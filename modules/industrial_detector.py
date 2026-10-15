@@ -8,6 +8,7 @@ and producing annotated video with glowing segmentation overlay + telemetry JSON
 
 from __future__ import annotations
 
+import collections
 import json
 import logging
 import math
@@ -17,7 +18,7 @@ import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, Generator, List, Optional, Tuple, Union
+from typing import Any, Deque, Dict, Generator, List, Optional, Tuple, Union
 
 import cv2
 import numpy as np
@@ -327,14 +328,14 @@ class DualModePlumeDetector:
     High-reliability industrial plume detector supporting:
       1. Primary Mode: Custom YOLO weight (`models/smoke.pt`) if present.
       2. Fallback Mode: Robust 3-Cue Computer Vision Segmentation Pipeline
-         combining Sky Difference, Low-Saturation HSV, and Temporal Motion
-         to extract smooth, organic smoke plume contours and pixel masks.
+         combining Multi-Step Temporal Turbulence, Row-Wise Sky Subtraction,
+         and Low-Saturation HSV Filtering to eliminate static sky bleed.
     """
 
     def __init__(
         self,
         model_path: str = "models/smoke.pt",
-        chimney_roi_norm: Tuple[float, float, float, float] = (0.28, 0.08, 0.72, 0.50),
+        chimney_roi_norm: Tuple[float, float, float, float] = (0.42, 0.41, 0.51, 0.465),
         vid_stride: int = 3,
         imgsz: int = 480,
     ):
@@ -346,6 +347,7 @@ class DualModePlumeDetector:
         self.mode = "fallback"
         self.model = None
         self.bg_subtractor = None
+        self.rolling_gray_buffer: Deque[np.ndarray] = collections.deque(maxlen=28)
 
         self._init_detector()
 
@@ -376,19 +378,20 @@ class DualModePlumeDetector:
         frame_idx: int = 0,
     ) -> Tuple[Tuple[int, int, int, int], np.ndarray, List[np.ndarray], str]:
         """
-        3-Cue Computer Vision Segmentation Pipeline:
-          Cue A: Frame-to-Frame & Background Difference against ambient sky reference
-          Cue B: HSV Low-Saturation & Darkness/Brightness Mask (S < 85, delta V)
-          Cue C: Temporal Motion / Turbulence Mask (MOG2 with learningRate=0.0005)
-          Fused: Morphological fusion into smooth, organic plume contours & binary mask.
+        Robust 3-Cue Computer Vision Smoke Segmentation Pipeline:
+          1. Strict Temporal Turbulence Gate (Rolling multi-step frame buffer t-6, t-14, t-22).
+             Static overcast sky pixels with zero motion can NEVER be masked!
+          2. Row-Wise Horizontal Background Subtraction (Handles vertical sky brightness gradients).
+          3. Low-Saturation HSV Filtering (smoke S < 85).
+          4. Chimney-Tip Anchor & Morphological Fusion into smooth organic contours.
         """
         h, w = frame.shape[:2]
 
-        # Restrict segmentation search zone to the upper 75% of the frame
-        search_h = int(h * 0.75)
+        # Upper 55% search zone covers the sky and stack exit zone above buildings
+        search_h = int(h * 0.55)
         search_zone = frame[:search_h, :]
 
-        # Downscale for segmentation processing if high-resolution (e.g. 1080p, 4K) to maintain 40+ FPS
+        # Downscale for segmentation processing to achieve 40+ FPS while retaining full output resolution
         proc_w = 640
         if w > proc_w:
             scale_ratio = float(proc_w) / float(w)
@@ -400,61 +403,114 @@ class DualModePlumeDetector:
             proc_w = w
             proc_h = search_h
 
-        # -------------------------------------------------------------
-        # Cue A: Dynamic Ambient Sky Reference & Difference Mask
-        # -------------------------------------------------------------
-        pw = max(8, min(40, proc_w // 8))
-        ph = max(8, min(40, proc_h // 8))
-        patch_tl = proc_zone[2:2 + ph, 2:2 + pw]
-        patch_tr = proc_zone[2:2 + ph, max(0, proc_w - 2 - pw):max(1, proc_w - 2)]
-        sky_bgr = (np.mean(patch_tl, axis=(0, 1)) + np.mean(patch_tr, axis=(0, 1))) / 2.0
-
-        sky_fill = np.full_like(proc_zone, np.uint8(sky_bgr))
-        diff_sky = cv2.absdiff(proc_zone, sky_fill)
-        diff_sky_gray = cv2.cvtColor(diff_sky, cv2.COLOR_BGR2GRAY)
-        _, sky_diff_mask = cv2.threshold(diff_sky_gray, 20, 255, cv2.THRESH_BINARY)
+        proc_gray = cv2.cvtColor(proc_zone, cv2.COLOR_BGR2GRAY)
+        self.rolling_gray_buffer.append(proc_gray.copy())
 
         # -------------------------------------------------------------
-        # Cue B: HSV Low-Saturation & Brightness / Darkness Mask
+        # Cue 1: Strict Temporal Turbulence Gate (Multi-Step Rolling Buffer)
         # -------------------------------------------------------------
-        hsv_zone = cv2.cvtColor(proc_zone, cv2.COLOR_BGR2HSV)
-        s_channel = hsv_zone[:, :, 1]
-        v_channel = hsv_zone[:, :, 2]
+        buf_len = len(self.rolling_gray_buffer)
+        if buf_len >= 8:
+            # Sample previous frames at ~6, 14, and 22 frames in the past
+            idx1 = max(0, buf_len - 6)
+            idx2 = max(0, buf_len - 14)
+            idx3 = max(0, buf_len - 22)
+            d1 = cv2.absdiff(proc_gray, self.rolling_gray_buffer[idx1])
+            d2 = cv2.absdiff(proc_gray, self.rolling_gray_buffer[idx2])
+            d3 = cv2.absdiff(proc_gray, self.rolling_gray_buffer[idx3])
+            temp_diff = np.maximum(d1, np.maximum(d2, d3))
+        elif buf_len >= 2:
+            temp_diff = cv2.absdiff(proc_gray, self.rolling_gray_buffer[0])
+        else:
+            temp_diff = np.zeros_like(proc_gray)
 
-        low_sat_mask = cv2.inRange(s_channel, 0, 85)
-
-        patch_tl_hsv = hsv_zone[2:2 + ph, 2:2 + pw, 2]
-        patch_tr_hsv = hsv_zone[2:2 + ph, max(0, proc_w - 2 - pw):max(1, proc_w - 2), 2]
-        sky_v = (np.mean(patch_tl_hsv) + np.mean(patch_tr_hsv)) / 2.0
-        v_fill = np.full_like(v_channel, int(sky_v))
-        v_diff = cv2.absdiff(v_channel, v_fill)
-        _, v_diff_mask = cv2.threshold(v_diff, 16, 255, cv2.THRESH_BINARY)
-
-        # -------------------------------------------------------------
-        # Cue C: Temporal Motion / Turbulence Mask
-        # -------------------------------------------------------------
+        # MOG2 background subtractor motion
         motion_raw = self.bg_subtractor.apply(proc_zone, learningRate=0.0005)
-        _, motion_mask = cv2.threshold(motion_raw, 180, 255, cv2.THRESH_BINARY)
+        _, mog_mask = cv2.threshold(motion_raw, 180, 255, cv2.THRESH_BINARY)
+
+        # Combined temporal activity mask (threshold > 3)
+        _, diff_mask = cv2.threshold(temp_diff, 3, 255, cv2.THRESH_BINARY)
+        temporal_activity = cv2.bitwise_or(diff_mask, mog_mask)
 
         # -------------------------------------------------------------
-        # Fused Morphological Plume Mask
+        # Cue 2: Row-Wise Horizontal Background Sky Subtraction
         # -------------------------------------------------------------
-        cue_ab = cv2.bitwise_and(sky_diff_mask, low_sat_mask)
-        fused = cv2.bitwise_or(cue_ab, motion_mask)
+        # Sky brightness has vertical gradients. For each row y, sample background
+        # luminance from clear sky margins (right side x in [0.72*proc_w, 0.98*proc_w])
+        row_bg = np.zeros(proc_h, dtype=np.float32)
+        right_margin_start = int(proc_w * 0.72)
+        right_margin_end = int(proc_w * 0.98)
 
-        # Smooth with Gaussian blur & morphological closing/opening
-        blurred = cv2.GaussianBlur(fused, (15, 15), 0)
-        _, thresh = cv2.threshold(blurred, 80, 255, cv2.THRESH_BINARY)
+        for y in range(proc_h):
+            margin_pixels = proc_gray[y, right_margin_start:right_margin_end]
+            row_bg[y] = float(np.median(margin_pixels)) if len(margin_pixels) > 0 else float(np.median(proc_gray[y, :]))
 
-        kernel_close = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (21, 21))
-        kernel_open = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (9, 9))
-        morph = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel_close)
-        morph = cv2.morphologyEx(morph, cv2.MORPH_OPEN, kernel_open)
+        # Row difference: smoke diverges from row-background sky luminance
+        row_diff_abs = np.abs(proc_gray.astype(np.float32) - row_bg[:, None])
+        contrast_mask = (row_diff_abs > 4.5).astype(np.uint8) * 255
 
-        # Find connected contours belonging to the smoke plume
-        min_area = max(150.0, (proc_w * proc_h) * 0.001)
-        contours, _ = cv2.findContours(morph, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        valid_contours = [c for c in contours if cv2.contourArea(c) > min_area]
+        # -------------------------------------------------------------
+        # Cue 3: HSV Low-Saturation Filter (Smoke has S < 85)
+        # -------------------------------------------------------------
+        hsv_search = cv2.cvtColor(proc_zone, cv2.COLOR_BGR2HSV)
+        low_sat_mask = cv2.inRange(hsv_search[:, :, 1], 0, 85)
+
+        # -------------------------------------------------------------
+        # FUSED PLUME SEED WITH MANDATORY TEMPORAL ACTIVITY GATE
+        # -------------------------------------------------------------
+        # (Temporal Turbulence AND Luminance Contrast AND Low Saturation)
+        # Static dull overcast sky has ZERO temporal turbulence -> completely eliminated!
+        plume_seed = cv2.bitwise_and(temporal_activity, contrast_mask)
+        plume_seed = cv2.bitwise_and(plume_seed, low_sat_mask)
+
+        # -------------------------------------------------------------
+        # Chimney-Tip Anchor & Spatial Geometry Constraints
+        # -------------------------------------------------------------
+        full_proc_h = int(h * scale_ratio)
+        stack_mouth_y = int(full_proc_h * 0.455)
+        roofline_y = int(full_proc_h * 0.50)
+        stack_x1 = int(proc_w * 0.44)
+        stack_x2 = int(proc_w * 0.53)
+
+        # Zero out stack body below mouth
+        plume_seed[stack_mouth_y:, stack_x1:stack_x2] = 0
+
+        # General roofline cutoff (anything below roofline is buildings/parked cars)
+        plume_seed[roofline_y:, :] = 0
+
+        # Right-side cutoff: Tall chimney is at x > 0.56*proc_w; plume drifts leftwards
+        plume_seed[:, int(proc_w * 0.56):] = 0
+
+        # -------------------------------------------------------------
+        # Morphological Plume Fusion & Sanity Area Cap
+        # -------------------------------------------------------------
+        kernel_close = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (31, 31))
+        kernel_open = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 7))
+        fused = cv2.morphologyEx(plume_seed, cv2.MORPH_CLOSE, kernel_close)
+        fused = cv2.morphologyEx(fused, cv2.MORPH_OPEN, kernel_open)
+
+        # Sanity Area Cap: If mask covers > 40% of the search area, tighten dynamically
+        total_search_pixels = float(proc_w * proc_h)
+        if cv2.countNonZero(fused) > 0.40 * total_search_pixels:
+            score_map = temp_diff.astype(np.float32) * row_diff_abs
+            cutoff = float(np.percentile(score_map[fused > 0], 85))
+            fused = ((score_map > cutoff) & (fused > 0)).astype(np.uint8) * 255
+            fused = cv2.morphologyEx(fused, cv2.MORPH_CLOSE, kernel_close)
+
+        # Find connected plume contours and filter by chimney origin & dispersion cone
+        contours, _ = cv2.findContours(fused, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        valid_contours = []
+        for c in contours:
+            area = cv2.contourArea(c)
+            if area < 500.0:
+                continue
+            bx, by, bw, bh = cv2.boundingRect(c)
+            # Must be in plume dispersion region: x <= stack_x2 and above roofline
+            if bx > stack_x2 or by > roofline_y:
+                continue
+            # Must connect near chimney tip or lie in leftward dispersion path
+            if (bx + bw >= stack_x1 - 60 and by + bh >= stack_mouth_y - 120) or (bx < stack_x1 and area > 1000.0):
+                valid_contours.append(c)
 
         inv_scale = 1.0 / scale_ratio
 
@@ -463,9 +519,8 @@ class DualModePlumeDetector:
             scaled_contours = []
             all_pts = []
             for c in valid_contours:
-                # Scale each point back
                 scaled = (c.astype(np.float32) * inv_scale).astype(np.int32)
-                epsilon = 0.006 * cv2.arcLength(scaled, True)
+                epsilon = 0.005 * cv2.arcLength(scaled, True)
                 approx = cv2.approxPolyDP(scaled, epsilon, True)
                 scaled_contours.append(approx)
                 all_pts.append(scaled.reshape(-1, 2))
@@ -476,15 +531,15 @@ class DualModePlumeDetector:
 
             all_pts_arr = np.vstack(all_pts)
             bx, by, bw, bh = cv2.boundingRect(all_pts_arr)
-            pad = int(10 * inv_scale)
+            pad = int(12 * inv_scale)
             x1 = max(0, bx - pad)
             y1 = max(0, by - pad)
             x2 = min(w, bx + bw + pad)
             y2 = min(h, by + bh + pad)
 
-            return (x1, y1, x2, y2), plume_mask, scaled_contours, "Fallback (Multi-Cue Segmentation)"
+            return (x1, y1, x2, y2), plume_mask, scaled_contours, "Fallback (Turbulence Segmentation)"
 
-        # Fallback to default chimney stack exit ROI
+        # Fallback to default chimney stack exit ROI if plume is not yet active
         rx1 = max(0, int(self.chimney_roi_norm[0] * w))
         ry1 = max(0, int(self.chimney_roi_norm[1] * h))
         rx2 = min(w, int(self.chimney_roi_norm[2] * w))
@@ -540,7 +595,7 @@ class DualModePlumeDetector:
                 logger.debug(f"YOLO inference exception: {e}")
 
         # -------------------------------------------------------------
-        # Mode 2: Multi-Cue Computer Vision Segmentation Pipeline
+        # Mode 2: Multi-Cue Turbulence Computer Vision Segmentation
         # -------------------------------------------------------------
         return self.segment_smoke_plume(frame, frame_idx=frame_idx)
 
