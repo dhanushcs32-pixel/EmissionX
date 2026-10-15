@@ -48,7 +48,7 @@ jobs:
       - name: Run Pytest Suite
         run: |
           if [ -d "tests" ]; then
-            uv run --no-project pytest -v
+            uv run --no-project python -m pytest -v
           fi
 
   # ==========================================
