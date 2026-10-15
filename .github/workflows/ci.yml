@@ -34,18 +34,21 @@ jobs:
         run: uv python install 3.11
 
       - name: Install Python Dependencies
-        run: uv sync --all-extras --dev || uv pip install --system -r pyproject.toml
+        run: |
+          uv venv
+          uv pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+          uv sync --all-extras --dev --no-install-project
 
       - name: Run Industrial Module End-to-End Test (Pillar 2)
         run: |
           if [ -f "run_industrial.py" ]; then
-            uv run python run_industrial.py
+            uv run --no-project python run_industrial.py
           fi
 
       - name: Run Pytest Suite
         run: |
           if [ -d "tests" ]; then
-            uv run pytest -v
+            uv run --no-project pytest -v
           fi
 
   # ==========================================
