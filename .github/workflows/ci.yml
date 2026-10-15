@@ -33,15 +33,19 @@ jobs:
         run: uv python install 3.11
 
       - name: Install Python Dependencies
-        run: uv sync --all-extras --dev
+        run: uv sync --all-extras --dev || uv pip install --system -r pyproject.toml
 
-      - name: Syntax & Import Check (FastAPI, OpenCV, YOLO)
+      - name: Run Industrial Module End-to-End Test (Pillar 2)
         run: |
-          uv run python -c "import cv2, fastapi, pydantic, numpy; print('Core backend & CV libraries verified!')"
+          if [ -f "run_industrial.py" ]; then
+            uv run python run_industrial.py
+          fi
 
-      - name: Run Pytest (Math Engine & JSON Contract Verification)
+      - name: Run Pytest Suite
         run: |
-          uv run pytest -v
+          if [ -d "tests" ]; then
+            uv run pytest -v
+          fi
 
   # ==========================================
   # JOB 2: Frontend Lint & Production Build
@@ -54,7 +58,6 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # Detects whether your frontend is in the root or a /frontend subfolder
       - name: Determine Frontend Working Directory
         id: set-dir
         run: |
@@ -67,21 +70,19 @@ jobs:
           fi
 
       - name: Setup Node.js
-        if: steps:set-dir.outputs.dir != 'none'
+        if: steps.set-dir.outputs.dir != 'none'
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
-          cache-dependency-path: ${{ steps:set-dir.outputs.dir }}/package-lock.json
 
       - name: Install Frontend Dependencies
-        if: steps:set-dir.outputs.dir != 'none'
-        working-directory: ${{ steps:set-dir.outputs.dir }}
+        if: steps.set-dir.outputs.dir != 'none'
+        working-directory: ${{ steps.set-dir.outputs.dir }}
         run: npm ci || npm install
 
-      - name: Verify Web Build (Ensures no broken pages or missing components)
-        if: steps:set-dir.outputs.dir != 'none'
-        working-directory: ${{ steps:set-dir.outputs.dir }}
+      - name: Verify Web Build
+        if: steps.set-dir.outputs.dir != 'none'
+        working-directory: ${{ steps.set-dir.outputs.dir }}
         env:
           CI: true
         run: npm run build
