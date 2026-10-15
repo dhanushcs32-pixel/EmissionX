@@ -111,3 +111,137 @@ def test_industrial_emissions_engine():
     assert lvl_m == 5
     assert mult_m == 1.60
     assert stat_m == "SCRUBBER VIOLATION"
+
+
+def test_api_health():
+    """Validates FastAPI system health and component diagnostics."""
+    from fastapi.testclient import TestClient
+    from main import app
+
+    client = TestClient(app)
+    response = client.get("/api/health")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] == "healthy"
+    assert "industrial_module" in data
+    assert "vehicular_module" in data
+    assert data["industrial_module"]["live"] is True
+    assert data["vehicular_module"]["live"] is True
+
+
+def test_api_telemetry_endpoints():
+    """Validates real-time circular telemetry streaming for industrial and vehicular sectors."""
+    from fastapi.testclient import TestClient
+    from main import app
+
+    client = TestClient(app)
+
+    # 1. Industrial telemetry stream
+    r_ind = client.get("/api/telemetry?sector=industrial")
+    assert r_ind.status_code == 200
+    data_ind = r_ind.json()
+    assert data_ind["sector"] == "industrial"
+    assert "emissions" in data_ind
+    assert "cv_telemetry" in data_ind
+    assert "environment" in data_ind
+
+    # 2. Vehicular telemetry stream (Open-Receiver Fallback)
+    r_veh = client.get("/api/telemetry?sector=vehicular")
+    assert r_veh.status_code == 200
+    data_veh = r_veh.json()
+    assert data_veh["sector"] == "vehicular"
+    assert "active_counts" in data_veh["cv_telemetry"]
+    assert data_veh["emissions"]["baseline_co2_kg_hr"] > 0
+
+    # 3. Dual-node simultaneous fetch (sector=all)
+    r_all = client.get("/api/telemetry?sector=all")
+    assert r_all.status_code == 200
+    data_all = r_all.json()
+    assert "industrial" in data_all
+    assert "vehicular" in data_all
+    assert data_all["industrial"]["sector"] == "industrial"
+    assert data_all["vehicular"]["sector"] == "vehicular"
+
+
+def test_api_simulation_endpoints():
+    """Validates What-If Carbon math and financial savings in INR for both sectors."""
+    from fastapi.testclient import TestClient
+    from main import app
+
+    client = TestClient(app)
+
+    # 1. Industrial What-If Simulation: Wet Scrubber Retrofit (85% efficiency)
+    sim_ind = client.post("/api/simulate", json={
+        "sector": "industrial",
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1245.0,
+        "opacity_multiplier": 1.6,
+        "scrubber_efficiency_pct": 85.0,
+        "combustion_tuning_pct": 0.0,
+    })
+    assert sim_ind.status_code == 200
+    res_ind = sim_ind.json()
+    assert res_ind["simulation"]["active"] is True
+    assert res_ind["simulation"]["projected_co2_kg_hr"] == 723.1
+    assert res_ind["simulation"]["financial_savings"]["inr_per_hour"] > 0
+    assert res_ind["simulation"]["financial_savings"]["currency"] == "INR (₹)"
+
+    # 2. Vehicular What-If Simulation: 40% EV Adoption + E20 Ethanol Blend
+    sim_veh = client.post("/api/simulate", json={
+        "sector": "vehicular",
+        "ev_adoption_pct": 40.0,
+        "e20_blend_pct": 20.0,
+        "queue_optimization_pct": 50.0,
+        "ban_bs3_bs4_heavy": True,
+    })
+    assert sim_veh.status_code == 200
+    res_veh = sim_veh.json()
+    assert res_veh["simulation"]["active"] is True
+    assert res_veh["simulation"]["reduction_pct"] > 0
+    assert res_veh["simulation"]["financial_savings"]["annual_inr"] > 0
+
+
+def test_api_ai_advice_endpoint():
+    """Validates GenAI Sustainability Copilot recommendation schema."""
+    from fastapi.testclient import TestClient
+    from main import app
+
+    client = TestClient(app)
+
+    # 1. Industrial Advice
+    adv_ind = client.post("/api/ai-advice", json={"sector": "industrial"})
+    assert adv_ind.status_code == 200
+    res_ind = adv_ind.json()
+    assert "headline" in res_ind
+    assert len(res_ind["immediate_actions"]) == 3
+    assert "capex_roi_estimate" in res_ind
+    assert "regulatory_status" in res_ind
+
+    # 2. Vehicular Advice
+    adv_veh = client.post("/api/ai-advice", json={"sector": "vehicular"})
+    assert adv_veh.status_code == 200
+    res_veh = adv_veh.json()
+    assert "headline" in res_veh
+    assert len(res_veh["immediate_actions"]) == 3
+    assert "capex_roi_estimate" in res_veh
+
+
+def test_api_video_streaming():
+    """Validates video streaming endpoints for both generated and ungenerated assets."""
+    from fastapi.testclient import TestClient
+    from main import app
+
+    client = TestClient(app)
+
+    # Industrial video is generated and should return 200
+    r_ind = client.get("/api/video/industrial")
+    assert r_ind.status_code == 200
+    assert r_ind.headers["content-type"] == "video/mp4"
+
+    # Vehicular video is not yet generated and should return clean 404
+    r_veh = client.get("/api/video/vehicular")
+    assert r_veh.status_code == 404
+
+    # Invalid sector returns 400
+    r_inv = client.get("/api/video/unknown_sector")
+    assert r_inv.status_code == 400
