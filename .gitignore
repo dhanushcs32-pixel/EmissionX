@@ -1,0 +1,27 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Pytest & cache
+.pytest_cache/
+cache/factory_annotated.mp4
+factory_stack.mp4
+
+# Models
+models/*.pt
+models/*.onnx
+models/*.bin
+
+# Node / Frontend
+node_modules/
+.next/
+dist/
+build/
+.env
+.env.local
+
+# OS
+Thumbs.db
+[Ee]xcluded/
+.DS_Store

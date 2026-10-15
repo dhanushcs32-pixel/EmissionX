@@ -1,0 +1,6452 @@
+[
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.212694+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 33.2,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1209.8,
+        "flue_gas_temp_c": 186.8,
+        "so2_ppm": 152
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 33.2% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1210 kg/hr | Flue Temp: 186.8C | SO2: 152 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3659.6,
+      "waste_co2_kg_hr": 731.9
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3659.6,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.228779+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 41.4,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1207.6,
+        "flue_gas_temp_c": 194.5,
+        "so2_ppm": 181
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 41.4% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1208 kg/hr | Flue Temp: 194.5C | SO2: 181 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3653.0,
+      "waste_co2_kg_hr": 730.6
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3653.0,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.241534+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 33.2,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1210.4,
+        "flue_gas_temp_c": 188.0,
+        "so2_ppm": 159
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 33.2% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1210 kg/hr | Flue Temp: 188.0C | SO2: 159 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3661.5,
+      "waste_co2_kg_hr": 732.3
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3661.5,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.260398+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 33.2,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1215.3,
+        "flue_gas_temp_c": 188.0,
+        "so2_ppm": 157
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 33.2% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1215 kg/hr | Flue Temp: 188.0C | SO2: 157 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3676.3,
+      "waste_co2_kg_hr": 735.3
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3676.3,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.278095+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 32.9,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1213.0,
+        "flue_gas_temp_c": 188.1,
+        "so2_ppm": 161
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 32.9% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1213 kg/hr | Flue Temp: 188.1C | SO2: 161 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3669.3,
+      "waste_co2_kg_hr": 733.8
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3669.3,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.289667+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 33.0,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1215.7,
+        "flue_gas_temp_c": 187.6,
+        "so2_ppm": 164
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 33.0% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1216 kg/hr | Flue Temp: 187.6C | SO2: 164 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3677.5,
+      "waste_co2_kg_hr": 735.5
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3677.5,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.314224+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 32.9,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1218.0,
+        "flue_gas_temp_c": 188.4,
+        "so2_ppm": 165
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 32.9% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1218 kg/hr | Flue Temp: 188.4C | SO2: 165 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3684.4,
+      "waste_co2_kg_hr": 736.8
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3684.4,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.333991+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 32.9,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1219.1,
+        "flue_gas_temp_c": 187.5,
+        "so2_ppm": 155
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 32.9% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1219 kg/hr | Flue Temp: 187.5C | SO2: 155 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3687.8,
+      "waste_co2_kg_hr": 737.6
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3687.8,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.348489+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 32.9,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1213.9,
+        "flue_gas_temp_c": 188.0,
+        "so2_ppm": 153
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 32.9% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1214 kg/hr | Flue Temp: 188.0C | SO2: 153 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3672.0,
+      "waste_co2_kg_hr": 734.4
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3672.0,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.377885+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 32.8,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1213.4,
+        "flue_gas_temp_c": 188.7,
+        "so2_ppm": 157
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 32.8% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1213 kg/hr | Flue Temp: 188.7C | SO2: 157 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3670.5,
+      "waste_co2_kg_hr": 734.1
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3670.5,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.395141+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 28.0,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1217.2,
+        "flue_gas_temp_c": 185.2,
+        "so2_ppm": 138
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 28.0% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1217 kg/hr | Flue Temp: 185.2C | SO2: 138 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3682.0,
+      "waste_co2_kg_hr": 736.4
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3682.0,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.419176+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 27.8,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1212.5,
+        "flue_gas_temp_c": 183.8,
+        "so2_ppm": 141
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 27.8% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1212 kg/hr | Flue Temp: 183.8C | SO2: 141 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3667.8,
+      "waste_co2_kg_hr": 733.6
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3667.8,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.457339+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 32.7,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1212.0,
+        "flue_gas_temp_c": 188.8,
+        "so2_ppm": 158
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 32.7% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1212 kg/hr | Flue Temp: 188.8C | SO2: 158 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3666.3,
+      "waste_co2_kg_hr": 733.3
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3666.3,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.495537+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 26.4,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1214.3,
+        "flue_gas_temp_c": 184.0,
+        "so2_ppm": 147
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 26.4% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1214 kg/hr | Flue Temp: 184.0C | SO2: 147 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3673.3,
+      "waste_co2_kg_hr": 734.7
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3673.3,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.531182+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 32.4,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1211.7,
+        "flue_gas_temp_c": 188.0,
+        "so2_ppm": 164
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 32.4% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1212 kg/hr | Flue Temp: 188.0C | SO2: 164 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3665.4,
+      "waste_co2_kg_hr": 733.1
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3665.4,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.560364+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 28.1,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1207.4,
+        "flue_gas_temp_c": 185.4,
+        "so2_ppm": 138
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 28.1% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1207 kg/hr | Flue Temp: 185.4C | SO2: 138 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3652.4,
+      "waste_co2_kg_hr": 730.5
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3652.4,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.580114+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 27.4,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1211.4,
+        "flue_gas_temp_c": 183.2,
+        "so2_ppm": 134
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 27.4% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1211 kg/hr | Flue Temp: 183.2C | SO2: 134 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3664.5,
+      "waste_co2_kg_hr": 732.9
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3664.5,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.589812+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 26.7,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1207.5,
+        "flue_gas_temp_c": 182.6,
+        "so2_ppm": 141
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 26.7% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1208 kg/hr | Flue Temp: 182.6C | SO2: 141 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3652.7,
+      "waste_co2_kg_hr": 730.5
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3652.7,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.599887+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 26.9,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1207.1,
+        "flue_gas_temp_c": 184.1,
+        "so2_ppm": 146
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 26.9% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1207 kg/hr | Flue Temp: 184.1C | SO2: 146 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3651.5,
+      "waste_co2_kg_hr": 730.3
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3651.5,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.610818+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 26.1,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1201.8,
+        "flue_gas_temp_c": 181.9,
+        "so2_ppm": 145
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 26.1% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1202 kg/hr | Flue Temp: 181.9C | SO2: 145 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3635.4,
+      "waste_co2_kg_hr": 727.0
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3635.4,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.620991+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 26.7,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1199.3,
+        "flue_gas_temp_c": 182.4,
+        "so2_ppm": 144
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 26.7% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1199 kg/hr | Flue Temp: 182.4C | SO2: 144 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3627.9,
+      "waste_co2_kg_hr": 725.6
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3627.9,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.632128+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 26.4,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1195.9,
+        "flue_gas_temp_c": 181.6,
+        "so2_ppm": 135
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 26.4% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1196 kg/hr | Flue Temp: 181.6C | SO2: 135 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3617.6,
+      "waste_co2_kg_hr": 723.5
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3617.6,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.643861+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 26.7,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1192.6,
+        "flue_gas_temp_c": 182.5,
+        "so2_ppm": 136
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 26.7% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1193 kg/hr | Flue Temp: 182.5C | SO2: 136 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3607.6,
+      "waste_co2_kg_hr": 721.5
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3607.6,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.653698+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 26.2,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1194.8,
+        "flue_gas_temp_c": 181.1,
+        "so2_ppm": 143
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 26.2% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1195 kg/hr | Flue Temp: 181.1C | SO2: 143 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3614.3,
+      "waste_co2_kg_hr": 722.9
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3614.3,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.664695+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 26.3,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1189.8,
+        "flue_gas_temp_c": 180.9,
+        "so2_ppm": 144
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 26.3% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1190 kg/hr | Flue Temp: 180.9C | SO2: 144 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3599.1,
+      "waste_co2_kg_hr": 719.8
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3599.1,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.676633+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 26.3,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1191.4,
+        "flue_gas_temp_c": 181.0,
+        "so2_ppm": 140
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 26.3% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1191 kg/hr | Flue Temp: 181.0C | SO2: 140 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3604.0,
+      "waste_co2_kg_hr": 720.8
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3604.0,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.686699+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 26.1,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1190.6,
+        "flue_gas_temp_c": 181.0,
+        "so2_ppm": 140
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 26.1% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1191 kg/hr | Flue Temp: 181.0C | SO2: 140 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3601.6,
+      "waste_co2_kg_hr": 720.3
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3601.6,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.697688+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 26.1,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1183.9,
+        "flue_gas_temp_c": 180.4,
+        "so2_ppm": 145
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 26.1% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1184 kg/hr | Flue Temp: 180.4C | SO2: 145 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3581.3,
+      "waste_co2_kg_hr": 716.3
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3581.3,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.707629+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 26.0,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1187.2,
+        "flue_gas_temp_c": 180.4,
+        "so2_ppm": 141
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 26.0% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1187 kg/hr | Flue Temp: 180.4C | SO2: 141 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3591.3,
+      "waste_co2_kg_hr": 718.3
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3591.3,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.718623+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 26.0,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1186.6,
+        "flue_gas_temp_c": 179.2,
+        "so2_ppm": 145
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 26.0% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1187 kg/hr | Flue Temp: 179.2C | SO2: 145 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3589.5,
+      "waste_co2_kg_hr": 717.9
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3589.5,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.730129+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 25.9,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1183.3,
+        "flue_gas_temp_c": 179.4,
+        "so2_ppm": 139
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 25.9% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1183 kg/hr | Flue Temp: 179.4C | SO2: 139 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3579.5,
+      "waste_co2_kg_hr": 715.9
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3579.5,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.739199+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 25.9,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1183.4,
+        "flue_gas_temp_c": 178.4,
+        "so2_ppm": 131
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 25.9% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1183 kg/hr | Flue Temp: 178.4C | SO2: 131 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3579.8,
+      "waste_co2_kg_hr": 716.0
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3579.8,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.749848+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 25.8,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1181.6,
+        "flue_gas_temp_c": 179.4,
+        "so2_ppm": 131
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 25.8% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1182 kg/hr | Flue Temp: 179.4C | SO2: 131 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3574.3,
+      "waste_co2_kg_hr": 714.8
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3574.3,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.759849+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 25.8,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1186.1,
+        "flue_gas_temp_c": 178.8,
+        "so2_ppm": 142
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 25.8% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1186 kg/hr | Flue Temp: 178.8C | SO2: 142 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3588.0,
+      "waste_co2_kg_hr": 717.6
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3588.0,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.769930+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 25.9,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1183.3,
+        "flue_gas_temp_c": 179.3,
+        "so2_ppm": 129
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 25.9% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1183 kg/hr | Flue Temp: 179.3C | SO2: 129 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3579.5,
+      "waste_co2_kg_hr": 715.9
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3579.5,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.780915+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 25.8,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1183.4,
+        "flue_gas_temp_c": 177.9,
+        "so2_ppm": 142
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 25.8% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1183 kg/hr | Flue Temp: 177.9C | SO2: 142 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3579.8,
+      "waste_co2_kg_hr": 716.0
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3579.8,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.790941+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 25.8,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1187.9,
+        "flue_gas_temp_c": 178.0,
+        "so2_ppm": 135
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 25.8% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1188 kg/hr | Flue Temp: 178.0C | SO2: 135 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3593.4,
+      "waste_co2_kg_hr": 718.7
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3593.4,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.806942+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 25.8,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1186.6,
+        "flue_gas_temp_c": 178.0,
+        "so2_ppm": 131
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 25.8% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1187 kg/hr | Flue Temp: 178.0C | SO2: 131 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3589.5,
+      "waste_co2_kg_hr": 717.9
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3589.5,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.818557+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 25.8,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1187.0,
+        "flue_gas_temp_c": 177.4,
+        "so2_ppm": 144
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 25.8% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1187 kg/hr | Flue Temp: 177.4C | SO2: 144 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3590.7,
+      "waste_co2_kg_hr": 718.2
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3590.7,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.828880+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 25.7,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1191.2,
+        "flue_gas_temp_c": 178.7,
+        "so2_ppm": 145
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 25.7% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1191 kg/hr | Flue Temp: 178.7C | SO2: 145 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3603.4,
+      "waste_co2_kg_hr": 720.7
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3603.4,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.839990+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 25.8,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1189.5,
+        "flue_gas_temp_c": 178.6,
+        "so2_ppm": 144
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 25.8% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1190 kg/hr | Flue Temp: 178.6C | SO2: 144 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3598.2,
+      "waste_co2_kg_hr": 719.6
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3598.2,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.855406+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 25.6,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1195.7,
+        "flue_gas_temp_c": 178.2,
+        "so2_ppm": 142
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 25.6% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1196 kg/hr | Flue Temp: 178.2C | SO2: 142 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3617.0,
+      "waste_co2_kg_hr": 723.4
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3617.0,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.866971+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 25.6,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1198.8,
+        "flue_gas_temp_c": 178.9,
+        "so2_ppm": 142
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 25.6% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1199 kg/hr | Flue Temp: 178.9C | SO2: 142 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3626.4,
+      "waste_co2_kg_hr": 725.3
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3626.4,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.879183+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 25.6,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1197.2,
+        "flue_gas_temp_c": 179.4,
+        "so2_ppm": 132
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 25.6% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1197 kg/hr | Flue Temp: 179.4C | SO2: 132 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3621.5,
+      "waste_co2_kg_hr": 724.3
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3621.5,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.890696+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 25.5,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1197.7,
+        "flue_gas_temp_c": 178.0,
+        "so2_ppm": 130
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 25.5% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1198 kg/hr | Flue Temp: 178.0C | SO2: 130 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3623.0,
+      "waste_co2_kg_hr": 724.6
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3623.0,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.903537+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 25.5,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1199.5,
+        "flue_gas_temp_c": 178.7,
+        "so2_ppm": 136
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 25.5% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1200 kg/hr | Flue Temp: 178.7C | SO2: 136 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3628.5,
+      "waste_co2_kg_hr": 725.7
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3628.5,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.915516+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 25.5,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1203.3,
+        "flue_gas_temp_c": 178.7,
+        "so2_ppm": 139
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 25.5% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1203 kg/hr | Flue Temp: 178.7C | SO2: 139 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3640.0,
+      "waste_co2_kg_hr": 728.0
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3640.0,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.925532+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 25.5,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1206.9,
+        "flue_gas_temp_c": 179.2,
+        "so2_ppm": 141
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 25.5% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1207 kg/hr | Flue Temp: 179.2C | SO2: 141 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3650.9,
+      "waste_co2_kg_hr": 730.2
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3650.9,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.935638+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 24.9,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1207.3,
+        "flue_gas_temp_c": 179.9,
+        "so2_ppm": 132
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 24.9% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1207 kg/hr | Flue Temp: 179.9C | SO2: 132 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3652.1,
+      "waste_co2_kg_hr": 730.4
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3652.1,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.950871+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 24.9,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1204.4,
+        "flue_gas_temp_c": 178.4,
+        "so2_ppm": 139
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 24.9% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1204 kg/hr | Flue Temp: 178.4C | SO2: 139 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3643.3,
+      "waste_co2_kg_hr": 728.7
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3643.3,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.966381+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 24.9,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1204.4,
+        "flue_gas_temp_c": 179.4,
+        "so2_ppm": 138
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 24.9% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1204 kg/hr | Flue Temp: 179.4C | SO2: 138 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3643.3,
+      "waste_co2_kg_hr": 728.7
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3643.3,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.981830+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 24.9,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1205.9,
+        "flue_gas_temp_c": 179.8,
+        "so2_ppm": 126
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 24.9% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1206 kg/hr | Flue Temp: 179.8C | SO2: 126 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3647.8,
+      "waste_co2_kg_hr": 729.5
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3647.8,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:23.992906+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 24.7,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1205.2,
+        "flue_gas_temp_c": 179.1,
+        "so2_ppm": 140
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 24.7% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1205 kg/hr | Flue Temp: 179.1C | SO2: 140 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3645.7,
+      "waste_co2_kg_hr": 729.1
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3645.7,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.004629+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 24.7,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1205.1,
+        "flue_gas_temp_c": 180.0,
+        "so2_ppm": 129
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 24.7% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1205 kg/hr | Flue Temp: 180.0C | SO2: 129 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3645.4,
+      "waste_co2_kg_hr": 729.1
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3645.4,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.016161+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 24.6,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1210.2,
+        "flue_gas_temp_c": 179.5,
+        "so2_ppm": 130
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 24.6% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1210 kg/hr | Flue Temp: 179.5C | SO2: 130 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3660.9,
+      "waste_co2_kg_hr": 732.2
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3660.9,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.029505+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 24.5,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1209.4,
+        "flue_gas_temp_c": 180.1,
+        "so2_ppm": 130
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 24.5% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1209 kg/hr | Flue Temp: 180.1C | SO2: 130 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3658.4,
+      "waste_co2_kg_hr": 731.7
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3658.4,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.042033+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 24.4,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1205.3,
+        "flue_gas_temp_c": 181.5,
+        "so2_ppm": 132
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 24.4% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1205 kg/hr | Flue Temp: 181.5C | SO2: 132 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3646.0,
+      "waste_co2_kg_hr": 729.2
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3646.0,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.053643+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 24.3,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1205.8,
+        "flue_gas_temp_c": 181.3,
+        "so2_ppm": 140
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 24.3% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1206 kg/hr | Flue Temp: 181.3C | SO2: 140 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3647.5,
+      "waste_co2_kg_hr": 729.5
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3647.5,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.065648+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 24.2,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1204.7,
+        "flue_gas_temp_c": 181.4,
+        "so2_ppm": 139
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 24.2% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1205 kg/hr | Flue Temp: 181.4C | SO2: 139 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3644.2,
+      "waste_co2_kg_hr": 728.8
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3644.2,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.076644+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 24.6,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1202.2,
+        "flue_gas_temp_c": 182.2,
+        "so2_ppm": 132
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 24.6% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1202 kg/hr | Flue Temp: 182.2C | SO2: 132 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3636.7,
+      "waste_co2_kg_hr": 727.4
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3636.7,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.089302+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 24.6,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1200.1,
+        "flue_gas_temp_c": 182.1,
+        "so2_ppm": 134
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 24.6% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1200 kg/hr | Flue Temp: 182.1C | SO2: 134 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3630.3,
+      "waste_co2_kg_hr": 726.1
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3630.3,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.102068+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 24.1,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1200.2,
+        "flue_gas_temp_c": 182.1,
+        "so2_ppm": 126
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 24.1% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1200 kg/hr | Flue Temp: 182.1C | SO2: 126 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3630.6,
+      "waste_co2_kg_hr": 726.1
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3630.6,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.113305+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 23.9,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1202.3,
+        "flue_gas_temp_c": 180.9,
+        "so2_ppm": 125
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 23.9% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1202 kg/hr | Flue Temp: 180.9C | SO2: 125 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3637.0,
+      "waste_co2_kg_hr": 727.4
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3637.0,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.125136+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 23.6,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1200.4,
+        "flue_gas_temp_c": 181.7,
+        "so2_ppm": 124
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 23.6% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1200 kg/hr | Flue Temp: 181.7C | SO2: 124 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3631.2,
+      "waste_co2_kg_hr": 726.2
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3631.2,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.136186+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 37.2,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1199.7,
+        "flue_gas_temp_c": 192.4,
+        "so2_ppm": 170
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 37.2% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1200 kg/hr | Flue Temp: 192.4C | SO2: 170 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3629.1,
+      "waste_co2_kg_hr": 725.8
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3629.1,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.148296+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 37.1,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1195.2,
+        "flue_gas_temp_c": 192.2,
+        "so2_ppm": 173
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 37.1% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1195 kg/hr | Flue Temp: 192.2C | SO2: 173 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3615.5,
+      "waste_co2_kg_hr": 723.1
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3615.5,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.159301+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 37.1,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1192.8,
+        "flue_gas_temp_c": 191.8,
+        "so2_ppm": 176
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 37.1% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1193 kg/hr | Flue Temp: 191.8C | SO2: 176 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3608.2,
+      "waste_co2_kg_hr": 721.6
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3608.2,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.170205+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 36.7,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1192.3,
+        "flue_gas_temp_c": 191.0,
+        "so2_ppm": 174
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 36.7% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1192 kg/hr | Flue Temp: 191.0C | SO2: 174 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3606.7,
+      "waste_co2_kg_hr": 721.3
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3606.7,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.181299+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 36.6,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1191.7,
+        "flue_gas_temp_c": 191.5,
+        "so2_ppm": 176
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 36.6% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1192 kg/hr | Flue Temp: 191.5C | SO2: 176 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3604.9,
+      "waste_co2_kg_hr": 721.0
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3604.9,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.191580+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 36.4,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1190.9,
+        "flue_gas_temp_c": 191.2,
+        "so2_ppm": 170
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 36.4% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1191 kg/hr | Flue Temp: 191.2C | SO2: 170 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3602.5,
+      "waste_co2_kg_hr": 720.5
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3602.5,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.202611+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 36.0,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1193.0,
+        "flue_gas_temp_c": 191.7,
+        "so2_ppm": 162
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 36.0% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1193 kg/hr | Flue Temp: 191.7C | SO2: 162 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3608.8,
+      "waste_co2_kg_hr": 721.7
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3608.8,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.213581+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 36.4,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1189.9,
+        "flue_gas_temp_c": 190.9,
+        "so2_ppm": 176
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 36.4% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1190 kg/hr | Flue Temp: 190.9C | SO2: 176 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3599.4,
+      "waste_co2_kg_hr": 719.8
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3599.4,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.223723+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 35.9,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1190.1,
+        "flue_gas_temp_c": 190.7,
+        "so2_ppm": 170
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 35.9% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1190 kg/hr | Flue Temp: 190.7C | SO2: 170 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3600.1,
+      "waste_co2_kg_hr": 720.1
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3600.1,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.237493+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 35.9,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1193.8,
+        "flue_gas_temp_c": 189.4,
+        "so2_ppm": 170
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 35.9% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1194 kg/hr | Flue Temp: 189.4C | SO2: 170 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3611.2,
+      "waste_co2_kg_hr": 722.2
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3611.2,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.249456+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 35.9,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1195.2,
+        "flue_gas_temp_c": 190.3,
+        "so2_ppm": 162
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 35.9% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1195 kg/hr | Flue Temp: 190.3C | SO2: 162 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3615.5,
+      "waste_co2_kg_hr": 723.1
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3615.5,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.260385+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 35.9,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1193.6,
+        "flue_gas_temp_c": 189.6,
+        "so2_ppm": 172
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 35.9% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1194 kg/hr | Flue Temp: 189.6C | SO2: 172 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3610.6,
+      "waste_co2_kg_hr": 722.1
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3610.6,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.270487+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 35.8,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1195.1,
+        "flue_gas_temp_c": 189.4,
+        "so2_ppm": 159
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 35.8% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1195 kg/hr | Flue Temp: 189.4C | SO2: 159 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3615.2,
+      "waste_co2_kg_hr": 723.1
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3615.2,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.281926+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 35.9,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1197.6,
+        "flue_gas_temp_c": 188.7,
+        "so2_ppm": 173
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 35.9% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1198 kg/hr | Flue Temp: 188.7C | SO2: 173 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3622.7,
+      "waste_co2_kg_hr": 724.5
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3622.7,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.292931+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 36.2,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1200.2,
+        "flue_gas_temp_c": 188.7,
+        "so2_ppm": 166
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 36.2% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1200 kg/hr | Flue Temp: 188.7C | SO2: 166 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3630.6,
+      "waste_co2_kg_hr": 726.1
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3630.6,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.303933+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 36.0,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1200.0,
+        "flue_gas_temp_c": 187.7,
+        "so2_ppm": 163
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 36.0% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1200 kg/hr | Flue Temp: 187.7C | SO2: 163 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3630.0,
+      "waste_co2_kg_hr": 726.0
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3630.0,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.315933+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 35.6,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1200.2,
+        "flue_gas_temp_c": 188.6,
+        "so2_ppm": 166
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 35.6% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1200 kg/hr | Flue Temp: 188.6C | SO2: 166 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3630.6,
+      "waste_co2_kg_hr": 726.1
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3630.6,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.326945+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 35.8,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1200.0,
+        "flue_gas_temp_c": 187.4,
+        "so2_ppm": 160
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 35.8% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1200 kg/hr | Flue Temp: 187.4C | SO2: 160 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3630.0,
+      "waste_co2_kg_hr": 726.0
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3630.0,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.338694+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 36.2,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1205.9,
+        "flue_gas_temp_c": 187.6,
+        "so2_ppm": 176
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 36.2% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1206 kg/hr | Flue Temp: 187.6C | SO2: 176 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3647.8,
+      "waste_co2_kg_hr": 729.5
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3647.8,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.353301+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 35.9,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1208.5,
+        "flue_gas_temp_c": 186.5,
+        "so2_ppm": 162
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 35.9% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1208 kg/hr | Flue Temp: 186.5C | SO2: 162 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3655.7,
+      "waste_co2_kg_hr": 731.1
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3655.7,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.367318+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 36.0,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1210.6,
+        "flue_gas_temp_c": 186.8,
+        "so2_ppm": 162
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 36.0% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1211 kg/hr | Flue Temp: 186.8C | SO2: 162 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3662.1,
+      "waste_co2_kg_hr": 732.4
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3662.1,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.384309+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 36.0,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1208.8,
+        "flue_gas_temp_c": 186.2,
+        "so2_ppm": 161
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 36.0% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1209 kg/hr | Flue Temp: 186.2C | SO2: 161 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3656.6,
+      "waste_co2_kg_hr": 731.3
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3656.6,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.420596+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 36.0,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1211.0,
+        "flue_gas_temp_c": 186.1,
+        "so2_ppm": 163
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 36.0% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1211 kg/hr | Flue Temp: 186.1C | SO2: 163 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3663.3,
+      "waste_co2_kg_hr": 732.7
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3663.3,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.442543+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 36.2,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1210.6,
+        "flue_gas_temp_c": 187.2,
+        "so2_ppm": 168
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 36.2% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1211 kg/hr | Flue Temp: 187.2C | SO2: 168 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3662.1,
+      "waste_co2_kg_hr": 732.4
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3662.1,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.456551+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 36.6,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1214.3,
+        "flue_gas_temp_c": 186.6,
+        "so2_ppm": 177
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 36.6% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1214 kg/hr | Flue Temp: 186.6C | SO2: 177 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3673.3,
+      "waste_co2_kg_hr": 734.7
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3673.3,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.474551+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 36.3,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1213.2,
+        "flue_gas_temp_c": 186.0,
+        "so2_ppm": 162
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 36.3% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1213 kg/hr | Flue Temp: 186.0C | SO2: 162 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3669.9,
+      "waste_co2_kg_hr": 734.0
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3669.9,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.502709+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 36.6,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1215.1,
+        "flue_gas_temp_c": 186.6,
+        "so2_ppm": 162
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 36.6% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1215 kg/hr | Flue Temp: 186.6C | SO2: 162 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3675.7,
+      "waste_co2_kg_hr": 735.2
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3675.7,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.517810+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 36.7,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1214.8,
+        "flue_gas_temp_c": 187.4,
+        "so2_ppm": 165
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 36.7% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1215 kg/hr | Flue Temp: 187.4C | SO2: 165 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3674.8,
+      "waste_co2_kg_hr": 735.0
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3674.8,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.530875+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 36.8,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1215.1,
+        "flue_gas_temp_c": 187.9,
+        "so2_ppm": 178
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 36.8% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1215 kg/hr | Flue Temp: 187.9C | SO2: 178 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3675.7,
+      "waste_co2_kg_hr": 735.2
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3675.7,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.542872+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 36.0,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1217.6,
+        "flue_gas_temp_c": 186.0,
+        "so2_ppm": 165
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 36.0% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1218 kg/hr | Flue Temp: 186.0C | SO2: 165 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3683.2,
+      "waste_co2_kg_hr": 736.6
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3683.2,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.557899+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 36.4,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1217.5,
+        "flue_gas_temp_c": 187.7,
+        "so2_ppm": 172
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 36.4% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1218 kg/hr | Flue Temp: 187.7C | SO2: 172 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3682.9,
+      "waste_co2_kg_hr": 736.6
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3682.9,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.572930+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 36.5,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1216.4,
+        "flue_gas_temp_c": 187.5,
+        "so2_ppm": 166
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 36.5% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1216 kg/hr | Flue Temp: 187.5C | SO2: 166 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3679.6,
+      "waste_co2_kg_hr": 735.9
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3679.6,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.585896+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 36.7,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1215.9,
+        "flue_gas_temp_c": 187.2,
+        "so2_ppm": 175
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 36.7% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1216 kg/hr | Flue Temp: 187.2C | SO2: 175 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3678.1,
+      "waste_co2_kg_hr": 735.6
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3678.1,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.598877+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 36.9,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1213.0,
+        "flue_gas_temp_c": 188.5,
+        "so2_ppm": 175
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 36.9% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1213 kg/hr | Flue Temp: 188.5C | SO2: 175 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3669.3,
+      "waste_co2_kg_hr": 733.8
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3669.3,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.610901+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 37.3,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1208.9,
+        "flue_gas_temp_c": 187.9,
+        "so2_ppm": 171
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 37.3% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1209 kg/hr | Flue Temp: 187.9C | SO2: 171 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3656.9,
+      "waste_co2_kg_hr": 731.4
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3656.9,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.622549+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 37.3,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1212.0,
+        "flue_gas_temp_c": 187.8,
+        "so2_ppm": 166
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 37.3% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1212 kg/hr | Flue Temp: 187.8C | SO2: 166 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3666.3,
+      "waste_co2_kg_hr": 733.3
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3666.3,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.634308+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 37.4,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1207.8,
+        "flue_gas_temp_c": 188.1,
+        "so2_ppm": 166
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 37.4% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1208 kg/hr | Flue Temp: 188.1C | SO2: 166 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3653.6,
+      "waste_co2_kg_hr": 730.7
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3653.6,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.646596+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 37.7,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1206.8,
+        "flue_gas_temp_c": 190.3,
+        "so2_ppm": 176
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 37.7% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1207 kg/hr | Flue Temp: 190.3C | SO2: 176 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3650.6,
+      "waste_co2_kg_hr": 730.1
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3650.6,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.657600+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 37.4,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1201.3,
+        "flue_gas_temp_c": 189.9,
+        "so2_ppm": 176
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 37.4% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1201 kg/hr | Flue Temp: 189.9C | SO2: 176 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3633.9,
+      "waste_co2_kg_hr": 726.8
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3633.9,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.669608+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 37.8,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1204.4,
+        "flue_gas_temp_c": 189.9,
+        "so2_ppm": 168
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 37.8% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1204 kg/hr | Flue Temp: 189.9C | SO2: 168 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3643.3,
+      "waste_co2_kg_hr": 728.7
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3643.3,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.683603+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 38.6,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1197.2,
+        "flue_gas_temp_c": 192.0,
+        "so2_ppm": 173
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 38.6% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1197 kg/hr | Flue Temp: 192.0C | SO2: 173 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3621.5,
+      "waste_co2_kg_hr": 724.3
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3621.5,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.696581+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 38.9,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1194.7,
+        "flue_gas_temp_c": 191.5,
+        "so2_ppm": 181
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 38.9% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1195 kg/hr | Flue Temp: 191.5C | SO2: 181 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3614.0,
+      "waste_co2_kg_hr": 722.8
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3614.0,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.707581+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 39.2,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1195.3,
+        "flue_gas_temp_c": 192.8,
+        "so2_ppm": 174
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 39.2% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1195 kg/hr | Flue Temp: 192.8C | SO2: 174 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3615.8,
+      "waste_co2_kg_hr": 723.2
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3615.8,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.719725+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 39.5,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1194.9,
+        "flue_gas_temp_c": 193.3,
+        "so2_ppm": 172
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 39.5% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1195 kg/hr | Flue Temp: 193.3C | SO2: 172 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3614.6,
+      "waste_co2_kg_hr": 722.9
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3614.6,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.732217+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 39.9,
+      "ringelmann_level": 2,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1191.1,
+        "flue_gas_temp_c": 192.6,
+        "so2_ppm": 187
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 39.9% (Ringelmann Lvl 2) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1191 kg/hr | Flue Temp: 192.6C | SO2: 187 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3603.1,
+      "waste_co2_kg_hr": 720.6
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3603.1,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.753579+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 41.0,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1190.2,
+        "flue_gas_temp_c": 194.1,
+        "so2_ppm": 180
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 41.0% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1190 kg/hr | Flue Temp: 194.1C | SO2: 180 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3600.4,
+      "waste_co2_kg_hr": 720.1
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3600.4,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.773383+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 41.4,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1188.3,
+        "flue_gas_temp_c": 195.6,
+        "so2_ppm": 179
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 41.4% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1188 kg/hr | Flue Temp: 195.6C | SO2: 179 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3594.6,
+      "waste_co2_kg_hr": 718.9
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3594.6,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.812589+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 41.3,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1183.9,
+        "flue_gas_temp_c": 195.2,
+        "so2_ppm": 183
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 41.3% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1184 kg/hr | Flue Temp: 195.2C | SO2: 183 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3581.3,
+      "waste_co2_kg_hr": 716.3
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3581.3,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.874762+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 41.2,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1183.4,
+        "flue_gas_temp_c": 195.3,
+        "so2_ppm": 186
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 41.2% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1183 kg/hr | Flue Temp: 195.3C | SO2: 186 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3579.8,
+      "waste_co2_kg_hr": 716.0
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3579.8,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.923794+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 41.7,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1183.0,
+        "flue_gas_temp_c": 196.2,
+        "so2_ppm": 180
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 41.7% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1183 kg/hr | Flue Temp: 196.2C | SO2: 180 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3578.6,
+      "waste_co2_kg_hr": 715.7
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3578.6,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.980057+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 41.9,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1181.7,
+        "flue_gas_temp_c": 196.3,
+        "so2_ppm": 183
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 41.9% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1182 kg/hr | Flue Temp: 196.3C | SO2: 183 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3574.6,
+      "waste_co2_kg_hr": 714.9
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3574.6,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:24.999238+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 42.3,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1184.9,
+        "flue_gas_temp_c": 195.7,
+        "so2_ppm": 188
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 42.3% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1185 kg/hr | Flue Temp: 195.7C | SO2: 188 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3584.3,
+      "waste_co2_kg_hr": 716.8
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3584.3,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.033721+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 42.7,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1181.4,
+        "flue_gas_temp_c": 197.4,
+        "so2_ppm": 196
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 42.7% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1181 kg/hr | Flue Temp: 197.4C | SO2: 196 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3573.7,
+      "waste_co2_kg_hr": 714.7
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3573.7,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.054336+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 43.0,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1182.6,
+        "flue_gas_temp_c": 197.5,
+        "so2_ppm": 183
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 43.0% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1183 kg/hr | Flue Temp: 197.5C | SO2: 183 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3577.4,
+      "waste_co2_kg_hr": 715.5
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3577.4,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.070641+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 42.8,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1183.0,
+        "flue_gas_temp_c": 196.8,
+        "so2_ppm": 184
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 42.8% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1183 kg/hr | Flue Temp: 196.8C | SO2: 184 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3578.6,
+      "waste_co2_kg_hr": 715.7
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3578.6,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.081724+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 43.2,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1184.3,
+        "flue_gas_temp_c": 196.1,
+        "so2_ppm": 191
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 43.2% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1184 kg/hr | Flue Temp: 196.1C | SO2: 191 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3582.5,
+      "waste_co2_kg_hr": 716.5
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3582.5,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.092820+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 43.6,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1184.4,
+        "flue_gas_temp_c": 196.4,
+        "so2_ppm": 182
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 43.6% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1184 kg/hr | Flue Temp: 196.4C | SO2: 182 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3582.8,
+      "waste_co2_kg_hr": 716.6
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3582.8,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.105573+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 44.1,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1189.6,
+        "flue_gas_temp_c": 197.6,
+        "so2_ppm": 184
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 44.1% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1190 kg/hr | Flue Temp: 197.6C | SO2: 184 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3598.5,
+      "waste_co2_kg_hr": 719.7
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3598.5,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.117624+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 51.8,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1203.7,
+        "flue_gas_temp_c": 202.7,
+        "so2_ppm": 223
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 51.8% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1204 kg/hr | Flue Temp: 202.7C | SO2: 223 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3641.2,
+      "waste_co2_kg_hr": 728.2
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3641.2,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.143579+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 51.7,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1205.6,
+        "flue_gas_temp_c": 202.5,
+        "so2_ppm": 211
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 51.7% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1206 kg/hr | Flue Temp: 202.5C | SO2: 211 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3646.9,
+      "waste_co2_kg_hr": 729.3
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3646.9,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.157572+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 52.1,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1209.4,
+        "flue_gas_temp_c": 204.2,
+        "so2_ppm": 219
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 52.1% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1209 kg/hr | Flue Temp: 204.2C | SO2: 219 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3658.4,
+      "waste_co2_kg_hr": 731.7
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3658.4,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.171619+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 52.1,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1209.6,
+        "flue_gas_temp_c": 202.4,
+        "so2_ppm": 222
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 52.1% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1210 kg/hr | Flue Temp: 202.4C | SO2: 222 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3659.0,
+      "waste_co2_kg_hr": 731.8
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3659.0,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.184572+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 52.3,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1212.3,
+        "flue_gas_temp_c": 202.3,
+        "so2_ppm": 213
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 52.3% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1212 kg/hr | Flue Temp: 202.3C | SO2: 213 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3667.2,
+      "waste_co2_kg_hr": 733.4
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3667.2,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.197588+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 52.2,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1212.7,
+        "flue_gas_temp_c": 202.5,
+        "so2_ppm": 220
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 52.2% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1213 kg/hr | Flue Temp: 202.5C | SO2: 220 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3668.4,
+      "waste_co2_kg_hr": 733.7
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3668.4,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.208587+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 52.1,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1218.6,
+        "flue_gas_temp_c": 201.4,
+        "so2_ppm": 217
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 52.1% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1219 kg/hr | Flue Temp: 201.4C | SO2: 217 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3686.3,
+      "waste_co2_kg_hr": 737.3
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3686.3,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.220632+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 52.1,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1217.4,
+        "flue_gas_temp_c": 201.6,
+        "so2_ppm": 222
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 52.1% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1217 kg/hr | Flue Temp: 201.6C | SO2: 222 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3682.6,
+      "waste_co2_kg_hr": 736.5
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3682.6,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.234330+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 52.2,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1217.6,
+        "flue_gas_temp_c": 201.9,
+        "so2_ppm": 220
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 52.2% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1218 kg/hr | Flue Temp: 201.9C | SO2: 220 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3683.2,
+      "waste_co2_kg_hr": 736.6
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3683.2,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.246818+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 52.2,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1219.2,
+        "flue_gas_temp_c": 200.6,
+        "so2_ppm": 213
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 52.2% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1219 kg/hr | Flue Temp: 200.6C | SO2: 213 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3688.1,
+      "waste_co2_kg_hr": 737.6
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3688.1,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.258572+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 52.4,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1225.7,
+        "flue_gas_temp_c": 201.4,
+        "so2_ppm": 215
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 52.4% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1226 kg/hr | Flue Temp: 201.4C | SO2: 215 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3707.7,
+      "waste_co2_kg_hr": 741.5
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3707.7,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.273947+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 52.6,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1221.8,
+        "flue_gas_temp_c": 201.5,
+        "so2_ppm": 215
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 52.6% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1222 kg/hr | Flue Temp: 201.5C | SO2: 215 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3695.9,
+      "waste_co2_kg_hr": 739.1
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3695.9,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.288061+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 52.6,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1227.6,
+        "flue_gas_temp_c": 201.9,
+        "so2_ppm": 211
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 52.6% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1228 kg/hr | Flue Temp: 201.9C | SO2: 211 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3713.5,
+      "waste_co2_kg_hr": 742.7
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3713.5,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.301870+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 52.7,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1228.1,
+        "flue_gas_temp_c": 200.3,
+        "so2_ppm": 211
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 52.7% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1228 kg/hr | Flue Temp: 200.3C | SO2: 211 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3715.0,
+      "waste_co2_kg_hr": 743.0
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3715.0,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.316544+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 49.9,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1205.3,
+        "flue_gas_temp_c": 198.7,
+        "so2_ppm": 202
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 49.9% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1205 kg/hr | Flue Temp: 198.7C | SO2: 202 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3646.0,
+      "waste_co2_kg_hr": 729.2
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3646.0,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.347884+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 50.5,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1225.3,
+        "flue_gas_temp_c": 197.6,
+        "so2_ppm": 212
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 50.5% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1225 kg/hr | Flue Temp: 197.6C | SO2: 212 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3706.5,
+      "waste_co2_kg_hr": 741.3
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3706.5,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.360548+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 52.9,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1227.9,
+        "flue_gas_temp_c": 199.9,
+        "so2_ppm": 225
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 52.9% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1228 kg/hr | Flue Temp: 199.9C | SO2: 225 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3714.4,
+      "waste_co2_kg_hr": 742.9
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3714.4,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.372789+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 50.7,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1220.2,
+        "flue_gas_temp_c": 198.3,
+        "so2_ppm": 213
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 50.7% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1220 kg/hr | Flue Temp: 198.3C | SO2: 213 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3691.1,
+      "waste_co2_kg_hr": 738.2
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3691.1,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.385845+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 50.9,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1223.5,
+        "flue_gas_temp_c": 198.0,
+        "so2_ppm": 210
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 50.9% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1224 kg/hr | Flue Temp: 198.0C | SO2: 210 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3701.1,
+      "waste_co2_kg_hr": 740.2
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3701.1,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.397670+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 51.2,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1223.8,
+        "flue_gas_temp_c": 197.8,
+        "so2_ppm": 210
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 51.2% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1224 kg/hr | Flue Temp: 197.8C | SO2: 210 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3702.0,
+      "waste_co2_kg_hr": 740.4
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3702.0,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.410918+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 51.3,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1219.5,
+        "flue_gas_temp_c": 198.5,
+        "so2_ppm": 219
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 51.3% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1220 kg/hr | Flue Temp: 198.5C | SO2: 219 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3689.0,
+      "waste_co2_kg_hr": 737.8
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3689.0,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.422919+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 51.6,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1221.9,
+        "flue_gas_temp_c": 199.1,
+        "so2_ppm": 206
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 51.6% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1222 kg/hr | Flue Temp: 199.1C | SO2: 206 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3696.2,
+      "waste_co2_kg_hr": 739.2
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3696.2,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.435042+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 51.8,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1217.6,
+        "flue_gas_temp_c": 199.5,
+        "so2_ppm": 214
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 51.8% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1218 kg/hr | Flue Temp: 199.5C | SO2: 214 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3683.2,
+      "waste_co2_kg_hr": 736.6
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3683.2,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.450376+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 52.0,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1219.6,
+        "flue_gas_temp_c": 199.4,
+        "so2_ppm": 215
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 52.0% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1220 kg/hr | Flue Temp: 199.4C | SO2: 215 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3689.3,
+      "waste_co2_kg_hr": 737.9
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3689.3,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.461574+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 52.3,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1218.4,
+        "flue_gas_temp_c": 198.9,
+        "so2_ppm": 224
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 52.3% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1218 kg/hr | Flue Temp: 198.9C | SO2: 224 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3685.7,
+      "waste_co2_kg_hr": 737.2
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3685.7,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.472894+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 52.5,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1217.0,
+        "flue_gas_temp_c": 199.6,
+        "so2_ppm": 215
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 52.5% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1217 kg/hr | Flue Temp: 199.6C | SO2: 215 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3681.4,
+      "waste_co2_kg_hr": 736.3
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3681.4,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.483713+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 52.9,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1212.8,
+        "flue_gas_temp_c": 200.2,
+        "so2_ppm": 211
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 52.9% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1213 kg/hr | Flue Temp: 200.2C | SO2: 211 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3668.7,
+      "waste_co2_kg_hr": 733.7
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3668.7,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  },
+  {
+    "node_id": "IND_STACK_01_PEENYA",
+    "sector": "industrial",
+    "timestamp": "2026-10-15T05:31:25.495291+00:00",
+    "environment": {
+      "temp_c": 29.5,
+      "wind_kmh": 11.2,
+      "wind_deg": 240,
+      "aqi": 168
+    },
+    "cv_telemetry": {
+      "active_counts": {},
+      "bay_dwell_sec": null,
+      "queue_idle_sec": null,
+      "smoke_opacity_pct": 53.0,
+      "ringelmann_level": 3,
+      "opacity_multiplier": 1.25,
+      "cems_metrics": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1214.4,
+        "flue_gas_temp_c": 199.7,
+        "so2_ppm": 225
+      },
+      "recent_logs": [
+        " [PLUME-CV] Smoke Opacity 53.0% (Ringelmann Lvl 3) -> Penalty 1.2x",
+        " [CEMS-IOT] Boiler #1 Coal Feed: 1214 kg/hr | Flue Temp: 199.7C | SO2: 225 ppm"
+      ]
+    },
+    "emissions": {
+      "baseline_co2_kg_hr": 3673.6,
+      "waste_co2_kg_hr": 734.8
+    },
+    "simulation": {
+      "active": false,
+      "projected_co2_kg_hr": 3673.6,
+      "reduction_pct": 0.0,
+      "applied_params": {
+        "fuel_type": "coal",
+        "scrubber_efficiency_pct": 0.0,
+        "combustion_tuning_pct": 0.0
+      }
+    }
+  }
+]

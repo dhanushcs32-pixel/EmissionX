@@ -1,0 +1,87 @@
+name: Full-Stack CI Pipeline
+
+on:
+  push:
+    branches: [ main, master, dev ]
+  pull_request:
+    branches: [ main, master, dev ]
+
+jobs:
+  # ==========================================
+  # JOB 1: Backend, CV & Emission Engine Tests
+  # ==========================================
+  backend-cv:
+    name: Backend & CV Validation (Python + uv)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install System Dependencies for OpenCV
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgl1 libglib2.0-0
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+          version: "latest"
+
+      - name: Set up Python
+        run: uv python install 3.11
+
+      - name: Install Python Dependencies
+        run: uv sync --all-extras --dev
+
+      - name: Syntax & Import Check (FastAPI, OpenCV, YOLO)
+        run: |
+          uv run python -c "import cv2, fastapi, pydantic, numpy; print('Core backend & CV libraries verified!')"
+
+      - name: Run Pytest (Math Engine & JSON Contract Verification)
+        run: |
+          uv run pytest -v
+
+  # ==========================================
+  # JOB 2: Frontend Lint & Production Build
+  # ==========================================
+  frontend:
+    name: Frontend Build & Typecheck (Node.js)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Detects whether your frontend is in the root or a /frontend subfolder
+      - name: Determine Frontend Working Directory
+        id: set-dir
+        run: |
+          if [ -f "./frontend/package.json" ]; then
+            echo "dir=./frontend" >> $GITHUB_OUTPUT
+          elif [ -f "./package.json" ]; then
+            echo "dir=." >> $GITHUB_OUTPUT
+          else
+            echo "dir=none" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup Node.js
+        if: steps:set-dir.outputs.dir != 'none'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: ${{ steps:set-dir.outputs.dir }}/package-lock.json
+
+      - name: Install Frontend Dependencies
+        if: steps:set-dir.outputs.dir != 'none'
+        working-directory: ${{ steps:set-dir.outputs.dir }}
+        run: npm ci || npm install
+
+      - name: Verify Web Build (Ensures no broken pages or missing components)
+        if: steps:set-dir.outputs.dir != 'none'
+        working-directory: ${{ steps:set-dir.outputs.dir }}
+        env:
+          CI: true
+        run: npm run build
