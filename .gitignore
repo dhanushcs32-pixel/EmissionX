@@ -1,0 +1,25 @@
+# Virtual Environment
+.venv/
+env/
+venv/
+
+# Pytest & Cache
+.pytest_cache/
+__pycache__/
+*.py[cod]
+
+# Model weights
+*.pt
+*.onnx
+models/*.pt
+
+# Video & Large Media Outputs
+*.mp4
+backend/data/*.mp4
+cache/*.mp4
+
+# OS & IDE
+Thumbs.db
+.DS_Store
+.vscode/
+.idea/

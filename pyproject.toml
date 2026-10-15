@@ -1,0 +1,22 @@
+[project]
+name = "emission-x-pillar1"
+version = "0.1.0"
+description = "Emission X - Pillar 1: Fuel Station Vehicular Emissions Detection, Tracking & Analysis"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "ultralytics>=8.3.0",
+    "supervision>=0.25.0",
+    "opencv-python>=4.10.0",
+    "pandas>=2.2.0",
+    "pydantic>=2.9.0",
+    "fastapi>=0.115.0",
+    "uvicorn>=0.32.0",
+    "scipy>=1.13.0",
+    "pytest>=8.3.0",
+    "easyocr>=1.7.0",
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
