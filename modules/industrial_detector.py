@@ -1,8 +1,9 @@
 """Industrial Emissions Module (Pillar 2) for Carbon Footprint Intelligence Platform.
 
 Modular, production-ready Python pipeline analyzing CCTV smokestack footage,
-detecting smoke plumes, computing Ringelmann Opacity, generating synthetic CEMS telemetry,
-calculating real-time CO2 emissions, and producing annotated video + telemetry JSON.
+detecting smoke plumes with True Multi-Cue Contour Segmentation, computing masked
+Ringelmann Opacity, generating synthetic CEMS telemetry, calculating real-time CO2 emissions,
+and producing annotated video with glowing segmentation overlay + telemetry JSON.
 """
 
 from __future__ import annotations
@@ -116,15 +117,18 @@ def calculate_industrial_emissions(
 
 
 # =====================================================================
-# 2. RINGELMANN SMOKE OPACITY CALCULATION
+# 2. TRUE MASKED RINGELMANN SMOKE OPACITY CALCULATION
 # =====================================================================
 
 def calculate_ringelmann_opacity(
-    roi_bgr: np.ndarray,
+    frame_or_roi: np.ndarray,
+    mask: Optional[np.ndarray] = None,
 ) -> Tuple[float, int, float, str]:
     """
-    Extract the Region of Interest (ROI) of the detected smoke plume,
-    convert to grayscale, and compute mean pixel brightness.
+    Computes Ringelmann Smoke Opacity (0-100%).
+    When a plume_mask is provided, computes mean pixel brightness strictly on
+    the pixels inside plume_mask > 0 (cv2.mean(gray, mask=mask)[0]), completely
+    eliminating empty-sky dilution.
 
     Opacity Formula:
         opacity_pct = round(max(0.0, min(100.0, (1.0 - (mean_brightness / 255.0)) * 100.0)), 1)
@@ -134,15 +138,24 @@ def calculate_ringelmann_opacity(
         * 21% - 60% (Ringelmann 2-3: Incomplete combustion warning)  -> multiplier = 1.25, status = "COMBUSTION WARNING"
         * > 60%     (Ringelmann 4-5: Black carbon violation / Scrubber failure) -> multiplier = 1.60, status = "SCRUBBER VIOLATION"
     """
-    if roi_bgr is None or roi_bgr.size == 0:
+    if frame_or_roi is None or frame_or_roi.size == 0:
         return 0.0, 0, 1.0, "NORMAL"
 
-    if len(roi_bgr.shape) == 3 and roi_bgr.shape[2] == 3:
-        gray = cv2.cvtColor(roi_bgr, cv2.COLOR_BGR2GRAY)
+    if len(frame_or_roi.shape) == 3 and frame_or_roi.shape[2] == 3:
+        gray = cv2.cvtColor(frame_or_roi, cv2.COLOR_BGR2GRAY)
     else:
-        gray = roi_bgr
+        gray = frame_or_roi
 
-    mean_brightness = float(np.mean(gray))
+    # Compute mean brightness strictly inside the mask if available
+    if mask is not None and cv2.countNonZero(mask) > 20:
+        if mask.shape[:2] == gray.shape[:2]:
+            mean_brightness = float(cv2.mean(gray, mask=mask)[0])
+        else:
+            resized_mask = cv2.resize(mask, (gray.shape[1], gray.shape[0]), interpolation=cv2.INTER_NEAREST)
+            mean_brightness = float(cv2.mean(gray, mask=resized_mask)[0])
+    else:
+        mean_brightness = float(np.mean(gray)) if gray.size > 0 else 255.0
+
     opacity_pct = round(max(0.0, min(100.0, (1.0 - (mean_brightness / 255.0)) * 100.0)), 1)
 
     # Classify Ringelmann level (0 to 5)
@@ -209,7 +222,6 @@ class SyntheticCEMSGenerator:
         micro_fluctuation = math.sin(t) * 12.0 + math.cos(t * 0.5) * 6.0 + random.uniform(-3.0, 3.0)
         spike = 0.0
         if opacity_pct > 50.0:
-            # Scale smoothly up towards 1245 - 1280 kg/hr during high opacity
             spike = (opacity_pct - 50.0) * 0.95 + 15.0
 
         fuel_rate = round(self.base_fuel_rate + micro_fluctuation + spike, 1)
@@ -221,17 +233,14 @@ class SyntheticCEMSGenerator:
 
         # 3. SO2 PPM: ~80 to 350 ppm (spikes sharply during Ringelmann 4-5 violations)
         if ringelmann_level >= 4 or opacity_pct > 60.0:
-            # Severe violation range: 260 - 350 ppm
             base_so2 = 250.0 + (opacity_pct - 60.0) * 2.5
             so2_noise = random.randint(-10, 15)
             so2_ppm = int(max(240, min(360, base_so2 + so2_noise)))
         elif opacity_pct > 20.0:
-            # Combustion warning range: 130 - 240 ppm
             base_so2 = 120.0 + (opacity_pct - 20.0) * 3.0
             so2_noise = random.randint(-8, 8)
             so2_ppm = int(max(90, min(240, base_so2 + so2_noise)))
         else:
-            # Normal clean range: 80 - 130 ppm
             base_so2 = 85.0 + opacity_pct * 1.5
             so2_noise = random.randint(-5, 5)
             so2_ppm = int(max(75, min(130, base_so2 + so2_noise)))
@@ -310,15 +319,16 @@ class IndustrialTelemetryPayload(BaseModel):
 
 
 # =====================================================================
-# 5. DUAL-MODE PLUME DETECTOR (PRIMARY YOLO / FALLBACK OPENCV MOG2)
+# 5. DUAL-MODE PLUME DETECTOR WITH TRUE MULTI-CUE SEGMENTATION
 # =====================================================================
 
 class DualModePlumeDetector:
     """
     High-reliability industrial plume detector supporting:
       1. Primary Mode: Custom YOLO weight (`models/smoke.pt`) if present.
-      2. Fallback Mode: Zero-weight OpenCV ROI + MOG2 Background Subtraction
-         + Pixel Intensity Analysis, operating reliably on any footage.
+      2. Fallback Mode: Robust 3-Cue Computer Vision Segmentation Pipeline
+         combining Sky Difference, Low-Saturation HSV, and Temporal Motion
+         to extract smooth, organic smoke plume contours and pixel masks.
     """
 
     def __init__(
@@ -349,34 +359,157 @@ class DualModePlumeDetector:
                 logger.info("Primary Mode YOLO model initialized successfully.")
                 return
             except Exception as e:
-                logger.warning(f"Failed to load YOLO model: {e}. Falling back to OpenCV MOG2 mode.")
+                logger.warning(f"Failed to load YOLO model: {e}. Falling back to Multi-Cue Segmentation.")
 
-        # Fallback Mode Initialization
-        logger.info("Initializing Fallback Mode: OpenCV MOG2 + Chimney ROI Analysis...")
+        # Fallback Mode Initialization: MOG2 with very slow learningRate so thick smoke isn't absorbed
+        logger.info("Initializing Fallback Mode: Multi-Cue Smoke Plume Segmentation Engine...")
         self.mode = "fallback_opencv"
         self.bg_subtractor = cv2.createBackgroundSubtractorMOG2(
             history=300,
-            varThreshold=25,
+            varThreshold=12,
             detectShadows=False,
         )
+
+    def segment_smoke_plume(
+        self,
+        frame: np.ndarray,
+        frame_idx: int = 0,
+    ) -> Tuple[Tuple[int, int, int, int], np.ndarray, List[np.ndarray], str]:
+        """
+        3-Cue Computer Vision Segmentation Pipeline:
+          Cue A: Frame-to-Frame & Background Difference against ambient sky reference
+          Cue B: HSV Low-Saturation & Darkness/Brightness Mask (S < 85, delta V)
+          Cue C: Temporal Motion / Turbulence Mask (MOG2 with learningRate=0.0005)
+          Fused: Morphological fusion into smooth, organic plume contours & binary mask.
+        """
+        h, w = frame.shape[:2]
+
+        # Restrict segmentation search zone to the upper 75% of the frame
+        search_h = int(h * 0.75)
+        search_zone = frame[:search_h, :]
+
+        # Downscale for segmentation processing if high-resolution (e.g. 1080p, 4K) to maintain 40+ FPS
+        proc_w = 640
+        if w > proc_w:
+            scale_ratio = float(proc_w) / float(w)
+            proc_h = int(search_h * scale_ratio)
+            proc_zone = cv2.resize(search_zone, (proc_w, proc_h), interpolation=cv2.INTER_LINEAR)
+        else:
+            scale_ratio = 1.0
+            proc_zone = search_zone
+            proc_w = w
+            proc_h = search_h
+
+        # -------------------------------------------------------------
+        # Cue A: Dynamic Ambient Sky Reference & Difference Mask
+        # -------------------------------------------------------------
+        pw = max(8, min(40, proc_w // 8))
+        ph = max(8, min(40, proc_h // 8))
+        patch_tl = proc_zone[2:2 + ph, 2:2 + pw]
+        patch_tr = proc_zone[2:2 + ph, max(0, proc_w - 2 - pw):max(1, proc_w - 2)]
+        sky_bgr = (np.mean(patch_tl, axis=(0, 1)) + np.mean(patch_tr, axis=(0, 1))) / 2.0
+
+        sky_fill = np.full_like(proc_zone, np.uint8(sky_bgr))
+        diff_sky = cv2.absdiff(proc_zone, sky_fill)
+        diff_sky_gray = cv2.cvtColor(diff_sky, cv2.COLOR_BGR2GRAY)
+        _, sky_diff_mask = cv2.threshold(diff_sky_gray, 20, 255, cv2.THRESH_BINARY)
+
+        # -------------------------------------------------------------
+        # Cue B: HSV Low-Saturation & Brightness / Darkness Mask
+        # -------------------------------------------------------------
+        hsv_zone = cv2.cvtColor(proc_zone, cv2.COLOR_BGR2HSV)
+        s_channel = hsv_zone[:, :, 1]
+        v_channel = hsv_zone[:, :, 2]
+
+        low_sat_mask = cv2.inRange(s_channel, 0, 85)
+
+        patch_tl_hsv = hsv_zone[2:2 + ph, 2:2 + pw, 2]
+        patch_tr_hsv = hsv_zone[2:2 + ph, max(0, proc_w - 2 - pw):max(1, proc_w - 2), 2]
+        sky_v = (np.mean(patch_tl_hsv) + np.mean(patch_tr_hsv)) / 2.0
+        v_fill = np.full_like(v_channel, int(sky_v))
+        v_diff = cv2.absdiff(v_channel, v_fill)
+        _, v_diff_mask = cv2.threshold(v_diff, 16, 255, cv2.THRESH_BINARY)
+
+        # -------------------------------------------------------------
+        # Cue C: Temporal Motion / Turbulence Mask
+        # -------------------------------------------------------------
+        motion_raw = self.bg_subtractor.apply(proc_zone, learningRate=0.0005)
+        _, motion_mask = cv2.threshold(motion_raw, 180, 255, cv2.THRESH_BINARY)
+
+        # -------------------------------------------------------------
+        # Fused Morphological Plume Mask
+        # -------------------------------------------------------------
+        cue_ab = cv2.bitwise_and(sky_diff_mask, low_sat_mask)
+        fused = cv2.bitwise_or(cue_ab, motion_mask)
+
+        # Smooth with Gaussian blur & morphological closing/opening
+        blurred = cv2.GaussianBlur(fused, (15, 15), 0)
+        _, thresh = cv2.threshold(blurred, 80, 255, cv2.THRESH_BINARY)
+
+        kernel_close = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (21, 21))
+        kernel_open = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (9, 9))
+        morph = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel_close)
+        morph = cv2.morphologyEx(morph, cv2.MORPH_OPEN, kernel_open)
+
+        # Find connected contours belonging to the smoke plume
+        min_area = max(150.0, (proc_w * proc_h) * 0.001)
+        contours, _ = cv2.findContours(morph, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        valid_contours = [c for c in contours if cv2.contourArea(c) > min_area]
+
+        inv_scale = 1.0 / scale_ratio
+
+        if valid_contours:
+            # Scale contours back to full video coordinates
+            scaled_contours = []
+            all_pts = []
+            for c in valid_contours:
+                # Scale each point back
+                scaled = (c.astype(np.float32) * inv_scale).astype(np.int32)
+                epsilon = 0.006 * cv2.arcLength(scaled, True)
+                approx = cv2.approxPolyDP(scaled, epsilon, True)
+                scaled_contours.append(approx)
+                all_pts.append(scaled.reshape(-1, 2))
+
+            # Build full-resolution exact binary pixel mask
+            plume_mask = np.zeros((h, w), dtype=np.uint8)
+            cv2.drawContours(plume_mask, scaled_contours, -1, 255, -1)
+
+            all_pts_arr = np.vstack(all_pts)
+            bx, by, bw, bh = cv2.boundingRect(all_pts_arr)
+            pad = int(10 * inv_scale)
+            x1 = max(0, bx - pad)
+            y1 = max(0, by - pad)
+            x2 = min(w, bx + bw + pad)
+            y2 = min(h, by + bh + pad)
+
+            return (x1, y1, x2, y2), plume_mask, scaled_contours, "Fallback (Multi-Cue Segmentation)"
+
+        # Fallback to default chimney stack exit ROI
+        rx1 = max(0, int(self.chimney_roi_norm[0] * w))
+        ry1 = max(0, int(self.chimney_roi_norm[1] * h))
+        rx2 = min(w, int(self.chimney_roi_norm[2] * w))
+        ry2 = min(h, int(self.chimney_roi_norm[3] * h))
+
+        fallback_mask = np.zeros((h, w), dtype=np.uint8)
+        fallback_mask[ry1:ry2, rx1:rx2] = 255
+        rect_contour = np.array([[[rx1, ry1]], [[rx2, ry1]], [[rx2, ry2]], [[rx1, ry2]]], dtype=np.int32)
+
+        return (rx1, ry1, rx2, ry2), fallback_mask, [rect_contour], "Fallback (Stack ROI)"
 
     def detect_plume(
         self,
         frame: np.ndarray,
         frame_idx: int = 0,
-    ) -> Tuple[Tuple[int, int, int, int], np.ndarray, str]:
+    ) -> Tuple[Tuple[int, int, int, int], np.ndarray, List[np.ndarray], str]:
         """
-        Detects smoke plume bounding box and returns:
-          (bbox, plume_roi, mode_name)
+        Detects smoke plume and returns:
+          (bbox, plume_mask, plume_contours, mode_name)
           where bbox = (x1, y1, x2, y2)
+                plume_mask = exact binary mask of the smoke (same HxW as frame)
+                plume_contours = list of smoothed contour polygons
+                mode_name = str
         """
         h, w = frame.shape[:2]
-
-        # Calculate default Chimney ROI in pixel coordinates
-        rx1 = max(0, int(self.chimney_roi_norm[0] * w))
-        ry1 = max(0, int(self.chimney_roi_norm[1] * h))
-        rx2 = min(w, int(self.chimney_roi_norm[2] * w))
-        ry2 = min(h, int(self.chimney_roi_norm[3] * h))
 
         # -------------------------------------------------------------
         # Mode 1: Primary YOLO Model
@@ -395,54 +528,21 @@ class DualModePlumeDetector:
                     confs = results[0].boxes.conf.cpu().numpy()
                     best_idx = int(np.argmax(confs))
                     x1, y1, x2, y2 = map(int, boxes[best_idx])
-                    # Bound to frame
                     x1, y1 = max(0, x1), max(0, y1)
                     x2, y2 = min(w, x2), min(h, y2)
-                    roi = frame[y1:y2, x1:x2]
-                    if roi.size > 0:
-                        return (x1, y1, x2, y2), roi, "Primary (YOLOv8)"
+
+                    # Build mask & contour for detected YOLO box
+                    plume_mask = np.zeros((h, w), dtype=np.uint8)
+                    cv2.rectangle(plume_mask, (x1, y1), (x2, y2), 255, -1)
+                    box_contour = np.array([[[x1, y1]], [[x2, y1]], [[x2, y2]], [[x1, y2]]], dtype=np.int32)
+                    return (x1, y1, x2, y2), plume_mask, [box_contour], "Primary (YOLOv8)"
             except Exception as e:
                 logger.debug(f"YOLO inference exception: {e}")
 
         # -------------------------------------------------------------
-        # Mode 2: Zero-Weight Fallback OpenCV MOG2 + Motion ROI
+        # Mode 2: Multi-Cue Computer Vision Segmentation Pipeline
         # -------------------------------------------------------------
-        roi_zone = frame[ry1:ry2, rx1:rx2]
-        if roi_zone.size == 0:
-            return (rx1, ry1, rx2, ry2), frame, "Fallback (ROI)"
-
-        # Update MOG2 background subtractor
-        fg_mask = self.bg_subtractor.apply(roi_zone)
-
-        # Morphological filter to isolate plume motion
-        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 7))
-        fg_clean = cv2.morphologyEx(fg_mask, cv2.MORPH_OPEN, kernel)
-        fg_clean = cv2.dilate(fg_clean, kernel, iterations=2)
-
-        contours, _ = cv2.findContours(fg_clean, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-        best_bbox = None
-        max_area = 0.0
-
-        for c in contours:
-            area = cv2.contourArea(c)
-            if area > 350.0:
-                bx, by, bw, bh = cv2.boundingRect(c)
-                if area > max_area:
-                    max_area = area
-                    best_bbox = (rx1 + bx, ry1 + by, rx1 + bx + bw, ry1 + by + bh)
-
-        if best_bbox is not None:
-            bx1, by1, bx2, by2 = best_bbox
-            # Smooth padding around detected motion
-            pad = 12
-            bx1, by1 = max(0, bx1 - pad), max(0, by1 - pad)
-            bx2, by2 = min(w, bx2 + pad), min(h, by2 + pad)
-            plume_roi = frame[by1:by2, bx1:bx2]
-            return (bx1, by1, bx2, by2), plume_roi, "Fallback (MOG2 Motion)"
-
-        # If no significant motion is detected, fall back to default stack zone
-        return (rx1, ry1, rx2, ry2), roi_zone, "Fallback (Stack ROI)"
+        return self.segment_smoke_plume(frame, frame_idx=frame_idx)
 
 
 # =====================================================================
@@ -461,19 +561,26 @@ def draw_hud_and_annotations(
     detector_mode: str,
     so2_ppm: int,
     flue_gas_temp_c: float,
+    plume_mask: Optional[np.ndarray] = None,
+    plume_contours: Optional[List[np.ndarray]] = None,
 ) -> np.ndarray:
     """
-    Renders high-contrast dark-mode HUD banner and glowing bounding box overlay.
+    Renders true segmentation overlay:
+      - Semi-transparent colored mask (alpha = 0.38) directly over the smoke plume pixels
+      - Crisp 2px glowing contour outline around the organic plume shape
+      - Tactical corner-reticle bounding box around plume bounds
+      - Dark-mode HUD banner with live diagnostics
     """
     annotated = frame.copy()
     h, w = frame.shape[:2]
+    ui_scale = max(1.0, min(w, h) / 720.0)
 
     # Color palette based on Ringelmann Level:
-    # 0-1: Neon Emerald Green (46, 204, 113)
+    # 0-1: Neon Emerald Green (113, 204, 46)
     # 2-3: Warning Amber Orange (0, 165, 255)
     # 4-5: Critical Crimson Red (41, 41, 231)
     if ringelmann_level <= 1:
-        theme_bgr = (113, 204, 46)   # Green
+        theme_bgr = (113, 204, 46)   # Neon Green
         glow_color = (150, 240, 80)
         status_text = "NORMAL OPERATION"
     elif ringelmann_level <= 3:
@@ -486,40 +593,56 @@ def draw_hud_and_annotations(
         status_text = "SCRUBBER VIOLATION"
 
     # -----------------------------------------------------------------
-    # A. Glowing Bounding Box around Smoke Plume ROI
+    # A. True Segmentation Plume Overlay (Mask & Glowing Contours)
+    # -----------------------------------------------------------------
+    if plume_mask is not None and cv2.countNonZero(plume_mask) > 0:
+        # Draw semi-transparent colored segmentation mask (alpha = 0.38)
+        mask_indices = plume_mask > 0
+        color_overlay = annotated.copy()
+        color_overlay[mask_indices] = theme_bgr
+        annotated = cv2.addWeighted(color_overlay, 0.38, annotated, 0.62, 0)
+
+    if plume_contours:
+        # Crisp glowing contour outline around the exact plume boundary
+        stroke_thickness = max(2, int(2 * ui_scale))
+        glow_thickness = max(4, int(4 * ui_scale))
+        cv2.drawContours(annotated, plume_contours, -1, glow_color, glow_thickness, cv2.LINE_AA)
+        cv2.drawContours(annotated, plume_contours, -1, theme_bgr, stroke_thickness, cv2.LINE_AA)
+
+    # -----------------------------------------------------------------
+    # B. Tactical Corner-Reticle Bounding Box
     # -----------------------------------------------------------------
     x1, y1, x2, y2 = bbox
     if x2 > x1 and y2 > y1:
-        # Create glowing semi-transparent overlay
-        glow_overlay = annotated.copy()
-        cv2.rectangle(glow_overlay, (x1, y1), (x2, y2), theme_bgr, -1)
-        cv2.addWeighted(glow_overlay, 0.12, annotated, 0.88, 0, annotated)
-
         # Outer glow borders
-        cv2.rectangle(annotated, (x1 - 2, y1 - 2), (x2 + 2, y2 + 2), glow_color, 1, cv2.LINE_AA)
-        cv2.rectangle(annotated, (x1, y1), (x2, y2), theme_bgr, 3, cv2.LINE_AA)
+        cv2.rectangle(annotated, (x1 - 1, y1 - 1), (x2 + 1, y2 + 1), glow_color, 1, cv2.LINE_AA)
+        cv2.rectangle(annotated, (x1, y1), (x2, y2), theme_bgr, max(2, int(2 * ui_scale)), cv2.LINE_AA)
 
         # Corner brackets for modern tactical CV look
-        corner_len = min(20, (x2 - x1) // 4, (y2 - y1) // 4)
+        corner_len = min(int(24 * ui_scale), (x2 - x1) // 4, (y2 - y1) // 4)
+        corner_thick = max(2, int(2 * ui_scale))
         for cx, cy in [(x1, y1), (x2, y1), (x1, y2), (x2, y2)]:
             dx = corner_len if cx == x1 else -corner_len
             dy = corner_len if cy == y1 else -corner_len
-            cv2.line(annotated, (cx, cy), (cx + dx, cy), (255, 255, 255), 2, cv2.LINE_AA)
-            cv2.line(annotated, (cx, cy), (cx, cy + dy), (255, 255, 255), 2, cv2.LINE_AA)
+            cv2.line(annotated, (cx, cy), (cx + dx, cy), (255, 255, 255), corner_thick, cv2.LINE_AA)
+            cv2.line(annotated, (cx, cy), (cx, cy + dy), (255, 255, 255), corner_thick, cv2.LINE_AA)
 
         # Plume tag
         tag = f"PLUME: {opacity_pct:.1f}% | R-{ringelmann_level}"
-        (tw, th), _ = cv2.getTextSize(tag, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)
-        ty = max(24, y1 - 8)
-        cv2.rectangle(annotated, (x1, ty - th - 6), (x1 + tw + 10, ty + 2), (20, 24, 30), -1)
-        cv2.rectangle(annotated, (x1, ty - th - 6), (x1 + tw + 10, ty + 2), theme_bgr, 1)
-        cv2.putText(annotated, tag, (x1 + 5, ty - 3), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+        font_scale = 0.5 * ui_scale
+        (tw, th), _ = cv2.getTextSize(tag, cv2.FONT_HERSHEY_SIMPLEX, font_scale, 1)
+        ty = max(int(28 * ui_scale), y1 - 8)
+        cv2.rectangle(annotated, (x1, ty - th - 6), (x1 + tw + 10, ty + 4), (20, 24, 30), -1)
+        cv2.rectangle(annotated, (x1, ty - th - 6), (x1 + tw + 10, ty + 4), theme_bgr, 1)
+        cv2.putText(annotated, tag, (x1 + 5, ty - 2), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (255, 255, 255), 1, cv2.LINE_AA)
 
     # -----------------------------------------------------------------
-    # B. Dark-Mode HUD Banner (Top-Left)
+    # C. Dark-Mode HUD Banner (Top-Left)
     # -----------------------------------------------------------------
-    hud_x, hud_y = 20, 20
-    hud_w, hud_h = min(480, w - 40), 160
+    hud_x = int(20 * ui_scale)
+    hud_y = int(20 * ui_scale)
+    hud_w = int(min(w - 40, 480 * ui_scale))
+    hud_h = int(160 * ui_scale)
 
     hud_sub = annotated[hud_y : hud_y + hud_h, hud_x : hud_x + hud_w]
     hud_bg = np.zeros_like(hud_sub, dtype=np.uint8)
@@ -527,32 +650,78 @@ def draw_hud_and_annotations(
     cv2.addWeighted(hud_bg, 0.88, hud_sub, 0.12, 0, hud_sub)
 
     # Top accent line with theme color
-    cv2.rectangle(annotated, (hud_x, hud_y), (hud_x + hud_w, hud_y + 4), theme_bgr, -1)
+    cv2.rectangle(annotated, (hud_x, hud_y), (hud_x + hud_w, hud_y + max(3, int(4 * ui_scale))), theme_bgr, -1)
     cv2.rectangle(annotated, (hud_x, hud_y), (hud_x + hud_w, hud_y + hud_h), (50, 58, 70), 1, cv2.LINE_AA)
 
     # Status LED indicator circle
-    cv2.circle(annotated, (hud_x + 20, hud_y + 24), 6, theme_bgr, -1, cv2.LINE_AA)
-    cv2.circle(annotated, (hud_x + 20, hud_y + 24), 8, glow_color, 1, cv2.LINE_AA)
+    led_r = max(5, int(6 * ui_scale))
+    cv2.circle(annotated, (hud_x + int(20 * ui_scale), hud_y + int(24 * ui_scale)), led_r, theme_bgr, -1, cv2.LINE_AA)
+    cv2.circle(annotated, (hud_x + int(20 * ui_scale), hud_y + int(24 * ui_scale)), led_r + 2, glow_color, 1, cv2.LINE_AA)
 
     # Header Title
     header_title = f"INDUSTRIAL EMISSIONS INTELLIGENCE  [{detector_mode}]"
-    cv2.putText(annotated, header_title, (hud_x + 36, hud_y + 28), cv2.FONT_HERSHEY_SIMPLEX, 0.42, (180, 195, 210), 1, cv2.LINE_AA)
+    cv2.putText(
+        annotated,
+        header_title,
+        (hud_x + int(36 * ui_scale), hud_y + int(28 * ui_scale)),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.42 * ui_scale,
+        (180, 195, 210),
+        1,
+        cv2.LINE_AA,
+    )
 
     # Line 1: Smoke Opacity & Ringelmann Level
     line1 = f"SMOKE OPACITY: {opacity_pct:.1f}% (RINGELMANN LEVEL {ringelmann_level})"
-    cv2.putText(annotated, line1, (hud_x + 20, hud_y + 60), cv2.FONT_HERSHEY_SIMPLEX, 0.62, (255, 255, 255), 2, cv2.LINE_AA)
+    cv2.putText(
+        annotated,
+        line1,
+        (hud_x + int(20 * ui_scale), hud_y + int(60 * ui_scale)),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.62 * ui_scale,
+        (255, 255, 255),
+        max(1, int(2 * ui_scale)),
+        cv2.LINE_AA,
+    )
 
     # Line 2: Coal Rate & CO2 Rate
     line2 = f"COAL RATE: {fuel_rate_kg_hr:,.0f} kg/hr | CO2 RATE: {co2_rate_kg_hr:,.1f} kg/hr"
-    cv2.putText(annotated, line2, (hud_x + 20, hud_y + 92), cv2.FONT_HERSHEY_SIMPLEX, 0.52, (220, 230, 240), 1, cv2.LINE_AA)
+    cv2.putText(
+        annotated,
+        line2,
+        (hud_x + int(20 * ui_scale), hud_y + int(92 * ui_scale)),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.52 * ui_scale,
+        (220, 230, 240),
+        1,
+        cv2.LINE_AA,
+    )
 
     # Line 3: Operational Status & Penalty Multiplier
     line3 = f"STATUS: {status_text} (PENALTY {multiplier:.2f}x)"
-    cv2.putText(annotated, line3, (hud_x + 20, hud_y + 122), cv2.FONT_HERSHEY_SIMPLEX, 0.50, theme_bgr, 2, cv2.LINE_AA)
+    cv2.putText(
+        annotated,
+        line3,
+        (hud_x + int(20 * ui_scale), hud_y + int(122 * ui_scale)),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.50 * ui_scale,
+        theme_bgr,
+        max(1, int(2 * ui_scale)),
+        cv2.LINE_AA,
+    )
 
     # Line 4: Auxiliary CEMS Metrics (Flue Temp & SO2)
     line4 = f"FLUE TEMP: {flue_gas_temp_c:.1f}C  |  SO2: {so2_ppm} ppm  |  NODE: IND_STACK_01"
-    cv2.putText(annotated, line4, (hud_x + 20, hud_y + 146), cv2.FONT_HERSHEY_SIMPLEX, 0.38, (130, 145, 160), 1, cv2.LINE_AA)
+    cv2.putText(
+        annotated,
+        line4,
+        (hud_x + int(20 * ui_scale), hud_y + int(146 * ui_scale)),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.38 * ui_scale,
+        (130, 145, 160),
+        1,
+        cv2.LINE_AA,
+    )
 
     return annotated
 
@@ -573,9 +742,9 @@ def process_video(
     max_frames: Optional[int] = None,
 ) -> Dict[str, Any]:
     """
-    Analyzes pre-recorded CCTV footage of a factory smokestack, detects smoke plume,
-    computes Ringelmann Opacity, pairs with CEMS telemetry, calculates emissions,
-    and saves both annotated video and telemetry JSON.
+    Analyzes pre-recorded CCTV footage of a factory smokestack, segments smoke plume,
+    computes masked Ringelmann Opacity, pairs with CEMS telemetry, calculates emissions,
+    and saves both annotated video (with true segmentation overlay) and telemetry JSON.
     """
     input_path = Path(input_video_path)
     if not input_path.is_file():
@@ -623,11 +792,11 @@ def process_video(
 
             frame_idx += 1
 
-            # 1. Detect Plume Box and Extract ROI
-            bbox, plume_roi, mode_name = detector.detect_plume(frame, frame_idx=frame_idx)
+            # 1. Segment Smoke Plume (Bbox, Exact Mask, and Smoothed Contours)
+            bbox, plume_mask, plume_contours, mode_name = detector.detect_plume(frame, frame_idx=frame_idx)
 
-            # 2. Ringelmann Opacity Calculation
-            opacity_pct, ringelmann_lvl, op_multiplier, status = calculate_ringelmann_opacity(plume_roi)
+            # 2. True Masked Ringelmann Opacity Calculation (strictly inside plume_mask)
+            opacity_pct, ringelmann_lvl, op_multiplier, status = calculate_ringelmann_opacity(frame, mask=plume_mask)
 
             # 3. Synchronized CEMS Telemetry
             cems_metrics, recent_logs = cems_gen.generate(
@@ -684,7 +853,7 @@ def process_video(
 
             telemetry_records.append(payload.model_dump())
 
-            # 6. Render HUD & Glow Overlay
+            # 6. Render HUD, Glowing Contours & Semi-Transparent Mask Overlay
             annotated_frame = draw_hud_and_annotations(
                 frame=frame,
                 bbox=bbox,
@@ -697,13 +866,15 @@ def process_video(
                 detector_mode=mode_name,
                 so2_ppm=cems_metrics["so2_ppm"],
                 flue_gas_temp_c=cems_metrics["flue_gas_temp_c"],
+                plume_mask=plume_mask,
+                plume_contours=plume_contours,
             )
 
             writer.write(annotated_frame)
 
             if frame_idx % 30 == 0:
                 logger.info(
-                    f"Frame {frame_idx}/{total_frames} | Opacity: {opacity_pct:.1f}% | "
+                    f"Frame {frame_idx}/{total_frames} | Opacity: {opacity_pct:.1f}% (R-{ringelmann_lvl}) | "
                     f"CO2: {emissions_calc['baseline_co2_kg_hr']} kg/hr | Mode: {mode_name}"
                 )
 
@@ -790,8 +961,8 @@ def stream_industrial_telemetry(
                         break
 
                 frame_idx += 1
-                bbox, plume_roi, _ = detector.detect_plume(frame, frame_idx=frame_idx)
-                opacity_pct, ringelmann_lvl, op_mult, status = calculate_ringelmann_opacity(plume_roi)
+                bbox, plume_mask, plume_contours, _ = detector.detect_plume(frame, frame_idx=frame_idx)
+                opacity_pct, ringelmann_lvl, op_mult, status = calculate_ringelmann_opacity(frame, mask=plume_mask)
                 cems_metrics, logs = cems_gen.generate(opacity_pct, ringelmann_lvl, op_mult)
                 emissions = calculate_industrial_emissions(
                     fuel_rate_kg_hr=cems_metrics["fuel_rate_kg_hr"],

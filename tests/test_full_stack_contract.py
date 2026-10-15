@@ -1,6 +1,8 @@
 import pytest
 from pydantic import BaseModel, Field
 from typing import Optional, Dict, List
+import numpy as np
+import cv2
 
 # Define the exact contract your frontend expects
 class EnvironmentContext(BaseModel):
@@ -61,7 +63,6 @@ def test_json_payload_schema():
 def test_industrial_emissions_engine():
     """Tests the Industrial Carbon Math Engine calculations."""
     from modules.industrial_detector import calculate_industrial_emissions, calculate_ringelmann_opacity
-    import numpy as np
 
     # Baseline dirty coal with 1.6x penalty
     calc = calculate_industrial_emissions(
@@ -97,3 +98,16 @@ def test_industrial_emissions_engine():
     assert level_w == 0
     assert mult_w == 1.0
     assert status_w == "NORMAL"
+
+    # Test True Masked Ringelmann Opacity: white sky with a black plume inside mask
+    sky_frame = np.ones((100, 100, 3), dtype=np.uint8) * 255  # 100% white sky
+    plume_mask = np.zeros((100, 100), dtype=np.uint8)
+    cv2.circle(plume_mask, (50, 50), 25, 255, -1)  # circular plume mask
+    sky_frame[plume_mask > 0] = 0  # 100% black smoke inside mask
+
+    # Masked calculation should evaluate ONLY the smoke pixels (100% opacity)
+    op_m, lvl_m, mult_m, stat_m = calculate_ringelmann_opacity(sky_frame, mask=plume_mask)
+    assert op_m == 100.0
+    assert lvl_m == 5
+    assert mult_m == 1.60
+    assert stat_m == "SCRUBBER VIOLATION"
