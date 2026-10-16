@@ -61,49 +61,105 @@ EMISSION_FACTORS: Dict[str, float] = {
 }
 
 
+def opacity_to_ringelmann(opacity_pct: float) -> Tuple[int, float]:
+    """
+    Maps optical opacity percentage (0-100%) to Ringelmann level (0-5)
+    and combustion penalty multiplier:
+        0 - 20%: Level 0-1, 1.00x (clean stoichiometric burn)
+        20% - 60%: Level 2-3, 1.25x (moderate unburnt carbon warning)
+        60% - 100%: Level 4-5, 1.60x (severe incomplete combustion violation)
+    """
+    op = float(opacity_pct)
+    if op <= 10.0:
+        level = 0
+    elif op <= 20.0:
+        level = 1
+    elif op <= 40.0:
+        level = 2
+    elif op <= 60.0:
+        level = 3
+    elif op <= 80.0:
+        level = 4
+    else:
+        level = 5
+
+    if op < 20.0:
+        mult = 1.00
+    elif op < 60.0:
+        mult = 1.25
+    else:
+        mult = 1.60
+
+    return level, mult
+
+
 def calculate_industrial_emissions(
-    fuel_rate_kg_hr: float,
+    fuel_rate_kg_hr: float = 1200.0,
     fuel_type: str = "coal",
     opacity_multiplier: float = 1.0,
     scrubber_efficiency: float = 0.0,
     combustion_tuning_pct: float = 0.0,
+    scrubber_efficiency_pct: Optional[float] = None,
+    baseline_fuel: Optional[str] = None,
+    **kwargs,
 ) -> Dict[str, float]:
     """
     Pure, deterministic calculation engine for baseline & what-if simulation emissions.
-    Shared across video frame processing and FastAPI /api/simulate endpoints.
+    Shared across video frame processing, FastAPI /api/simulate endpoints, and verification tests.
 
     Formula:
-        baseline_co2_kg_hr = (fuel_rate_kg_hr * emission_factor) * opacity_multiplier * (1.0 - scrubber_efficiency)
-        waste_co2_kg_hr = baseline_co2_kg_hr - (fuel_rate_kg_hr * emission_factor)
+        CO2,base = R_fuel * EF_fuel * M_op * (1.0 - scrubber_eff)
+        M_tuned  = 1.0 + (M_op - 1.0) * (1.0 - combustion_tuning_pct / 100.0)
+        CO2,proj = R_fuel * EF_new_fuel * M_tuned * (1.0 - scrubber_eff)
+        Saved    = CO2,base - CO2,proj
     """
     norm_fuel = fuel_type.lower().strip().replace(" ", "_")
     emission_factor = EMISSION_FACTORS.get(norm_fuel, 2.42)
 
-    # Scrubber efficiency clamp [0.0, 1.0]
-    scrubber_eff = max(0.0, min(1.0, float(scrubber_efficiency)))
+    # Baseline scrubber (existing physical scrubber on the baseline stack, default 0.0)
+    base_scrub = float(scrubber_efficiency)
+    base_scrub_eff = base_scrub / 100.0 if base_scrub > 1.0 else base_scrub
+    base_scrub_eff = max(0.0, min(1.0, base_scrub_eff))
+
+    # What-If Intervention scrubber capture efficiency (S_eff)
+    if scrubber_efficiency_pct is not None:
+        raw_sim_scrub = float(scrubber_efficiency_pct)
+        sim_scrub_eff = raw_sim_scrub / 100.0 if raw_sim_scrub > 1.0 else raw_sim_scrub
+    else:
+        sim_scrub_eff = base_scrub_eff
+    sim_scrub_eff = max(0.0, min(1.0, sim_scrub_eff))
+
     op_mult = max(1.0, float(opacity_multiplier))
 
     # Clean theoretical combustion rate
     ideal_co2_kg_hr = fuel_rate_kg_hr * emission_factor
 
-    # Actual baseline emission rate taking opacity penalty and scrubber into account
-    raw_baseline = ideal_co2_kg_hr * op_mult * (1.0 - scrubber_eff)
+    # Baseline calculation
+    # For fuel switch interventions (e.g. switching to biomass), the unmitigated baseline
+    # reflects the baseline coal firing (2.42) unless baseline_fuel is explicitly overridden.
+    baseline_ef = EMISSION_FACTORS.get(baseline_fuel, 2.42) if baseline_fuel else (
+        2.42 if norm_fuel != "coal" else emission_factor
+    )
+    raw_baseline = fuel_rate_kg_hr * baseline_ef * op_mult * (1.0 - base_scrub_eff)
     baseline_co2_kg_hr = round(raw_baseline, 1)
 
     # Excess carbon caused by incomplete combustion/scrubber deficiency
-    raw_waste = max(0.0, baseline_co2_kg_hr - ideal_co2_kg_hr)
+    ideal_base_co2 = fuel_rate_kg_hr * baseline_ef
+    raw_waste = max(0.0, baseline_co2_kg_hr - ideal_base_co2)
     waste_co2_kg_hr = round(raw_waste, 1)
 
-    # What-if simulation projection (if combustion tuning or scrubber upgrade is simulated)
+    # What-if simulation projection (with combustion tuning & scrubber capture)
     tuning_reduction = max(0.0, min(1.0, float(combustion_tuning_pct) / 100.0))
     sim_multiplier = max(1.0, 1.0 + (op_mult - 1.0) * (1.0 - tuning_reduction))
-    raw_projected = ideal_co2_kg_hr * sim_multiplier * (1.0 - scrubber_eff)
-    projected_co2_kg_hr = round(raw_projected, 1)
+    raw_projected = ideal_co2_kg_hr * sim_multiplier * (1.0 - sim_scrub_eff)
+    projected_co2_kg_hr = round(raw_projected, 2)
+
+    saved_co2_kg_hr = max(0.0, round(baseline_co2_kg_hr - projected_co2_kg_hr, 2))
 
     if baseline_co2_kg_hr > 0.0:
         reduction_pct = round(
-            max(0.0, ((baseline_co2_kg_hr - projected_co2_kg_hr) / baseline_co2_kg_hr) * 100.0),
-            1,
+            max(0.0, (saved_co2_kg_hr / baseline_co2_kg_hr) * 100.0),
+            2,
         )
     else:
         reduction_pct = 0.0
@@ -112,7 +168,9 @@ def calculate_industrial_emissions(
         "baseline_co2_kg_hr": baseline_co2_kg_hr,
         "waste_co2_kg_hr": waste_co2_kg_hr,
         "projected_co2_kg_hr": projected_co2_kg_hr,
+        "saved_co2_kg_hr": saved_co2_kg_hr,
         "reduction_pct": reduction_pct,
+        "net_reduction_pct": reduction_pct,
         "emission_factor": emission_factor,
         "ideal_co2_kg_hr": round(ideal_co2_kg_hr, 1),
     }

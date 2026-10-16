@@ -183,6 +183,48 @@ class DigitalTwinResponse(BaseModel):
     scene_3d_industrial: IndustrialScene3D
     scene_3d_vehicular: VehicularScene3D
 
+    def __getitem__(self, item: str) -> Any:
+        if item == "cpcb_compliance":
+            ind_item = next(
+                (c for c in self.cpcb_compliance if "Stack" in c.node or "Smokestack" in c.node or "industrial" in c.node.lower() or "IND_STACK" in c.node),
+                None,
+            )
+            veh_item = next(
+                (c for c in self.cpcb_compliance if "Station" in c.node or "Forecourt" in c.node or "vehicular" in c.node.lower() or "BLR_FUEL" in c.node),
+                None,
+            )
+            ind_status = ind_item.status if ind_item else "COMPLIANT"
+            veh_status = veh_item.status if veh_item else "COMPLIANT"
+
+            class ComplianceDict(list):
+                def __init__(self, items):
+                    super().__init__(items)
+                    self.industrial_status = ind_status
+                    self.vehicular_status = veh_status
+
+                def __getitem__(self, key):
+                    if isinstance(key, str):
+                        if key == "industrial_status":
+                            return ind_status
+                        if key == "vehicular_status":
+                            return veh_status
+                        return getattr(self, key, None)
+                    return super().__getitem__(key)
+
+                def get(self, key, default=None):
+                    if key == "industrial_status":
+                        return ind_status
+                    if key == "vehicular_status":
+                        return veh_status
+                    return default
+
+            return ComplianceDict(self.cpcb_compliance)
+
+        val = getattr(self, item, None)
+        if hasattr(val, "model_dump"):
+            return val.model_dump()
+        return val
+
 
 # =====================================================================
 # 3. BASELINE EXTRACTION WITH ULTRA-RELIABLE FALLBACKS
@@ -547,14 +589,18 @@ def simulate_digital_twin(params: Optional[DigitalTwinParams] = None) -> Digital
         baseline_summary={
             "industrial": ind_base,
             "vehicular": veh_base,
+            "total_co2_kg_hr": total_baseline_co2,
             "total_baseline_co2_kg_hr": total_baseline_co2,
         },
         projected_summary={
             "industrial_co2_kg_hr": projected_industrial_co2,
             "vehicular_co2_kg_hr": projected_vehicular_co2,
+            "total_co2_kg_hr": total_projected_co2,
             "total_projected_co2_kg_hr": total_projected_co2,
+            "avoided_co2_kg_hr": total_avoided_co2,
             "total_avoided_co2_kg_hr": total_avoided_co2,
             "total_reduction_pct": total_reduction_pct,
+            "reduction_pct": total_reduction_pct,
         },
         comparative_chart_metrics=comparative_metrics,
         financial_savings=FinancialSavingsData(
