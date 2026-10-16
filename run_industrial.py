@@ -312,17 +312,28 @@ def test_smart_replay_streaming(json_path: str) -> None:
 
 
 def main() -> None:
+    import argparse
+    parser = argparse.ArgumentParser(description="Industrial Emissions Module (Pillar 2) - Pipeline Runner")
+    parser.add_argument("--video", type=str, default="factory_stack.mp4", help="Path to input industrial smokestack video")
+    parser.add_argument("--output", type=str, default="cache/factory_annotated.mp4", help="Path to save annotated output video")
+    parser.add_argument("--json", type=str, default="cache/factory_telemetry.json", help="Path to save telemetry JSON file")
+    parser.add_argument("--model", type=str, default="models/smoke.pt", help="Path to YOLO plume weights (optional)")
+    args, _ = parser.parse_known_args()
+
     print("=" * 65)
     print(" INDUSTRIAL EMISSIONS MODULE (PILLAR 2) - TEST RUNNER")
     print("=" * 65)
 
-    input_video = "factory_stack.mp4"
-    output_video = "cache/factory_annotated.mp4"
-    output_json = "cache/factory_telemetry.json"
-    model_weight = "models/smoke.pt"
+    input_video = args.video
+    output_video = args.output
+    output_json = args.json
+    model_weight = args.model
 
-    # Step 1: Ensure input video exists
-    generate_synthetic_factory_video(output_path=input_video, duration_sec=6, fps=25)
+    # Step 1: Ensure input video exists (synthesizes default factory video if not provided)
+    if input_video == "factory_stack.mp4" and not Path(input_video).is_file():
+        generate_synthetic_factory_video(output_path=input_video, duration_sec=6, fps=25)
+    elif not Path(input_video).is_file():
+        raise FileNotFoundError(f"Input video file not found: {input_video}")
 
     # Step 2: Run End-to-End Video Processing Pipeline
     print(f"\n[PIPELINE] Launching video analysis on {input_video}...")

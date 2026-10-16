@@ -1,7 +1,7 @@
 @echo off
-set PYTHON_EXE=C:\Users\DHANUSH\AppData\Local\Python\bin\python3.11.exe
-if exist "%PYTHON_EXE%" (
-    "%PYTHON_EXE%" run_industrial.py %*
+if exist ".venv\Scripts\python.exe" (
+    ".venv\Scripts\python.exe" run_industrial.py %*
 ) else (
-    python run_industrial.py %*
+    uv run run_industrial.py %*
 )
+

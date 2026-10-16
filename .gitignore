@@ -14,6 +14,7 @@ venv/
 *.mp4
 cache/*.mp4
 backend/data/*.mp4
+backend/data/*.png
 fuel_station.mp4
 factory_stack.mp4
 

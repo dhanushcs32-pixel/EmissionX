@@ -1,0 +1,169 @@
+================================================================================
+                    EMISSIONX: CARBON FOOTPRINT INTELLIGENCE PLATFORM
+                              PROJECT SUMMARY & CAPABILITIES
+================================================================================
+
+1. EXECUTIVE OVERVIEW
+--------------------------------------------------------------------------------
+EmissionX is an end-to-end Computer Vision (CV) and IoT sensor fusion platform
+engineered to monitor, quantify, and simulate real-time carbon emissions and
+decarbonization strategies across two primary sectors:
+  - Pillar 1: Vehicular & Urban Mobility Emissions (Fuel stations & traffic queues)
+  - Pillar 2: Industrial Point-Source Smokestacks (Factories, boilers & CEMS)
+
+The system unifies real-time computer vision inference, empirical emission
+physics, IoT sensor telemetry, carbon credit valuation (INR), and AI-driven
+regulatory compliance advisories under a unified FastAPI backend.
+
+
+================================================================================
+2. WHAT THE SYSTEM CAN DO (CORE CAPABILITIES)
+================================================================================
+
+[PILLAR 1: VEHICULAR & URBAN MOBILITY INTELLIGENCE]
+---------------------------------------------------
+* Multi-Class Vehicle Detection & Tracking:
+  - Powered by YOLO11n object detection + ByteTrack multi-object tracker.
+  - Detects, classifies, and tracks cars, motorcycles, auto-rickshaws, buses, and trucks.
+  - Maintains persistent tracking IDs and trajectory history across video frames.
+
+* Automatic License Plate Recognition (ALPR / LPR):
+  - Integrates EasyOCR with CLAHE contrast enhancement and bilateral filtering.
+  - Extracts and normalizes vehicle registration plates at regular tracking intervals.
+
+* Queue Dwell Time & Idling Wastage Analysis:
+  - Monitors fuel dispensing bay occupancy and queue waiting times.
+  - Converts excess idle time into wasted fuel and avoidable tailpipe CO2 emissions.
+
+* Decarbonization Policy Simulation:
+  - Simulates emission impacts of:
+    1. EV adoption rate (%)
+    2. E20 Bioethanol fuel blending (%)
+    3. Queue flow / ANPR bay optimization (%)
+    4. Heavy commercial BS-III / BS-IV vehicle bans
+
+---
+
+[PILLAR 2: INDUSTRIAL SMOKESTACK INTELLIGENCE]
+----------------------------------------------
+* Dual-Mode Plume Detection:
+  - Primary Mode: Deep-learning YOLO plume weights (models/smoke.pt) for smoke plumes.
+  - Zero-Weight Fallback Mode: OpenCV MOG2 background subtractor with morphological
+    filtering and ROI intensity analysis (enables execution on low-spec CPUs).
+
+* Optical Ringelmann Opacity Indexing:
+  - Calculates plume opacity (0.0% to 100.0%) from grayscale pixel brightness.
+  - Maps plume density directly into standardized Ringelmann levels (0 to 5):
+    - Level 0-1 (0-20%): Normal operation / clean steam (1.0x baseline multiplier)
+    - Level 2-3 (21-60%): Incomplete combustion warning (1.25x penalty multiplier)
+    - Level 4-5 (>60%): Black carbon violation / scrubber failure (1.60x penalty)
+
+* CEMS (Continuous Emission Monitoring System) IoT Synchronization:
+  - Synthesizes and couples physical boiler sensor metrics with visual plume opacity:
+    - Fuel burn rate (e.g., Coal @ ~1200 kg/hr with opacity-correlated surges)
+    - Flue gas exit temperature (160°C to 240°C)
+    - Sulfur Dioxide (SO2) concentration (80 to 350 ppm)
+    - Continuous audit and diagnostic telemetry logging
+
+* Industrial Decarbonization Policy Simulation:
+  - Simulates mitigation scenarios including:
+    1. Electrostatic Precipitator (ESP) / Wet Scrubber efficiency (0% to 99%)
+    2. Primary combustion stoichiometric air/fuel damper tuning
+    3. Fuel switching (Coal -> Natural Gas, Furnace Oil, or Biomass co-firing)
+
+---
+
+[UNIFIED BACKEND & PLATFORM SERVICES]
+-------------------------------------
+* Ambient Environmental Ingestion:
+  - Real-time weather sync from Open-Meteo API (temperature, wind speed, wind
+    heading, AQI) with in-memory caching and offline fallback.
+
+* Carbon Economics Engine:
+  - Translates avoided CO2 emissions into monetary savings in Indian Rupees (INR ₹)
+    under the Indian Carbon Credit Trading Scheme (CCTS ~₹1,350/tCO2e).
+
+* GenAI Sustainability Copilot:
+  - Generates telemetry-grounded regulatory guidance under CPCB / KSPCB standards,
+    Air Act 1981 compliance checks, ESG score deltas, and CapEx ROI timelines.
+
+* Synthetic Factory Video Generator:
+  - Automatically synthesizes multi-phase smokestack CCTV video for test suites
+    if no physical camera feed is connected.
+
+
+================================================================================
+3. ALL OUTPUTS PRODUCED BY THE SYSTEM
+================================================================================
+
+A. PROCESSED VIDEO OUTPUTS
+--------------------------
+1. cache/factory_annotated.mp4
+   - Industrial video overlay featuring glowing neon bounding boxes color-coded
+     by Ringelmann severity (Green, Amber, Crimson Red).
+   - Glassmorphism tactical HUD showing real-time opacity %, fuel burn rate,
+     CO2 emission rate (kg/hr), and CEMS diagnostic status.
+
+2. backend/data/annotated_fuel_station.mp4
+   - Vehicular CCTV output annotated with ByteTrack IDs, vehicle class badges,
+     and recognized license plate numbers.
+
+3. factory_stack.mp4 (Synthetic Generator)
+   - Procedurally rendered industrial CCTV footage simulating clean steam,
+     incomplete combustion, and black carbon violation phases.
+
+
+B. STRUCTURED TELEMETRY & DATA ARTIFACTS
+----------------------------------------
+1. cache/factory_telemetry.json
+   - Frame-by-frame industrial telemetry conforming to strict Pydantic schemas:
+     * Node identifier & sector metadata
+     * Ambient weather & AQI
+     * Optical smoke opacity % & Ringelmann level
+     * CEMS metrics (fuel burn rate, flue gas temp, SO2 ppm)
+     * Real-time baseline CO2 vs. waste CO2 (kg/hr)
+     * Audit log streams
+
+2. backend/data/phase1_summary.json
+   - Vehicle tracking dataset including:
+     * Total unique vehicles detected
+     * Class breakdown (cars, bikes, buses, trucks)
+     * Video metadata (dimensions, FPS, duration)
+     * Individual per-vehicle records (track ID, timestamps, frame count, plates)
+
+
+C. REST API ENDPOINTS & LIVE RESPONSES (FastAPI on Port 8000)
+-------------------------------------------------------------
+1. GET /api/telemetry?sector=industrial|vehicular|all
+   - Provides continuous, circular real-time telemetry stream for UI dashboards.
+
+2. POST /api/simulate
+   - Runs deterministic carbon reduction calculations and returns:
+     * Baseline vs. Projected CO2 (kg/hr)
+     * Total avoided CO2 & net reduction percentage (%)
+     * Hourly and Annual financial savings in INR (₹)
+
+3. POST /api/ai-advice
+   - Returns structured advisories with immediate engineering action items,
+     regulatory status (CPCB/KSPCB/MoRTH), and ESG reporting impacts.
+
+4. GET /api/environment
+   - Returns live ambient weather parameters (temperature, wind, AQI).
+
+5. GET /api/video/{sector}
+   - Streams annotated video files (factory_annotated.mp4 or fuel_annotated.mp4)
+     for direct web browser display.
+
+6. GET /api/health
+   - System health, cache diagnostic counters, and module status check.
+
+
+================================================================================
+4. TECHNOLOGY STACK
+================================================================================
+- Computer Vision: YOLO11n (Ultralytics), ByteTrack, OpenCV, Supervision
+- OCR & Recognition: EasyOCR, PyTorch
+- Backend API: FastAPI, Uvicorn, Pydantic v2, HTTPX
+- Math & Analytics: NumPy, SciPy, Pandas
+- External APIs: Open-Meteo Weather API
+================================================================================
