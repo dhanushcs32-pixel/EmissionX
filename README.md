@@ -1,72 +1,129 @@
 <div align="center">
 
-<!-- TODO: add a logo (e.g. ./docs/assets/logo.gif) -->
-<img src="./docs/assets/logo.png" width="130" alt="EmissionX logo"/>
+<!-- TODO: logo -> docs/assets/logo.png -->
+<img src="./docs/assets/logo.png" width="120" alt="EmissionX logo"/>
 
 # EmissionX
 
-### Carbon Footprint Intelligence Platform
+### See every gram. *Cut* every ton.
 
 <p align="center">
-See smoke. Measure it. Put a number on the carbon.<br/>
-Computer vision + IoT sensor fusion that turns a CCTV feed of a smokestack into real-time CO₂ telemetry.
+Real-time carbon emission detection from camera feeds, a 3D digital twin to test cuts,<br/>
+and a GenAI advisor that drafts the policy.
 </p>
 
-<br>
+<a href="https://emission-x.vercel.app/">
+  <img src="https://img.shields.io/badge/▶%20LIVE%20DEMO-Enter%20Platform-10b981?style=for-the-badge" alt="Live demo"/>
+</a>
 
-<img src="https://img.shields.io/badge/Python-FastAPI-10b981?style=for-the-badge" alt="Python FastAPI">
-<img src="https://img.shields.io/badge/OpenCV-YOLO-10b981?style=for-the-badge" alt="OpenCV YOLO">
-<img src="https://img.shields.io/badge/Pydantic-Strict%20Schema-10b981?style=for-the-badge" alt="Pydantic">
-<img src="https://img.shields.io/badge/Frontend-React%20%2B%20Vite-10b981?style=for-the-badge" alt="React Vite">
-<img src="https://img.shields.io/badge/CI-GitHub%20Actions-10b981?style=for-the-badge" alt="GitHub Actions">
+<br><br>
+
+<img src="https://img.shields.io/badge/Computer%20Vision-YOLO%20%2B%20OpenCV-10b981?style=for-the-badge" alt="YOLO OpenCV">
+<img src="https://img.shields.io/badge/Backend-FastAPI-10b981?style=for-the-badge" alt="FastAPI">
+<img src="https://img.shields.io/badge/3D-Three.js-10b981?style=for-the-badge" alt="Three.js">
+<img src="https://img.shields.io/badge/Charts-Chart.js-10b981?style=for-the-badge" alt="Chart.js">
+<img src="https://img.shields.io/badge/GenAI-Groq%20%7C%20Gemini-10b981?style=for-the-badge" alt="Groq Gemini">
 <img src="https://img.shields.io/badge/DSU-Hackathon-10b981?style=for-the-badge" alt="DSU Hackathon">
 
 <br><br>
 
-<a href="#demo">Demo</a> •
-<a href="#the-problem">Problem</a> •
+<a href="#showcase">Showcase</a> •
+<a href="#what-it-does">What It Does</a> •
 <a href="#how-it-works">How It Works</a> •
-<a href="#features">Features</a> •
+<a href="#digital-twin">Digital Twin</a> •
 <a href="#quickstart">Quickstart</a> •
-<a href="#api--schema">API</a> •
 <a href="#roadmap">Roadmap</a>
 
 </div>
 
 ---
 
-## Demo
+## Showcase
+
+> 📸 Screenshots below are placeholders. Capture each from [emission-x.vercel.app](https://emission-x.vercel.app/) and save into `docs/screenshots/`.
+
+### Landing
 
 <div align="center">
 
-<!-- TODO: replace with real captures. Suggested: 3 frames (NORMAL / WARNING / VIOLATION) + 1 dashboard shot -->
-<img src="./docs/screenshots/hud-normal.png" height="260" alt="HUD overlay: normal operation, green bounding box"/>
-<img src="./docs/screenshots/hud-warning.png" height="260" alt="HUD overlay: combustion warning, amber bounding box"/>
-<img src="./docs/screenshots/hud-violation.png" height="260" alt="HUD overlay: scrubber violation, red bounding box"/>
+<img src="./docs/screenshots/landing.png" width="900" alt="EmissionX landing page with 3D smokestacks"/>
 
 <br><br>
 
-The same chimney, three states: the glow box shifts from neon green to amber to crimson as opacity climbs, while the HUD updates fuel burn, CO₂ rate and status in real time.
-
-<br>
-
-<img src="./docs/screenshots/dashboard.png" width="900" alt="EmissionX dashboard"/>
-
-<br><br>
-
-Live dashboard with telemetry, what-if simulation and replay.
+A procedural 3D scene of factories, roads and vehicles sits behind the whole app and reacts to your simulation sliders.
 
 </div>
 
-> 🎥 **Demo video:** _add link here_
+---
+
+### Map & Live Feed
+
+<div align="center">
+
+<img src="./docs/screenshots/map.png" width="440" alt="Map with fuel station and factory pins and wind dispersion"/>
+<img src="./docs/screenshots/live-feed.png" width="440" alt="Simulated camera feed with detections"/>
+
+<br><br>
+
+Two camera nodes, one air shed: a **fuel station** and a **factory**. Pick a pin to see how its plume drifts with the wind and what the camera is catching right now. Drop in your own video (MP4, MOV, AVI, MKV or WebM, up to 1 GB) to run the detector on it.
+
+</div>
 
 ---
 
-## The Problem
+### Telemetry
 
-Industrial stacks are one of the largest and least-measured sources of urban carbon and particulate emissions. Continuous Emission Monitoring Systems (CEMS) are expensive, and a camera on a chimney is cheap but gives you pixels, not numbers.
+<div align="center">
 
-**EmissionX bridges that gap.** It reads smoke opacity straight from video, fuses it with boiler sensor metrics, and converts both into a deterministic **kg CO₂ per hour** figure, plus the *avoidable* share of it, so operators and regulators see what a scrubber failure actually costs.
+<img src="./docs/screenshots/telemetry.png" width="900" alt="Charts for CO2 by vehicle class and smoke opacity, plus raw JSON terminal"/>
+
+<br><br>
+
+CO₂ by vehicle class, smoke opacity over time, clip analysis progress, and a terminal tailing the raw JSON the backend emits, refreshed every second.
+
+</div>
+
+---
+
+### Digital Twin
+
+<div align="center">
+
+<img src="./docs/screenshots/twin-forecourt.png" width="440" alt="Forecourt view of the digital twin"/>
+<img src="./docs/screenshots/twin-stack.png" width="440" alt="Industrial stack view of the digital twin"/>
+
+<br><br>
+
+Move a slider and watch traffic, EV lights and factory smoke in the 3D scene follow your plan, with actual vs simulated savings, CPCB compliance level and annual carbon credits.
+
+</div>
+
+---
+
+### GenAI Advisor & Report
+
+<div align="center">
+
+<img src="./docs/screenshots/advisor.png" width="440" alt="GenAI policy advisor chat"/>
+<img src="./docs/screenshots/report.png" width="440" alt="Report export with JSON, PDF and CPCB Form-V"/>
+
+<br><br>
+
+The advisor already holds the current node's telemetry. Ask for a draft policy, a compliance summary or a rollout cost, then export everything for the meeting.
+
+</div>
+
+---
+
+## What It Does
+
+| | Pillar | What happens |
+|---|---|---|
+| 🚗 | **Vehicle emissions** | YOLO tracks cars, trucks, buses and bikes across fuel station forecourts. Each vehicle gets a class, a dwell time, a fuel estimate and a CO₂ number, all from one camera. |
+| 🏭 | **Industrial smoke** | A second camera watches the factory stack. Background subtraction isolates the plume, grayscale intensity gives opacity, and the Ringelmann grade sets the emission multiplier. |
+| 🧪 | **Digital twin** | The same emission engine that scores the live feed runs your what-if scenario. |
+| 🤖 | **GenAI advisor** | Live JSON (baseline CO₂, simulation delta, weather, CV alerts) goes into Groq or Gemini. You get three immediate fixes and a long-term ROI plan, then keep chatting. |
+| 📄 | **Reports** | Export raw JSON, a PDF report, or a CPCB Form-V certificate. |
 
 ---
 
@@ -74,174 +131,116 @@ Industrial stacks are one of the largest and least-measured sources of urban car
 
 ```mermaid
 flowchart LR
-    A[CCTV / Video Feed] --> B{smoke.pt present?}
-    B -- Yes --> C[YOLO Plume Detector]
-    B -- No --> D[OpenCV ROI + MOG2 Fallback]
-    C --> E[Ringelmann Opacity Engine]
-    D --> E
-    F[CEMS Sensor Sync<br/>fuel, flue temp, SO₂] --> G
-    E --> G[Carbon Math Engine]
-    G --> H[Annotated Video<br/>HUD + Glow Boxes]
-    G --> I[Telemetry JSON<br/>Pydantic Contract]
-    I --> J[Smart Replay Cache<br/>60 FPS, under 2% CPU]
-    I --> K[FastAPI /api/simulate]
+    A[Fuel Station Camera] --> C[YOLO Vehicle Tracker]
+    B[Factory Stack Camera] --> D{smoke.pt present?}
+    D -- Yes --> E[YOLO Plume Detector]
+    D -- No --> F[OpenCV ROI + MOG2]
+    E --> G[Ringelmann Opacity]
+    F --> G
+    C --> H[Carbon Math Engine]
+    G --> H
+    S[CEMS Sensor Sync] --> H
+    H --> I[Telemetry JSON]
+    I --> J[Live Dashboard]
+    I --> K[Digital Twin]
+    I --> L[GenAI Advisor]
+    I --> M[PDF / JSON / Form-V]
 ```
 
----
-
-## Features
-
-### 🔍 Dual-Mode Plume Detector
-
-Works out of the box, with or without a GPU or trained weights.
-
-| Mode | Trigger | Method |
-|---|---|---|
-| **Primary** | `models/smoke.pt` exists | YOLO detection (`vid_stride=3`, `imgsz=480`) |
-| **Fallback** | No weights found | OpenCV MOG2 background subtraction + brightness analysis + morphological filtering on the chimney-exit ROI |
-
-The fallback path never crashes and runs on any video.
-
-### 🌫️ Optical Ringelmann Opacity
-
-The plume ROI is converted to grayscale and scored by mean brightness:
+### Ringelmann scale
 
 $$\text{opacity\_pct} = \text{clamp}\left(\left(1 - \frac{\text{mean\_brightness}}{255}\right) \times 100,\ 0,\ 100\right)$$
 
-| Opacity | Ringelmann | Status | Multiplier | HUD Color |
-|---|---|---|---|---|
-| 0 – 20% | 0 – 1 | `NORMAL` | 1.00× | 🟢 Neon green |
-| 21 – 60% | 2 – 3 | `COMBUSTION WARNING` | 1.25× | 🟠 Amber |
-| > 60% | 4 – 5 | `SCRUBBER VIOLATION` | 1.60× | 🔴 Crimson |
+| Opacity | Grade | Status | Multiplier |
+|---|---|---|---|
+| 0 – 20% | 0 – 1 | 🟢 `NORMAL` | 1.00× |
+| 21 – 60% | 2 – 3 | 🟠 `COMBUSTION WARNING` | 1.25× |
+| 60%+ | 4 – 5 | 🔴 `SCRUBBER VIOLATION` | 1.60× |
 
-### 📡 Synthetic CEMS Sensor Sync
+### Industrial formula
 
-Boiler and stack metrics are generated and tied to plume opacity, so the demo behaves like a real plant.
-
-| Metric | Field | Range |
-|---|---|---|
-| Fuel rate | `fuel_rate_kg_hr` | ~1200 kg/hr base, spikes above 50% opacity |
-| Flue gas temp | `flue_gas_temp_c` | 160 – 240 °C |
-| SO₂ | `so2_ppm` | 80 → 350 ppm during Ringelmann 4–5 |
-
-Each frame also emits tagged audit logs (`[PLUME-CV]`, `[CEMS-IOT]`).
-
-### 🧮 Deterministic Carbon Math Engine
-
-One engine shared by the video pipeline and `/api/simulate`, so live and what-if numbers always agree.
+$$\text{CO}_2 = \text{Fuel\_Rate} \times \text{EF} \times \text{Opacity\_Mult} \times (1 - \text{Scrubber\_Eff})$$
 
 | Fuel | Emission factor |
 |---|---|
 | Coal | 2.42 kg CO₂ / kg |
 | Furnace oil | 3.15 kg CO₂ / kg |
 | Natural gas | 1.93 kg CO₂ / m³ |
-| Biomass | 0.45 kg CO₂ / kg (net lifecycle) |
+| Biomass | 0.45 kg CO₂ / kg (net) |
 
-$$\text{baseline\_co2\_kg\_hr} = (\text{fuel\_rate} \times \text{factor}) \times \text{opacity\_multiplier} \times (1 - \text{scrubber\_efficiency})$$
+**Worked example:** 1245 kg/hr coal at 64.2% opacity → 1245 × 2.42 × 1.6 = **4820.6 kg CO₂/hr**, of which **1807.7** is avoidable waste.
 
-$$\text{waste\_co2\_kg\_hr} = \text{baseline\_co2\_kg\_hr} - (\text{fuel\_rate} \times \text{factor})$$
+### Dual-mode plume detector
 
-**Worked example** (matches the sample payload below): 1245 kg/hr coal at 64.2% opacity (Ringelmann 4)
+| Mode | Trigger | Method |
+|---|---|---|
+| **Primary** | `models/smoke.pt` exists | YOLO (`vid_stride=3`, `imgsz=480`) |
+| **Fallback** | No weights | OpenCV MOG2 + brightness analysis + morphology on the chimney-exit ROI |
 
-```
-ideal   = 1245 × 2.42        = 3012.9 kg CO₂/hr
-actual  = 3012.9 × 1.60      = 4820.6 kg CO₂/hr   ← baseline
-waste   = 4820.6 − 3012.9    = 1807.7 kg CO₂/hr   ← avoidable with a working scrubber
-```
+The fallback never crashes and runs on any video.
 
-### 🎯 Tactical HUD Annotation
+---
 
-Glowing bounding boxes with corner reticles and plume tags, plus a glassmorphism banner showing opacity, Ringelmann level, fuel burn, CO₂ rate, status and flue diagnostics.
+## Digital Twin
 
-### ⚡ Smart Replay Cache
+| Vehicular levers | Industrial levers |
+|---|---|
+| EV adoption (0–100%) | Boiler fuel switch (Coal / Oil / Gas / Biomass) |
+| E20 ethanol blend (0–100%) | Carbon scrubber (0–90%) |
+| Queue wait reduction (0–100%) | Combustion tuning (reduces opacity) |
+| BS3 / BS4 truck ban (toggle) | |
 
-Process once, replay forever. `stream_industrial_telemetry(use_cache=True)` streams cached results at **60 FPS with under 2% CPU and zero GPU load**.
+Outputs: projected savings %, actual vs simulated CO₂, **CPCB compliance** shift (e.g. Level 4 → Level 1), and **annual carbon credits** at an assumed ₹1,000 per tonne CO₂.
+
+Saved runs are bundled into the exported report.
+
+---
+
+## Smart Replay Cache
+
+Process once, replay forever. `stream_industrial_telemetry(use_cache=True)` streams at **60 FPS with under 2% CPU and zero GPU load**.
 
 | Output | Path |
 |---|---|
 | Annotated video | `cache/factory_annotated.mp4` |
-| Telemetry contract | `cache/factory_telemetry.json` |
+| Telemetry | `cache/factory_telemetry.json` |
 
 ---
 
 ## Quickstart
 
-### Prerequisites
-
-- Python 3.10+ (check `pyproject.toml` for the exact version)
-- Node.js 18+ (for the frontend)
-- Optional: a GPU and your own `models/smoke.pt`
-
-### 1. Clone
-
 ```bash
 git clone https://github.com/dhanushcs32-pixel/EmissionX.git
 cd EmissionX
-cp .env.example .env     # then fill in values
+cp .env.example .env        # add your Groq / Gemini keys
 ```
 
-### 2. Run the end-to-end pipeline
+**Run the industrial pipeline end to end**
 
 ```bash
 pip install -e .
-python run_industrial.py
+python run_industrial.py    # or: uv run run_industrial.py
 ```
 
-or with [uv](https://github.com/astral-sh/uv):
+**Run the app**
 
 ```bash
-uv run run_industrial.py
+python main.py              # backend, see README_backend.md
+npm install && npm run dev  # frontend (Vite)
 ```
 
-The runner will:
-
-1. Verify or synthesize smokestack CCTV footage (`factory_stack.mp4`)
-2. Run the full detection and telemetry pipeline
-3. Write `cache/factory_annotated.mp4` and `cache/factory_telemetry.json`
-4. Validate every record against the strict Pydantic schema
-5. Benchmark what-if simulations and 60 FPS cache streaming
-
-### 3. Start the app
-
-```bash
-# Backend (FastAPI), see README_backend.md for details
-python main.py
-
-# Frontend (Vite)
-npm install
-npm run dev
-```
-
-> On Windows, `run.bat` launches the project in one step.
-
-### Environment variables
-
-See [`.env.example`](./.env.example) for the full list.
-
----
-
-## API & Schema
-
-Every payload conforms to one strict contract, so any dashboard, alerting system or downstream model can consume it unchanged. Details for the backend live in [`README_backend.md`](./README_backend.md).
+> Windows: `run.bat` starts everything in one go.
 
 <details>
-<summary><b>View sample telemetry payload</b></summary>
+<summary><b>Sample telemetry payload</b></summary>
 
 ```json
 {
   "node_id": "IND_STACK_01_PEENYA",
   "sector": "industrial",
   "timestamp": "2026-10-15T11:30:00Z",
-  "environment": {
-    "temp_c": 29.5,
-    "wind_kmh": 11.2,
-    "wind_deg": 240,
-    "aqi": 168
-  },
+  "environment": { "temp_c": 29.5, "wind_kmh": 11.2, "wind_deg": 240, "aqi": 168 },
   "cv_telemetry": {
-    "active_counts": {},
-    "bay_dwell_sec": null,
-    "queue_idle_sec": null,
     "smoke_opacity_pct": 64.2,
     "ringelmann_level": 4,
     "opacity_multiplier": 1.6,
@@ -250,34 +249,39 @@ Every payload conforms to one strict contract, so any dashboard, alerting system
       "fuel_rate_kg_hr": 1245.0,
       "flue_gas_temp_c": 218.4,
       "so2_ppm": 285
-    },
-    "recent_logs": [
-      " [PLUME-CV] Smoke Opacity 64.2% (Ringelmann Lvl 4) -> Penalty 1.6x",
-      " [CEMS-IOT] Boiler #1 Coal Feed: 1245 kg/hr | Flue Temp: 218.4C | SO2: 285 ppm"
-    ]
+    }
   },
-  "emissions": {
-    "baseline_co2_kg_hr": 4820.6,
-    "waste_co2_kg_hr": 1807.7
-  },
+  "emissions": { "baseline_co2_kg_hr": 4820.6, "waste_co2_kg_hr": 1807.7 },
   "simulation": {
     "active": false,
     "projected_co2_kg_hr": 4820.6,
-    "reduction_pct": 0.0,
-    "applied_params": {
-      "fuel_type": "coal",
-      "scrubber_efficiency_pct": 0,
-      "combustion_tuning_pct": 0
-    }
+    "reduction_pct": 0.0
   }
 }
 ```
 
 </details>
 
-### What-if simulation
+<details>
+<summary><b>Repository structure</b></summary>
 
-`POST /api/simulate` re-runs the same math engine with changed parameters (fuel type, scrubber efficiency, combustion tuning) and returns `projected_co2_kg_hr` and `reduction_pct`, so you can answer *"what if we install a 90% scrubber?"* instantly.
+```
+EmissionX
+├── .github/workflows/
+├── backend/
+├── modules/industrial_detector.py
+├── models/            # optional smoke.pt
+├── cache/
+├── src/               # frontend
+├── tests/
+├── run_industrial.py
+├── main.py
+├── index.html
+├── vite.config.ts
+└── pyproject.toml
+```
+
+</details>
 
 ---
 
@@ -285,64 +289,39 @@ Every payload conforms to one strict contract, so any dashboard, alerting system
 
 | Layer | Tools |
 |---|---|
-| Computer vision | OpenCV (MOG2), Ultralytics YOLO |
+| Vision | YOLO, OpenCV (MOG2) |
 | Backend | Python, FastAPI, Pydantic |
-| Frontend | React, TypeScript, Vite |
-| Tooling | uv / pip, GitHub Actions |
-
----
-
-<details>
-<summary><b>Repository Structure</b></summary>
-
-```
-EmissionX
-├── .github/workflows/        # CI
-├── backend/                  # FastAPI service
-├── modules/
-│   └── industrial_detector.py   # Detector, CEMS sync, math engine, replay cache
-├── models/                   # Drop optional smoke.pt here
-├── cache/                    # Annotated video + telemetry JSON
-├── src/                      # Frontend source
-├── tests/
-├── run_industrial.py         # End-to-end runner, CCTV synthesizer, validator
-├── main.py
-├── index.html
-├── vite.config.ts
-├── pyproject.toml
-└── .env.example
-```
-
-</details>
+| Frontend | TypeScript, Vite, Three.js, Chart.js |
+| GenAI | Groq, Gemini |
+| CI | GitHub Actions |
 
 ---
 
 ## Roadmap
 
-- [x] Dual-mode plume detection (YOLO + OpenCV fallback)
-- [x] Ringelmann opacity scoring and status classification
-- [x] Deterministic CO₂ engine with what-if simulation
-- [x] Smart replay cache for low-power playback
+- [x] Vehicle tracking and per-class CO₂ at fuel stations
+- [x] Ringelmann smoke opacity with dual-mode detector
+- [x] 3D digital twin with CPCB compliance and carbon credits
+- [x] GenAI policy advisor and PDF / JSON / Form-V export
 - [ ] Live RTSP camera ingestion
-- [ ] Real CEMS hardware integration (Modbus / MQTT)
-- [ ] Trained smoke model released in `models/`
-- [ ] Multi-stack dashboard with alerts and regulator export
-- [ ] Remaining platform pillars (see main project docs)
+- [ ] Real CEMS hardware (Modbus / MQTT)
+- [ ] Released trained smoke model
+- [ ] Multi-node dashboard with alerts
 
 ---
 
+## Disclaimer
+
+All demo data is simulated. Thresholds and advice are indicative; check local pollution-control norms before acting.
+
 ## Team
 
-Built for the **DSU Hackathon** by [@dhanushcs32-pixel](https://github.com/dhanushcs32-pixel) _(add teammates here)_.
-
-## License
-
-_Add a license (MIT is a common choice for hackathon projects)._
+Built for the **DSU Hackathon** by [@dhanushcs32-pixel](https://github.com/dhanushcs32-pixel) _(add teammates)_.
 
 <div align="center">
 
 <br>
 
-**If EmissionX caught your eye, drop a ⭐**
+**[▶ Try the live demo](https://emission-x.vercel.app/)** · If it caught your eye, drop a ⭐
 
 </div>
