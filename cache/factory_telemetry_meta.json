@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-10-16T09:22:07.688019+00:00",
+  "generated_at": "2026-10-16T09:51:36.267321+00:00",
   "source_video": "factory_stack.mp4",
   "profile": null,
   "detector_mode": "Chimney-Tip Flood-Fill Engine",
-  "frames_processed": 1830,
-  "width": 3840,
-  "height": 2160,
-  "fps": 29.97,
+  "frames_processed": 232,
+  "width": 2160,
+  "height": 3840,
+  "fps": 30.0,
   "video_codec": "avc1 (H.264 - Web Compatible)"
 }

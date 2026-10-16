@@ -350,7 +350,7 @@ def main() -> None:
         output_json_path=output_json,
         model_path=model_weight,
         profile=None if args.profile == "auto" else args.profile,
-        calibrate=args.calibrate,
+        calibrate=args.calibrate or os.environ.get("INTERACTIVE_ROI") == "1",
         manual_roi=args.roi,
     )
 

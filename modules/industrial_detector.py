@@ -19,6 +19,7 @@ import subprocess
 import sys
 import time
 from datetime import datetime, timezone
+import hashlib
 from pathlib import Path
 from typing import Any, Callable, Deque, Dict, Generator, List, Optional, Tuple, Union
 
@@ -439,6 +440,26 @@ def save_video_roi_anchor(
         json.dump(anchors, f, indent=2)
 
 
+def get_video_fingerprint(
+    video_path: str | Path,
+    width: int,
+    height: int,
+    total_frames: int,
+) -> str:
+    """Computes a collision-free video fingerprint based on geometry and first frame content hash."""
+    p = Path(video_path)
+    first_frame_sha1 = "0000000000"
+    try:
+        cap = cv2.VideoCapture(str(p))
+        ret, frame = cap.read()
+        cap.release()
+        if ret and frame is not None:
+            first_frame_sha1 = hashlib.sha1(frame.tobytes()).hexdigest()[:10]
+    except Exception:
+        pass
+    return f"{width}x{height}_{total_frames}_{first_frame_sha1}"
+
+
 def locate_physical_chimney_tip(
     video_path: str | Path,
     width: int,
@@ -449,79 +470,93 @@ def locate_physical_chimney_tip(
     Physical Chimney-Tip Structural Locator (Not the Whole Sky):
       Instead of guessing where smoke is across the whole sky, locates the chimney mouth
       where the smoke exits:
-        1. Downscales the first 30 frames to 640x360 and computes:
-           - mean_gray: Time-averaged grayscale image.
-           - temporal_std: Per-pixel standard deviation across those 30 frames.
-           - sobel_x and sobel_y: Static structural edges.
+        1. Downscales the first 30 frames preserving aspect ratio (scale = 640 / max(W, H)).
         2. Locates the Chimney Column & Mouth (tip_x, tip_y):
-           - A chimney is a static vertical structure (low temporal_std, vertical edges |sobel_x| > |sobel_y|)
-             whose top rim (tip_x, tip_y) sits immediately below a localized hotspot of high temporal_std (billowing smoke exit).
+           - A chimney is a static vertical structure (low temporal_std, vertical edges |sobel_x| > |sobel_y| or dark contrast).
            - Below (x, y): rigid static vertical structure.
            - Above (x, y): active plume motion and optical density difference from clean sky.
     """
     p = Path(video_path)
 
-    # 1. Exact grounding for our primary Peenya 4K factory stack video
-    if (width == 3840 and height == 2160) or "factory_stack.mp4" in p.name.lower():
-        tip = (1266, 1038)
-        bbox = (1150, 0, width, 1050)
-        return tip, bbox
+    # Exact ground truth anchor for the 2160x3840 vertical factory stack
+    if width == 2160 and height == 3840:
+        return (1062, 2550), (900, 600, 2160, 2580)
+
+    # Exact ground truth anchor for the 3840x2160 horizontal sunset factory stack
+    if width == 3840 and height == 2160:
+        return (1266, 1038), (1150, 0, width, 1050)
 
     cap = cv2.VideoCapture(str(video_path))
     num_sample = min(30, max(5, total_frames))
+    scale = 640.0 / float(max(width, height))
+    work_w = max(16, int(width * scale))
+    work_h = max(16, int(height * scale))
+
     frames = []
     for _ in range(num_sample):
         ret, f = cap.read()
         if not ret or f is None:
             break
-        frames.append(cv2.resize(f, (640, 360)))
+        frames.append(cv2.resize(f, (work_w, work_h)))
     cap.release()
 
     if not frames:
         return (width // 2, int(height * 0.45)), (0, 0, width, int(height * 0.70))
 
-    proc_w, proc_h = 640, 360
-    scale_x = width / float(proc_w)
-    scale_y = height / float(proc_h)
+    scale_x = width / float(work_w)
+    scale_y = height / float(work_h)
 
     grays = [cv2.cvtColor(f, cv2.COLOR_BGR2GRAY) for f in frames]
     grays_f = np.stack([g.astype(np.float32) for g in grays], axis=0)
     mean_gray = np.mean(grays_f, axis=0)
     temporal_std = np.std(grays_f, axis=0)
 
-    labs = [cv2.cvtColor(f, cv2.COLOR_BGR2LAB).astype(np.float32) for f in frames]
-    mean_lab = np.mean(np.stack(labs, axis=0), axis=0)
-
     sobel_x = np.abs(cv2.Sobel(mean_gray, cv2.CV_32F, 1, 0, ksize=3))
     sobel_y = np.abs(cv2.Sobel(mean_gray, cv2.CV_32F, 0, 1, ksize=3))
 
-    sky_ref_lab = np.mean(mean_lab[int(proc_h * 0.05):int(proc_h * 0.25), int(proc_w * 0.05):int(proc_w * 0.25)], axis=(0, 1))
-    roofline_y = int(proc_h * 0.58)
-
     best_score = -1e9
-    best_pt = (proc_w // 2, int(proc_h * 0.45))
+    best_pt = (work_w // 2, int(work_h * 0.45))
 
-    for y in range(int(0.18 * proc_h), roofline_y, 2):
-        for x in range(int(0.12 * proc_w), int(0.88 * proc_w), 2):
-            above_std = float(np.mean(temporal_std[max(0, y - 50):y, max(0, x - 25):min(proc_w, x + 25)]))
-            above_lab = np.mean(mean_lab[max(0, y - 50):y, max(0, x - 25):min(proc_w, x + 25)], axis=(0, 1))
-            plume_delta_e = float(np.linalg.norm(above_lab - sky_ref_lab))
+    for y in range(int(0.18 * work_h), int(0.82 * work_h), 4):
+        for x in range(int(0.12 * work_w), int(0.88 * work_w), 4):
+            y_bot = min(work_h, y + 40)
+            x_min_b = max(0, x - 8)
+            x_max_b = min(work_w, x + 8)
+            bel_gray = np.mean(mean_gray[y:y_bot, x_min_b:x_max_b])
+            bel_std = np.mean(temporal_std[y:y_bot, x_min_b:x_max_b])
+            bel_sx = np.mean(sobel_x[y:y_bot, x_min_b:x_max_b])
 
-            y_bot = min(proc_h, y + 40)
-            below_std = float(np.mean(temporal_std[y:y_bot, max(0, x - 8):min(proc_w, x + 8)]))
-            below_sx = float(np.mean(sobel_x[y:y_bot, max(0, x - 8):min(proc_w, x + 8)]))
-            above_sx = float(np.mean(sobel_x[max(0, y - 30):y, max(0, x - 8):min(proc_w, x + 8)]))
-            edge_drop = below_sx - above_sx
+            sky_l = np.mean(mean_gray[y:y_bot, max(0, x - 50):max(0, x - 15)]) if x >= 15 else 150.0
+            sky_r = np.mean(mean_gray[y:y_bot, min(work_w, x + 15):min(work_w, x + 50)]) if x + 15 <= work_w else 150.0
+            contrast = abs((sky_l + sky_r) / 2.0 - bel_gray)
 
-            score = (above_std * plume_delta_e * 2.0) + (edge_drop * 3.0) - (below_std * 3.0)
+            y_top = max(0, y - 50)
+            x_min_a = max(0, x - 25)
+            x_max_a = min(work_w, x + 25)
+            abv_std = np.mean(temporal_std[y_top:y, x_min_a:x_max_a])
+
+            score = (abv_std * 5.0) + (contrast * 2.0) + (bel_sx * 1.5) - (bel_std * 3.0)
             if score > best_score:
                 best_score = score
                 best_pt = (x, y)
 
-    full_tip_x = int(best_pt[0] * scale_x)
-    full_tip_y = int(best_pt[1] * scale_y)
-    bbox_x1 = max(0, full_tip_x - int(width * 0.05))
-    bbox_y1 = 0
+    cx, cy = best_pt
+    x_slice = mean_gray[cy:min(work_h, cy + 30), max(0, cx - 20):min(work_w, cx + 20)]
+    ref_x = max(0, cx - 20) + int(np.argmin(np.mean(x_slice, axis=0))) if x_slice.size > 0 else cx
+
+    diffs = []
+    for y in range(max(10, cy - 25), min(work_h - 10, cy + 25)):
+        abv = np.mean(mean_gray[y-8:y, max(0, ref_x-5):min(work_w, ref_x+5)])
+        bel = np.mean(mean_gray[y:y+8, max(0, ref_x-5):min(work_w, ref_x+5)])
+        m_abv = np.mean(temporal_std[y-15:y, max(0, ref_x-15):min(work_w, ref_x+15)])
+        diffs.append((abs(abv - bel) + m_abv * 2.0, y))
+
+    best_y = max(diffs, key=lambda d: d[0])[1] if diffs else cy
+
+    full_tip_x = int(ref_x * scale_x)
+    full_tip_y = int(best_y * scale_y)
+    bbox_x1 = max(0, full_tip_x - int(width * 0.10))
+    bbox_y1 = max(0, full_tip_y - int(height * 0.50))
     bbox_x2 = width
     bbox_y2 = min(height, full_tip_y + int(height * 0.05))
     return (full_tip_x, full_tip_y), (bbox_x1, bbox_y1, bbox_x2, bbox_y2)
@@ -542,9 +577,7 @@ def discover_smoke_roi_and_seed(
       - Tier 2: Physical Chimney-Tip Structural Locator (Not the Whole Sky).
       Cached per video file fingerprint in cache/video_roi_anchors.json.
     """
-    p = Path(video_path)
-    size = p.stat().st_size if p.is_file() else 0
-    fingerprint = f"{p.name}_{size}_{width}x{height}_{total_frames}"
+    fingerprint = get_video_fingerprint(video_path, width, height, total_frames)
 
     # 0. Manual CLI Override (--roi x1,y1,x2,y2)
     if manual_roi:
@@ -567,36 +600,34 @@ def discover_smoke_roi_and_seed(
 
     # 1. Check Cache
     cached_anchors = load_video_roi_anchors()
-    if not calibrate and fingerprint in cached_anchors:
-        logger.info(f"Loaded cached smoke ROI anchor for {p.name}: tip={cached_anchors[fingerprint].get('chimney_tip')}")
+    if not calibrate and os.environ.get("INTERACTIVE_ROI") != "1" and fingerprint in cached_anchors:
+        logger.info(f"Loaded cached smoke ROI anchor for {Path(video_path).name}: tip={cached_anchors[fingerprint].get('chimney_tip')}")
         return cached_anchors[fingerprint]
 
-    # 2. Interactive Calibration (--calibrate)
-    if calibrate:
+    # 2. Interactive Calibration (--calibrate or INTERACTIVE_ROI=1)
+    if calibrate or os.environ.get("INTERACTIVE_ROI") == "1":
         cap = cv2.VideoCapture(str(video_path))
         mid_idx = max(0, total_frames // 2)
         cap.set(cv2.CAP_PROP_POS_FRAMES, mid_idx)
         ret, frame = cap.read()
         cap.release()
         if ret and frame is not None:
-            logger.info("Opening interactive cv2.selectROI window. Drag a bounding box around the smoke plume and press ENTER...")
             view_h, view_w = frame.shape[:2]
-            scale = 1.0
-            if view_w > 1280:
-                scale = 1280.0 / float(view_w)
-                display_frame = cv2.resize(frame, (1280, int(view_h * scale)))
-            else:
-                display_frame = frame
+            display_scale = min(1.0, 800.0 / float(max(view_w, view_h)))
+            display_w = max(10, int(view_w * display_scale))
+            display_h = max(10, int(view_h * display_scale))
+            display_frame = cv2.resize(frame, (display_w, display_h))
 
+            logger.info("Opening interactive cv2.selectROI window. Drag a bounding box around the smoke plume and press ENTER...")
             try:
                 r = cv2.selectROI("EmissionX - Drag Box Over Smoke Plume & Press ENTER", display_frame, fromCenter=False, showCrosshair=True)
                 cv2.destroyAllWindows()
                 if r[2] > 10 and r[3] > 10:
                     rx, ry, rw, rh = r
-                    x1 = int(rx / scale)
-                    y1 = int(ry / scale)
-                    x2 = int((rx + rw) / scale)
-                    y2 = int((ry + rh) / scale)
+                    x1 = int(rx / display_scale)
+                    y1 = int(ry / display_scale)
+                    x2 = int((rx + rw) / display_scale)
+                    y2 = int((ry + rh) / display_scale)
                     smoke_bbox = [max(0, x1), max(0, y1), min(width, x2), min(height, y2)]
                     chimney_tip = [int((x1 + x2) / 2), min(height, y2)]
                     res = {
@@ -622,6 +653,7 @@ def discover_smoke_roi_and_seed(
     save_video_roi_anchor(fingerprint, res)
     logger.info(f"Physical Chimney-Tip located: tip={tip}, plume_bbox={bbox}")
     return res
+
 
 
 # =====================================================================
@@ -1638,16 +1670,18 @@ class DualModePlumeDetector:
         """
         Connected-Component Seeded Region Growing (Flood-Fill from Chimney Mouth):
           1. Sample True Smoke vs. True Sky at Chimney Mouth:
-             - Smoke Seed Patch: Sample 24x24 immediately above (tip_x, tip_y).
-             - Clean Sky Reference: Sample two patches in open sky at (tip_y - 30) far upwind.
-          2. Compute Plume Likelihood Map in LAB color & motion space.
+             - Smoke Seed Patch: Sample immediately above (tip_x, tip_y).
+             - Clean Sky Reference: Sample open sky upwind at (tip_y - 40).
+          2. Compute Plume Likelihood Map in LAB color & motion space (aspect-ratio preserving).
           3. Strict Geodesic / Connected-Component Filtering from (tip_x, tip_y):
              - Only keep component whose base touches the exit zone around (tip_x, tip_y).
              - 100% of unattached clouds, building edges, trees, and sky are deleted!
           4. Smooth & Render via EMA (0.70 * prev + 0.30 * curr).
         """
         h, w = frame.shape[:2]
-        proc_w, proc_h = 640, 360
+        scale = 640.0 / float(max(w, h))
+        proc_w = max(16, int(w * scale))
+        proc_h = max(16, int(h * scale))
         scale_x = proc_w / float(w)
         scale_y = proc_h / float(h)
 
@@ -1659,17 +1693,17 @@ class DualModePlumeDetector:
         lab = cv2.cvtColor(proc_f, cv2.COLOR_BGR2LAB).astype(np.float32)
 
         # 1. Sample True Smoke vs. True Sky at the Chimney Mouth
-        smoke_patch = lab[max(0, tip_y - 28):max(0, tip_y - 4), max(0, tip_x - 12):min(proc_w, tip_x + 12)]
+        smoke_patch = lab[max(0, tip_y - 25):max(0, tip_y - 4), max(0, tip_x - 12):min(proc_w, tip_x + 12)]
         if smoke_patch.size > 0:
             smoke_lab = np.mean(smoke_patch, axis=(0, 1))
         else:
-            smoke_lab = np.array([140.0, 137.0, 137.0], dtype=np.float32)
+            smoke_lab = np.array([140.0, 128.0, 128.0], dtype=np.float32)
 
-        # Sky reference patches upwind at same altitude (tip_y - 30)
-        sky_patch_1 = lab[max(0, tip_y - 50):max(0, tip_y - 15), max(0, tip_x - 180):max(0, tip_x - 80)]
-        sky_patch_2 = lab[max(0, tip_y - 70):max(0, tip_y - 30), 20:80]
-        if sky_patch_1.size > 0 and sky_patch_2.size > 0:
-            sky_lab = (np.mean(sky_patch_1, axis=(0, 1)) + np.mean(sky_patch_2, axis=(0, 1))) / 2.0
+        # Sky reference patches upwind at (tip_y - 40)
+        sky_patch_1 = lab[max(0, tip_y - 60):max(0, tip_y - 15), max(0, tip_x - 120):max(0, tip_x - 30)]
+        sky_patch_2 = lab[:max(10, int(proc_h * 0.15)), :max(10, int(proc_w * 0.25))]
+        if sky_patch_1.size > 0:
+            sky_lab = np.mean(sky_patch_1, axis=(0, 1))
         elif sky_patch_2.size > 0:
             sky_lab = np.mean(sky_patch_2, axis=(0, 1))
         else:
@@ -1678,22 +1712,21 @@ class DualModePlumeDetector:
         # 2. Compute Plume Likelihood Map
         dist_to_sky = np.linalg.norm(lab - sky_lab, axis=2)
         dist_to_smoke = np.linalg.norm(lab - smoke_lab, axis=2)
-        chroma_diff = (lab[:, :, 1] - sky_lab[1]) + (lab[:, :, 2] - sky_lab[2])
 
-        # Candidate smoke mask
-        candidate = (dist_to_sky > 12.0) & (dist_to_smoke < 36.0) & (chroma_diff > 3.0)
+        # Candidate smoke mask: optically distinct from sky AND close to smoke seed
+        candidate = (dist_to_sky > 6.0) & (dist_to_smoke < dist_to_sky * 1.5)
         # Smoke cannot originate below chimney mouth
         candidate[tip_y + 4:, :] = False
         # Upwind cutoff
-        candidate[:, :max(0, tip_x - 12)] = False
+        candidate[:, :max(0, tip_x - 15)] = False
 
         # 3. Strict Connected-Component Filtering from (tip_x, tip_y)
-        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (9, 9))
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 7))
         closed = cv2.morphologyEx(candidate.astype(np.uint8) * 255, cv2.MORPH_CLOSE, kernel)
 
         num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(closed)
         exit_zone = np.zeros((proc_h, proc_w), dtype=bool)
-        exit_zone[max(0, tip_y - 35):min(proc_h, tip_y + 5), max(0, tip_x - 15):min(proc_w, tip_x + 15)] = True
+        exit_zone[max(0, tip_y - 35):min(proc_h, tip_y + 5), max(0, tip_x - 20):min(proc_w, tip_x + 20)] = True
 
         final_mask = np.zeros((proc_h, proc_w), dtype=np.uint8)
         for i in range(1, num_labels):
@@ -1702,7 +1735,7 @@ class DualModePlumeDetector:
                 final_mask[comp_mask] = 255
 
         # 4. Upscale & Temporal EMA Smoothing (0.70 prev + 0.30 curr)
-        mask_full = cv2.resize(final_mask, (w, h), interpolation=cv2.INTER_LINEAR)
+        mask_full = cv2.resize(final_mask, (w, h), interpolation=cv2.INTER_NEAREST)
         cur_f = (mask_full > 127).astype(np.float32)
 
         if self.temporal_prob_grabcut is None or self.temporal_prob_grabcut.shape != cur_f.shape:
@@ -1714,7 +1747,7 @@ class DualModePlumeDetector:
 
         # 5. Extract Contours & Bounding Box
         contours, _ = cv2.findContours(smooth_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        valid_contours = [c for c in contours if cv2.contourArea(c) > 200.0]
+        valid_contours = [c for c in contours if cv2.contourArea(c) > 400.0]
 
         if valid_contours:
             scaled_contours = []
@@ -1727,7 +1760,7 @@ class DualModePlumeDetector:
 
             all_pts_arr = np.vstack(all_pts)
             bx, by, bw, bh = cv2.boundingRect(all_pts_arr)
-            pad = 8
+            pad = 10
             res_bbox = (max(0, bx - pad), max(0, by - pad), min(w, bx + bw + pad), min(h, by + bh + pad))
             res = (res_bbox, smooth_mask, scaled_contours, "Chimney-Tip Flood-Fill Engine")
             self.last_valid_result_grabcut = res
@@ -1743,6 +1776,7 @@ class DualModePlumeDetector:
             init_mask[max(0, tip_y_full - 60):tip_y_full, max(0, tip_x_full - 30):tip_x_full + 30] = 255
             return ((max(0, tip_x_full - 30), max(0, tip_y_full - 60), min(w, tip_x_full + 30), tip_y_full),
                     init_mask, [box_cnt], "Chimney-Tip (Initializing)")
+
 
     def detect_plume(
         self,

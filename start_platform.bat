@@ -4,10 +4,10 @@ REM then opens the site. The website reaches the backend through the Vite /api p
 REM For the GenAI chatbot, set MIMO_API_KEY, MIMO_BASE_URL and MIMO_MODEL in this window first.
 cd /d "%~dp0"
 
-if exist ".venv\Scripts\python.exe" (
-    set "PY=.venv\Scripts\python.exe"
+if exist "C:\Users\DHANUSH\AppData\Local\Python\bin\python3.11.exe" (
+    set "PY=C:\Users\DHANUSH\AppData\Local\Python\bin\python3.11.exe"
 ) else (
-    set "PY=py"
+    set "PY=py -3.11"
 )
 
 if not exist "node_modules" (

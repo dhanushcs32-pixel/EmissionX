@@ -1,7 +1,7 @@
 @echo off
-if exist ".venv\Scripts\python.exe" (
-    ".venv\Scripts\python.exe" run_industrial.py %*
+if exist "C:\Users\DHANUSH\AppData\Local\Python\bin\python3.11.exe" (
+    "C:\Users\DHANUSH\AppData\Local\Python\bin\python3.11.exe" run_industrial.py %*
 ) else (
-    uv run run_industrial.py %*
+    py -3.11 run_industrial.py %*
 )
 
