@@ -334,10 +334,13 @@ def main() -> None:
     )
 
     print("\n[PIPELINE SUMMARY]")
+    print(f" - Profile Selected:   {stats.get('profile', 'Auto-Routed')}")
     print(f" - Frames Processed:   {stats['frames_processed']}")
     print(f" - Processing Speed:   {stats['proc_fps']} FPS (Total time: {stats['elapsed_sec']}s)")
     print(f" - Annotated Video:    {stats['annotated_video']} (File size: {os.path.getsize(output_video) / 1024:.1f} KB)")
     print(f" - Telemetry JSON:     {stats['telemetry_json']} (Records: {stats['records_count']})")
+    if stats.get('backup_video') and os.path.exists(stats['backup_video']):
+        print(f" - Permanent Backup:   {stats['backup_video']} & {stats['backup_json']}")
 
     # Step 3: Validate Strict JSON Schema
     records = validate_telemetry_schema(output_json)

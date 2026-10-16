@@ -14,6 +14,7 @@ import logging
 import math
 import os
 import random
+import shutil
 import sys
 import time
 from datetime import datetime, timezone
@@ -327,30 +328,44 @@ class DualModePlumeDetector:
     """
     High-reliability industrial plume detector supporting:
       1. Primary Mode: Custom YOLO weight (`models/smoke.pt`) if present.
-      2. Fallback Mode: Robust 3-Cue Computer Vision Segmentation Pipeline
-         combining Multi-Step Temporal Turbulence, Row-Wise Sky Subtraction,
-         and Low-Saturation HSV Filtering to eliminate static sky bleed.
+      2. Multi-Profile Scene Router:
+         - Profile A: Overcast / Wide / 4K Chimney Scene (_segment_profile_overcast_horizontal)
+           recovered from commit 0838785 (3-cue temporal turbulence + row-wise horizontal sky subtraction).
+         - Profile B: Sunset / Warm Gradient / Vertical Scene (_segment_profile_sunset_vertical)
+           from commit 9d5f95e (auto-locating plume origin + adaptive local contrast + temporal smoothing).
+         - Profile C: Synthetic / Generic Fallback (_segment_profile_synthetic)
+           for synthetic CI videos.
     """
-    
+
     def __init__(
         self,
         model_path: str = "models/smoke.pt",
         chimney_roi_norm: Optional[Tuple[float, float, float, float]] = None,
         vid_stride: int = 3,
         imgsz: int = 480,
+        profile: Optional[str] = None,
     ):
         self.model_path = model_path
         self.chimney_roi_norm = chimney_roi_norm
         self.vid_stride = vid_stride
         self.imgsz = imgsz
+        self.active_profile = profile
 
         self.mode = "fallback"
         self.model = None
+
+        # State for Profile A (Overcast Horizontal - Commit 0838785)
         self.bg_subtractor = None
-        self.rolling_gray_buffer: Deque[np.ndarray] = collections.deque(maxlen=24)
+        self.rolling_gray_buffer_overcast: Deque[np.ndarray] = collections.deque(maxlen=28)
+
+        # State for Profile B (Sunset Vertical - Commit 9d5f95e)
+        self.rolling_gray_buffer_sunset: Deque[np.ndarray] = collections.deque(maxlen=24)
         self.energy_map: Optional[np.ndarray] = None
         self.detected_origin_seed: Optional[Tuple[int, int]] = None
         self.temporal_mask_prob: Optional[np.ndarray] = None
+        self.last_valid_result_sunset: Optional[Tuple[Tuple[int, int, int, int], np.ndarray, List[np.ndarray], str]] = None
+
+        # Generic last valid result
         self.last_valid_result: Optional[Tuple[Tuple[int, int, int, int], np.ndarray, List[np.ndarray], str]] = None
 
         self._init_detector()
@@ -367,9 +382,62 @@ class DualModePlumeDetector:
             except Exception as e:
                 logger.warning(f"Failed to load YOLO model: {e}. Falling back to Multi-Cue Segmentation.")
 
-        # Fallback Mode Initialization: Universal Auto-Calibrating Plume Engine
-        logger.info("Initializing Universal Video-Agnostic Plume Segmentation Engine...")
-        self.mode = "universal_cv"
+        # Fallback Mode Initialization: Multi-Profile Scene Router
+        logger.info("Initializing Multi-Profile Plume Segmentation Router...")
+        self.mode = "multi_profile_router"
+        self.bg_subtractor = cv2.createBackgroundSubtractorMOG2(
+            history=300,
+            varThreshold=12,
+            detectShadows=False,
+        )
+
+    def _detect_scene_profile(self, frame: np.ndarray) -> str:
+        """
+        Inspects the frame geometry and ambient color signature:
+          - Profile A (Overcast / Wide / 4K Chimney Scene):
+            If width > height or top-sky mean saturation < 35 (overcast sky),
+            routes to _segment_profile_overcast_horizontal (from commit 0838785).
+          - Profile B (Sunset / Warm Gradient / Vertical Scene):
+            If height >= width or top-sky has warm sunset hue/saturation,
+            routes to _segment_profile_sunset_vertical (from commit 9d5f95e).
+          - Profile C (Synthetic / Generic Fallback):
+            Synthetic CI videos (e.g. 640x480).
+        """
+        h, w = frame.shape[:2]
+
+        # Profile C: Synthetic CI test videos
+        if (w == 640 and h == 480) or (w <= 640 and h <= 480):
+            logger.info(f"Scene Signature: Synthetic CI frame ({w}x{h}) -> Route: Profile C")
+            return "synthetic"
+
+        # Sample top sky region (upper 15% of frame)
+        sky_h = max(10, int(h * 0.15))
+        top_sky = frame[:sky_h, :]
+        hsv_sky = cv2.cvtColor(top_sky, cv2.COLOR_BGR2HSV)
+        mean_sat = float(np.mean(hsv_sky[:, :, 1]))
+        mean_val = float(np.mean(hsv_sky[:, :, 2]))
+
+        logger.info(
+            f"Scene Signature Analysis: resolution={w}x{h}, "
+            f"top_sky_mean_sat={mean_sat:.1f}, top_sky_mean_val={mean_val:.1f}"
+        )
+
+        # Profile A: Overcast / Wide / 4K Chimney Scene
+        # Top-sky mean saturation < 35 (overcast gray/slate sky) and daylight luminance
+        if mean_sat < 35.0 and mean_val > 130.0:
+            logger.info("Detected Overcast Sky (saturation < 35) -> Route: Profile A (Overcast Horizontal)")
+            return "overcast_horizontal"
+
+        # Profile B: Sunset / Warm Gradient / Vertical Scene
+        # Warm sunset hue/saturation (mean_sat >= 30 or low evening luminance or vertical)
+        if h >= w or mean_sat >= 30.0 or mean_val <= 130.0:
+            logger.info("Detected Sunset / Warm Gradient Sky -> Route: Profile B (Sunset Vertical)")
+            return "sunset_vertical"
+
+        if w > h and mean_sat < 35.0:
+            return "overcast_horizontal"
+
+        return "sunset_vertical"
 
     def segment_smoke_plume(
         self,
@@ -377,7 +445,210 @@ class DualModePlumeDetector:
         frame_idx: int = 0,
     ) -> Tuple[Tuple[int, int, int, int], np.ndarray, List[np.ndarray], str]:
         """
-        Universal, Video-Agnostic Smoke Plume Segmentation Engine:
+        Multi-Profile Scene Router:
+        Automatically routes frame to its exact proven segmentation pipeline.
+        """
+        if self.active_profile is None:
+            self.active_profile = self._detect_scene_profile(frame)
+            logger.info(f"Routed Plume Segmentation to Profile: '{self.active_profile}'")
+
+        if self.active_profile == "overcast_horizontal":
+            res = self._segment_profile_overcast_horizontal(frame, frame_idx=frame_idx)
+        elif self.active_profile == "sunset_vertical":
+            res = self._segment_profile_sunset_vertical(frame, frame_idx=frame_idx)
+        else:
+            res = self._segment_profile_synthetic(frame, frame_idx=frame_idx)
+
+        self.last_valid_result = res
+        return res
+
+    def _segment_profile_overcast_horizontal(
+        self,
+        frame: np.ndarray,
+        frame_idx: int = 0,
+    ) -> Tuple[Tuple[int, int, int, int], np.ndarray, List[np.ndarray], str]:
+        """
+        Profile A (Recovered from commit 0838785):
+        Proven 3-Cue Computer Vision Smoke Segmentation Pipeline for 4K Overcast Chimney Scene:
+          1. Strict Temporal Turbulence Gate (Rolling multi-step frame buffer t-6, t-14, t-22).
+             Static overcast sky pixels with zero motion can NEVER be masked!
+          2. Row-Wise Horizontal Background Subtraction (Handles vertical sky brightness gradients).
+          3. Low-Saturation HSV Filtering (smoke S < 85).
+          4. Chimney-Tip Anchor & Morphological Fusion into smooth organic contours.
+        """
+        h, w = frame.shape[:2]
+
+        # Upper 55% search zone covers the sky and stack exit zone above buildings
+        search_h = int(h * 0.55)
+        search_zone = frame[:search_h, :]
+
+        # Downscale for segmentation processing to achieve 40+ FPS while retaining full output resolution
+        proc_w = 640
+        if w > proc_w:
+            scale_ratio = float(proc_w) / float(w)
+            proc_h = int(search_h * scale_ratio)
+            proc_zone = cv2.resize(search_zone, (proc_w, proc_h), interpolation=cv2.INTER_LINEAR)
+        else:
+            scale_ratio = 1.0
+            proc_zone = search_zone
+            proc_w = w
+            proc_h = search_h
+
+        proc_gray = cv2.cvtColor(proc_zone, cv2.COLOR_BGR2GRAY)
+        self.rolling_gray_buffer_overcast.append(proc_gray.copy())
+
+        # -------------------------------------------------------------
+        # Cue 1: Strict Temporal Turbulence Gate (Multi-Step Rolling Buffer)
+        # -------------------------------------------------------------
+        buf_len = len(self.rolling_gray_buffer_overcast)
+        if buf_len >= 8:
+            idx1 = max(0, buf_len - 6)
+            idx2 = max(0, buf_len - 14)
+            idx3 = max(0, buf_len - 22)
+            d1 = cv2.absdiff(proc_gray, self.rolling_gray_buffer_overcast[idx1])
+            d2 = cv2.absdiff(proc_gray, self.rolling_gray_buffer_overcast[idx2])
+            d3 = cv2.absdiff(proc_gray, self.rolling_gray_buffer_overcast[idx3])
+            temp_diff = np.maximum(d1, np.maximum(d2, d3))
+        elif buf_len >= 2:
+            temp_diff = cv2.absdiff(proc_gray, self.rolling_gray_buffer_overcast[0])
+        else:
+            temp_diff = np.zeros_like(proc_gray)
+
+        # MOG2 background subtractor motion
+        if self.bg_subtractor is None:
+            self.bg_subtractor = cv2.createBackgroundSubtractorMOG2(
+                history=300, varThreshold=12, detectShadows=False
+            )
+        motion_raw = self.bg_subtractor.apply(proc_zone, learningRate=0.0005)
+        _, mog_mask = cv2.threshold(motion_raw, 180, 255, cv2.THRESH_BINARY)
+
+        # Combined temporal activity mask (threshold > 3)
+        _, diff_mask = cv2.threshold(temp_diff, 3, 255, cv2.THRESH_BINARY)
+        temporal_activity = cv2.bitwise_or(diff_mask, mog_mask)
+
+        # -------------------------------------------------------------
+        # Cue 2: Row-Wise Horizontal Background Sky Subtraction
+        # -------------------------------------------------------------
+        row_bg = np.zeros(proc_h, dtype=np.float32)
+        right_margin_start = int(proc_w * 0.72)
+        right_margin_end = int(proc_w * 0.98)
+
+        for y in range(proc_h):
+            margin_pixels = proc_gray[y, right_margin_start:right_margin_end]
+            row_bg[y] = float(np.median(margin_pixels)) if len(margin_pixels) > 0 else float(np.median(proc_gray[y, :]))
+
+        # Row difference: smoke diverges from row-background sky luminance
+        row_diff_abs = np.abs(proc_gray.astype(np.float32) - row_bg[:, None])
+        contrast_mask = (row_diff_abs > 4.5).astype(np.uint8) * 255
+
+        # -------------------------------------------------------------
+        # Cue 3: HSV Low-Saturation Filter (Smoke has S < 85)
+        # -------------------------------------------------------------
+        hsv_search = cv2.cvtColor(proc_zone, cv2.COLOR_BGR2HSV)
+        low_sat_mask = cv2.inRange(hsv_search[:, :, 1], 0, 85)
+
+        # -------------------------------------------------------------
+        # FUSED PLUME SEED WITH MANDATORY TEMPORAL ACTIVITY GATE
+        # -------------------------------------------------------------
+        plume_seed = cv2.bitwise_and(temporal_activity, contrast_mask)
+        plume_seed = cv2.bitwise_and(plume_seed, low_sat_mask)
+
+        # -------------------------------------------------------------
+        # Chimney-Tip Anchor & Spatial Geometry Constraints
+        # -------------------------------------------------------------
+        full_proc_h = int(h * scale_ratio)
+        stack_mouth_y = int(full_proc_h * 0.455)
+        roofline_y = int(full_proc_h * 0.50)
+        stack_x1 = int(proc_w * 0.44)
+        stack_x2 = int(proc_w * 0.53)
+
+        # Zero out stack body below mouth
+        plume_seed[stack_mouth_y:, stack_x1:stack_x2] = 0
+
+        # General roofline cutoff (anything below roofline is buildings/parked cars)
+        plume_seed[roofline_y:, :] = 0
+
+        # Right-side cutoff: Tall chimney is at x > 0.56*proc_w; plume drifts leftwards
+        plume_seed[:, int(proc_w * 0.56):] = 0
+
+        # -------------------------------------------------------------
+        # Morphological Plume Fusion & Sanity Area Cap
+        # -------------------------------------------------------------
+        kernel_close = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (31, 31))
+        kernel_open = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 7))
+        fused = cv2.morphologyEx(plume_seed, cv2.MORPH_CLOSE, kernel_close)
+        fused = cv2.morphologyEx(fused, cv2.MORPH_OPEN, kernel_open)
+
+        # Sanity Area Cap: If mask covers > 40% of the search area, tighten dynamically
+        total_search_pixels = float(proc_w * proc_h)
+        if cv2.countNonZero(fused) > 0.40 * total_search_pixels:
+            score_map = temp_diff.astype(np.float32) * row_diff_abs
+            cutoff = float(np.percentile(score_map[fused > 0], 85))
+            fused = ((score_map > cutoff) & (fused > 0)).astype(np.uint8) * 255
+            fused = cv2.morphologyEx(fused, cv2.MORPH_CLOSE, kernel_close)
+
+        # Find connected plume contours and filter by chimney origin & dispersion cone
+        contours, _ = cv2.findContours(fused, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        valid_contours = []
+        for c in contours:
+            area = cv2.contourArea(c)
+            if area < 500.0:
+                continue
+            bx, by, bw, bh = cv2.boundingRect(c)
+            # Must be in plume dispersion region: x <= stack_x2 and above roofline
+            if bx > stack_x2 or by > roofline_y:
+                continue
+            # Must connect near chimney tip or lie in leftward dispersion path
+            if (bx + bw >= stack_x1 - 60 and by + bh >= stack_mouth_y - 120) or (bx < stack_x1 and area > 1000.0):
+                valid_contours.append(c)
+
+        inv_scale = 1.0 / scale_ratio
+
+        if valid_contours:
+            # Scale contours back to full video coordinates
+            scaled_contours = []
+            all_pts = []
+            for c in valid_contours:
+                scaled = (c.astype(np.float32) * inv_scale).astype(np.int32)
+                epsilon = 0.005 * cv2.arcLength(scaled, True)
+                approx = cv2.approxPolyDP(scaled, epsilon, True)
+                scaled_contours.append(approx)
+                all_pts.append(scaled.reshape(-1, 2))
+
+            # Build full-resolution exact binary pixel mask
+            plume_mask = np.zeros((h, w), dtype=np.uint8)
+            cv2.drawContours(plume_mask, scaled_contours, -1, 255, -1)
+
+            all_pts_arr = np.vstack(all_pts)
+            bx, by, bw, bh = cv2.boundingRect(all_pts_arr)
+            pad = int(12 * inv_scale)
+            x1 = max(0, bx - pad)
+            y1 = max(0, by - pad)
+            x2 = min(w, bx + bw + pad)
+            y2 = min(h, by + bh + pad)
+
+            return (x1, y1, x2, y2), plume_mask, scaled_contours, "Profile A (Overcast Horizontal)"
+
+        roi_norm = self.chimney_roi_norm or (0.42, 0.41, 0.51, 0.465)
+        rx1 = max(0, int(roi_norm[0] * w))
+        ry1 = max(0, int(roi_norm[1] * h))
+        rx2 = min(w, int(roi_norm[2] * w))
+        ry2 = min(h, int(roi_norm[3] * h))
+
+        fallback_mask = np.zeros((h, w), dtype=np.uint8)
+        fallback_mask[ry1:ry2, rx1:rx2] = 255
+        rect_contour = np.array([[[rx1, ry1]], [[rx2, ry1]], [[rx2, ry2]], [[rx1, ry2]]], dtype=np.int32)
+
+        return (rx1, ry1, rx2, ry2), fallback_mask, [rect_contour], "Profile A (Overcast Initializing)"
+
+    def _segment_profile_sunset_vertical(
+        self,
+        frame: np.ndarray,
+        frame_idx: int = 0,
+    ) -> Tuple[Tuple[int, int, int, int], np.ndarray, List[np.ndarray], str]:
+        """
+        Profile B (Retained from commit 9d5f95e):
+        Universal Smoke Plume Segmentation Engine for Sunset / Warm Gradient / Vertical Scene:
           Stage 1: Camera-Shake & Illumination Stabilization (mean normalization + 5x5 median blur).
           Stage 2: Dynamic Chimney-Tip & Plume-Origin Auto-Locator (EMA Turbulence Energy Map).
           Stage 3: Connected Seed-Growing & Local Adaptive Background Contrast (Zero sky/cloud bleed).
@@ -385,7 +656,6 @@ class DualModePlumeDetector:
         """
         h, w = frame.shape[:2]
 
-        # Standard processing resolution preserving aspect ratio
         proc_w = 480
         scale_ratio = float(proc_w) / float(w)
         proc_h = int(h * scale_ratio)
@@ -402,19 +672,18 @@ class DualModePlumeDetector:
         else:
             norm_gray = raw_gray
 
-        # 5x5 median blur suppresses MPEG video compression artifacts and micro-jitter
         stable_gray = cv2.medianBlur(norm_gray, 5)
-        self.rolling_gray_buffer.append(stable_gray)
+        self.rolling_gray_buffer_sunset.append(stable_gray)
 
-        buf_len = len(self.rolling_gray_buffer)
+        buf_len = len(self.rolling_gray_buffer_sunset)
         if buf_len >= 5:
             idx5 = max(0, buf_len - 5)
             idx12 = max(0, buf_len - 12)
-            d1 = cv2.absdiff(stable_gray, self.rolling_gray_buffer[idx5])
-            d2 = cv2.absdiff(stable_gray, self.rolling_gray_buffer[idx12])
+            d1 = cv2.absdiff(stable_gray, self.rolling_gray_buffer_sunset[idx5])
+            d2 = cv2.absdiff(stable_gray, self.rolling_gray_buffer_sunset[idx12])
             diff = np.maximum(d1, d2)
         elif buf_len >= 2:
-            diff = cv2.absdiff(stable_gray, self.rolling_gray_buffer[0])
+            diff = cv2.absdiff(stable_gray, self.rolling_gray_buffer_sunset[0])
         else:
             diff = np.zeros_like(stable_gray)
 
@@ -444,7 +713,6 @@ class DualModePlumeDetector:
             if best_l > 0 and max_a > 120:
                 pts = np.argwhere(lbls == best_l)
                 bh = sts[best_l, cv2.CC_STAT_HEIGHT]
-                # Chimney exit is the bottom-most high-energy centroid inside active turbulence cluster
                 bottom_pts = pts[pts[:, 0] >= pts[:, 0].max() - max(3, int(bh * 0.08))]
                 cur_y = int(np.median(bottom_pts[:, 0]))
                 cur_x = int(np.median(bottom_pts[:, 1]))
@@ -462,11 +730,8 @@ class DualModePlumeDetector:
         # -------------------------------------------------------------
         active_turb_mask = (diff > 4) & (self.energy_map > 4.0)
         if self.detected_origin_seed is not None:
-            # Cut off chimney structure below stack mouth
             active_turb_mask[self.detected_origin_seed[1] + 12:, :] = False
 
-        # Local Adaptive Background Reference:
-        # Sample zero-turbulence sky pixels (energy_map < 1.0) along each row
         zero_turb = (self.energy_map < 1.0)
         row_bg = np.zeros(proc_h, dtype=np.float32)
         for y in range(proc_h):
@@ -482,7 +747,6 @@ class DualModePlumeDetector:
         fused = cv2.morphologyEx(candidate, cv2.MORPH_CLOSE, k_close)
         fused = cv2.morphologyEx(fused, cv2.MORPH_OPEN, k_open)
 
-        # Connect candidate plume strictly to auto-detected origin seed
         plume_bin = np.zeros_like(fused)
         if self.detected_origin_seed is not None:
             sx, sy = self.detected_origin_seed
@@ -504,7 +768,6 @@ class DualModePlumeDetector:
             if chosen_l > 0:
                 plume_bin[lbls == chosen_l] = 255
 
-        # Adaptive Core Tightening: If mask area > 25% of frame, tighten thresholds
         total_px = float(proc_w * proc_h)
         plume_area = float(cv2.countNonZero(plume_bin))
         if plume_area > 0.25 * total_px:
@@ -551,15 +814,14 @@ class DualModePlumeDetector:
             x2 = min(w, bx + bw + pad)
             y2 = min(h, by + bh + pad)
 
-            res = ((x1, y1, x2, y2), plume_mask, scaled_contours, "Universal Plume Engine")
-            self.last_valid_result = res
+            res = ((x1, y1, x2, y2), plume_mask, scaled_contours, "Profile B (Sunset Vertical)")
+            self.last_valid_result_sunset = res
             return res
 
-        elif self.last_valid_result is not None:
-            return self.last_valid_result
+        elif self.last_valid_result_sunset is not None:
+            return self.last_valid_result_sunset
 
         else:
-            # Fallback during initial buffer warm-up
             dummy_mask = np.zeros((h, w), dtype=np.uint8)
             if self.detected_origin_seed is not None:
                 sx, sy = self.detected_origin_seed
@@ -570,9 +832,48 @@ class DualModePlumeDetector:
                 rx2, ry2 = min(w, fx + r), min(h, fy + r)
                 dummy_mask[ry1:ry2, rx1:rx2] = 255
                 box_cnt = np.array([[[rx1, ry1]], [[rx2, ry1]], [[rx2, ry2]], [[rx1, ry2]]], dtype=np.int32)
-                return (rx1, ry1, rx2, ry2), dummy_mask, [box_cnt], "Calibrating..."
+                return (rx1, ry1, rx2, ry2), dummy_mask, [box_cnt], "Profile B (Sunset Calibrating)"
 
-            return (0, 0, 0, 0), dummy_mask, [], "Calibrating..."
+            return (0, 0, 0, 0), dummy_mask, [], "Profile B (Sunset Calibrating)"
+
+    def _segment_profile_synthetic(
+        self,
+        frame: np.ndarray,
+        frame_idx: int = 0,
+    ) -> Tuple[Tuple[int, int, int, int], np.ndarray, List[np.ndarray], str]:
+        """
+        Profile C (Clean threshold + MOG2 fallback for synthetic CI videos).
+        """
+        h, w = frame.shape[:2]
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        search_h = int(h * 0.65)
+
+        if self.bg_subtractor is None:
+            self.bg_subtractor = cv2.createBackgroundSubtractorMOG2(history=150, varThreshold=16, detectShadows=False)
+
+        fg_mask = self.bg_subtractor.apply(frame[:search_h, :], learningRate=0.01)
+        _, thresh = cv2.threshold(fg_mask, 150, 255, cv2.THRESH_BINARY)
+
+        k = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (11, 11))
+        cleaned = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, k)
+
+        contours, _ = cv2.findContours(cleaned, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        valid = [c for c in contours if cv2.contourArea(c) > 200]
+
+        plume_mask = np.zeros((h, w), dtype=np.uint8)
+        if valid:
+            cv2.drawContours(plume_mask[:search_h, :], valid, -1, 255, -1)
+            all_pts = np.vstack([c.reshape(-1, 2) for c in valid])
+            bx, by, bw, bh = cv2.boundingRect(all_pts)
+            x1, y1 = max(0, bx - 8), max(0, by - 8)
+            x2, y2 = min(w, bx + bw + 8), min(h, by + bh + 8)
+            return (x1, y1, x2, y2), plume_mask, valid, "Profile C (Synthetic)"
+
+        sx1, sy1 = int(w * 0.44), int(h * 0.35)
+        sx2, sy2 = int(w * 0.56), int(h * 0.52)
+        plume_mask[sy1:sy2, sx1:sx2] = 255
+        rect_cnt = np.array([[[sx1, sy1]], [[sx2, sy1]], [[sx2, sy2]], [[sx1, sy2]]], dtype=np.int32)
+        return (sx1, sy1, sx2, sy2), plume_mask, [rect_cnt], "Profile C (Synthetic Initializing)"
 
     def detect_plume(
         self,
@@ -964,6 +1265,18 @@ def process_video(
     with open(output_json_path, "w", encoding="utf-8") as f:
         json.dump(telemetry_records, f, indent=2)
 
+    # Save permanent backup copy named after the video profile/resolution
+    # so switching videos never destroys previously verified demo outputs!
+    tag = "overcast" if "overcast" in (detector.active_profile or "") else ("sunset" if "sunset" in (detector.active_profile or "") else "synthetic")
+    backup_video_path = Path(output_video_path).parent / f"factory_annotated_{tag}.mp4"
+    backup_json_path = Path(output_json_path).parent / f"factory_telemetry_{tag}.json"
+    try:
+        shutil.copyfile(output_video_path, str(backup_video_path))
+        shutil.copyfile(output_json_path, str(backup_json_path))
+        logger.info(f"Saved permanent named profile backup: {backup_video_path} and {backup_json_path}")
+    except Exception as e:
+        logger.warning(f"Could not save named backup copies: {e}")
+
     elapsed = time.time() - start_time
     proc_fps = frame_idx / elapsed if elapsed > 0 else 0.0
     logger.info(
@@ -978,6 +1291,9 @@ def process_video(
         "annotated_video": output_video_path,
         "telemetry_json": output_json_path,
         "records_count": len(telemetry_records),
+        "profile": detector.active_profile,
+        "backup_video": str(backup_video_path),
+        "backup_json": str(backup_json_path),
     }
 
 

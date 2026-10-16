@@ -10,10 +10,8 @@ venv/
 
 # Pytest & cache
 .pytest_cache/
-
 # Videos & media caches
 *.mp4
-cache/factory_annotated.mp4
 cache/*.mp4
 backend/data/*.mp4
 fuel_station.mp4
