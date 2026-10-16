@@ -255,6 +255,27 @@ footer b{color:var(--ink);display:block;margin-bottom:6px}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto} .dot,.pin .ring,.tick div{animation:none}
 }
+
+/* twin: 3D stage, tabs, dock */
+body.dashboard #v3.on::before{background:linear-gradient(90deg,var(--scrim) 0%,var(--scrim) 30%,transparent 62%)}
+.twin{display:grid;grid-template-columns:minmax(320px,450px) 1fr;gap:20px;margin-top:22px;align-items:start}
+.twin .col{display:grid;gap:16px}
+.stage{position:relative;min-height:min(68vh,620px);padding-bottom:56px;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-end;gap:16px;pointer-events:none}
+.stage>*{pointer-events:auto}
+.stage .seg{background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.dock{display:grid;grid-template-columns:1fr 1fr;gap:14px 22px;padding:14px 18px;max-width:560px;width:100%}
+.dock .k2{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.lvls{display:flex;align-items:center;gap:8px;white-space:nowrap;margin-top:4px;font-family:"Cabinet Grotesk",sans-serif;font-weight:800;font-size:20px}
+.lvls i{font-style:normal;color:var(--muted)}
+.pill{display:inline-block;margin-top:6px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:800;color:#fff;background:#2E9E5B}
+.pill.warn{background:#D98A12}.pill.bad{background:#C9302C}
+.inr{font-family:"Cabinet Grotesk",sans-serif;font-weight:800;font-size:26px;color:var(--o2);margin-top:2px;font-variant-numeric:tabular-nums}
+.dock small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+.tabs{margin-bottom:14px;width:100%}.tabs button{flex:1}
+.pane{display:grid;gap:16px}
+.sw{display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:700}
+.sw input{width:20px;height:20px;accent-color:var(--o)}
+@media (max-width:900px){.twin{grid-template-columns:1fr}.stage{order:-1;min-height:300px}body.dashboard #v3.on::before{background:linear-gradient(180deg,transparent 0%,transparent 30%,var(--scrim) 55%)}}
 /* print: only the report */
 @media print{
   #bg,.top,.idx,main>section:not(#v5),footer,.noprint{display:none!important}
@@ -505,19 +526,42 @@ footer b{color:var(--ink);display:block;margin-bottom:6px}
   <div class="wrap">
     <div class="tag">Digital twin simulator</div>
     <h2>What if we <em class="s">changed</em> it?</h2>
-    <p class="lead">Move the sliders. Traffic, EV lights and factory smoke in the 3D scene behind this page follow your plan.</p>
-    <div class="grid g3">
-      <div class="card sl">
-        <div><label>Traffic reduction <span id="vT">10%</span></label><input type="range" id="sT" min="0" max="50" value="10"></div>
-        <div><label>EV share <span id="vE">15%</span></label><input type="range" id="sE" min="0" max="60" value="15"></div>
-        <div><label>Filter and tune-up coverage <span id="vF">20%</span></label><input type="range" id="sF" min="0" max="40" value="20"></div>
-        <div><label>Idle time cut <span id="vI">25%</span></label><input type="range" id="sI" min="0" max="50" value="25"></div>
-        <div class="row"><button class="btn pri sm" id="saveRun">Save this run</button><span class="k" id="runHint">Saved runs appear in your report.</span></div>
+    <p class="lead">Move the sliders. Traffic, EV lights and factory smoke in the live 3D scene follow your plan.</p>
+    <div class="twin">
+      <div class="col">
+        <div class="card">
+          <div class="seg tabs" id="twTabs"><button data-pane="paneV" class="on">Vehicular</button><button data-pane="paneI">Industrial</button></div>
+          <div class="sl pane" id="paneV">
+            <div><label>Traffic reduction <span id="vT">10%</span></label><input type="range" id="sT" min="0" max="50" value="10"></div>
+            <div><label>EV share <span id="vE">15%</span></label><input type="range" id="sE" min="0" max="60" value="15"></div>
+            <div><label>Idle time cut <span id="vI">25%</span></label><input type="range" id="sI" min="0" max="50" value="25"></div>
+            <div><label>E20 ethanol blend <span id="vE20">0%</span></label><input type="range" id="sE20" min="0" max="20" value="0"></div>
+            <label class="sw"><span>Ban BS3 / BS4 trucks</span><input type="checkbox" id="sBan"></label>
+          </div>
+          <div class="sl pane" id="paneI" hidden>
+            <div><label>Scrubber efficiency <span id="vF">20%</span></label><input type="range" id="sF" min="0" max="90" value="20"></div>
+            <div><label>Boiler air-fuel tuning <span id="vTu">0%</span></label><input type="range" id="sTu" min="0" max="30" value="0"></div>
+            <div><label>Boiler fuel</label>
+              <div class="seg" id="fuelSeg" style="margin-top:6px"><button data-fuel="coal" class="on">Coal</button><button data-fuel="biomass">Biomass</button></div></div>
+          </div>
+          <div class="row" style="margin-top:16px"><button class="btn pri sm" id="saveRun">Save this run</button><span class="k" id="runHint">Saved runs appear in your report.</span></div>
+        </div>
+        <div class="card">
+          <div class="row" style="justify-content:space-between;margin-bottom:8px"><b>Actual vs simulated</b><span class="badge" id="saved">-0%<small>saved</small></span></div>
+          <div class="chart" style="height:220px"><canvas id="chTwin"></canvas></div>
+          <div class="runs" id="runChips"></div>
+        </div>
       </div>
-      <div class="card">
-        <div class="row" style="justify-content:space-between;margin-bottom:8px"><b>Actual vs simulated</b><span class="badge" id="saved">-0%<small>saved</small></span></div>
-        <div class="chart" style="height:250px"><canvas id="chTwin"></canvas></div>
-        <div class="runs" id="runChips"></div>
+      <div class="stage" aria-label="3D scene controls">
+        <div class="seg" id="camSeg"><button data-cam="fore" class="on">Forecourt View</button><button data-cam="stack">Industrial Stack View</button></div>
+        <div class="card dock" id="dock">
+          <div><div class="k2">CPCB compliance (stack)</div>
+            <div class="lvls"><span id="lvlNow">Level 4</span><i>→</i><span id="lvlSim">Level 1</span></div>
+            <span class="pill" id="cpcb">Compliant</span></div>
+          <div><div class="k2">Annual carbon credits</div>
+            <div class="inr">₹ <span id="inr">0</span></div>
+            <small id="inrNote">0 t CO₂/yr at an assumed ₹1,000/t</small></div>
+        </div>
       </div>
     </div>
   </div>
@@ -822,34 +866,71 @@ function tick(){
 setInterval(tick,1000);
 
 /* ---------------- digital twin ---------------- */
+var CREDIT_INR=1000,BIO=.19,HRS_YR=8760;   /* assumed carbon credit price (INR per t CO2); biomass net lifecycle 0.45/2.42 vs coal */
+var twFuel="coal";
+function twinVals(){
+  return {t:+$("#sT").value/100,e:+$("#sE").value/100,f:+$("#sF").value/100,i:+$("#sI").value/100,
+    e20:+$("#sE20").value/100,tu:+$("#sTu").value/100,ban:$("#sBan").checked,bio:twFuel==="biomass"};
+}
 function twinCalc(){
-  var t=+$("#sT").value/100,e=+$("#sE").value/100,f=+$("#sF").value/100,i=+$("#sI").value/100,b=N().base;
+  var v=twinVals(),t=v.t,e=v.e,f=v.f,i=v.i,b=N().base;
   var act={},sim={};
   CLS.forEach(function(c){act[c]=b[c]*FLOW[c]/1000});
   act.stack=N().stack;
-  sim.car=act.car*(1-t)*(1-e)*(1-i*.25);
-  sim.truck=act.truck*(1-t*.6)*(1-f)*(1-i*.25);
-  sim.bus=act.bus*(1-t*.6)*(1-e*.5)*(1-i*.25);
-  sim.bike=act.bike*(1-t)*(1-e);
-  sim.stack=act.stack*(1-f);
+  var eth=1-v.e20*.3;                       /* E20 cuts petrol CO2 by about 6% */
+  var ban=v.ban?1:0;
+  sim.car=act.car*(1-t)*(1-e)*(1-i*.25)*eth;
+  sim.truck=act.truck*(1-t*.6)*(1-f*0)*(1-i*.25)*(1-ban*.3);
+  sim.bus=act.bus*(1-t*.6)*(1-e*.5)*(1-i*.25)*(1-ban*.15);
+  sim.bike=act.bike*(1-t)*(1-e)*eth;
+  var stackF=(1-f)*(1-v.tu*.5)*(v.bio?BIO:1);
+  sim.stack=act.stack*stackF;
   var A=0,B=0;Object.keys(act).forEach(function(k){A+=act[k];B+=sim[k]});
-  return {act:act,sim:sim,A:A,B:B,pct:A?(1-B/A)*100:0,p:{traffic:t*100,ev:e*100,filter:f*100,idle:i*100}};
+  return {act:act,sim:sim,A:A,B:B,pct:A?(1-B/A)*100:0,stackF:stackF,
+    p:{traffic:t*100,ev:e*100,filter:f*100,idle:i*100,e20:v.e20*100,ban_bs3_bs4:ban?1:0,air_fuel_tuning:v.tu*100,fuel:v.bio?"biomass":"coal"}};
 }
 var twinSaved=0;
 var TW={t:.1,e:.15,f:.2,i:.25};   /* live slider values, read every frame by the 3D scene */
+function levelOf(op){return Math.max(1,Math.min(5,Math.ceil(op/20)))}
+function twinDock(r){
+  var op=S.node==="p2"&&S.opac.length?S.opac[S.opac.length-1]:NODES.p2.opac;
+  var now=levelOf(op),sim=levelOf(op*r.stackF);
+  $("#lvlNow").textContent="Level "+now;$("#lvlSim").textContent="Level "+sim;
+  var pc=$("#cpcb");pc.textContent=sim<=1?"Compliant":sim<=3?"Warning":"Violation";pc.className="pill"+(sim<=1?"":sim<=3?" warn":" bad");
+  var tons=Math.max(0,(r.A-r.B))*HRS_YR/1000;
+  tickTo.target=tons*CREDIT_INR;
+  $("#inrNote").textContent=Math.round(tons).toLocaleString("en-IN")+" t CO₂/yr at an assumed ₹"+CREDIT_INR.toLocaleString("en-IN")+"/t";
+}
+var tickTo={cur:0,target:0};
+(function tk(){requestAnimationFrame(tk);var d=tickTo.target-tickTo.cur;
+  if(Math.abs(d)>.5)tickTo.cur+=d*.12;else tickTo.cur=tickTo.target;
+  var el=$("#inr");if(el)el.textContent=Math.round(tickTo.cur).toLocaleString("en-IN")})();
 function twinUpdate(){
+  var v=twinVals();
   $("#vT").textContent=$("#sT").value+"%";$("#vE").textContent=$("#sE").value+"%";$("#vF").textContent=$("#sF").value+"%";$("#vI").textContent=$("#sI").value+"%";
-  TW.t=+$("#sT").value/100;TW.e=+$("#sE").value/100;TW.f=+$("#sF").value/100;TW.i=+$("#sI").value/100;
+  $("#vE20").textContent=$("#sE20").value+"%";$("#vTu").textContent=$("#sTu").value+"%";
+  TW.t=v.t;TW.e=v.e;TW.i=v.i;
+  TW.f=1-(1-v.f)*(1-v.tu*.4)*(v.bio?.35:1);   /* smoke density in the 3D scene */
   var r=twinCalc();twinSaved=r.pct;
   $("#saved").innerHTML="-"+r.pct.toFixed(1)+"%<small>saved</small>";
   if(chTwin){var ks=["car","truck","bus","bike","stack"];
     chTwin.data.datasets[0].data=ks.map(function(k){return +r.act[k].toFixed(1)});
     chTwin.data.datasets[1].data=ks.map(function(k){return +r.sim[k].toFixed(1)});chTwin.update()}
+  twinDock(r);
 }
-["sT","sE","sF","sI"].forEach(function(id){$("#"+id).addEventListener("input",twinUpdate)});
+["sT","sE","sF","sI","sE20","sTu","sBan"].forEach(function(id){$("#"+id).addEventListener("input",twinUpdate)});
+$$("#twTabs button").forEach(function(b){b.addEventListener("click",function(){
+  $$("#twTabs button").forEach(function(x){x.classList.toggle("on",x===b)});
+  ["paneV","paneI"].forEach(function(id){$("#"+id).hidden=id!==b.dataset.pane})})});
+$$("#fuelSeg button").forEach(function(b){b.addEventListener("click",function(){
+  twFuel=b.dataset.fuel;$$("#fuelSeg button").forEach(function(x){x.classList.toggle("on",x===b)});twinUpdate()})});
+var camView="fore";
+$$("#camSeg button").forEach(function(b){b.addEventListener("click",function(){
+  camView=b.dataset.cam;$$("#camSeg button").forEach(function(x){x.classList.toggle("on",x===b)})})});
 $("#saveRun").addEventListener("click",function(){
   var r=twinCalc();
-  S.runs.push({run:S.runs.length+1,node:N().id+" "+N().name,levers_pct:{traffic_reduction:r.p.traffic,ev_share:r.p.ev,filter_coverage:r.p.filter,idle_cut:r.p.idle},
+  S.runs.push({run:S.runs.length+1,node:N().id+" "+N().name,levers_pct:{traffic_reduction:r.p.traffic,ev_share:r.p.ev,filter_coverage:r.p.filter,idle_cut:r.p.idle,
+    e20_blend:r.p.e20,ban_bs3_bs4_trucks:!!r.p.ban_bs3_bs4,air_fuel_tuning:r.p.air_fuel_tuning,boiler_fuel:r.p.fuel},
     actual_kg_per_hr:+r.A.toFixed(1),simulated_kg_per_hr:+r.B.toFixed(1),saved_pct:+r.pct.toFixed(1)});
   renderRuns();renderReport();
   $("#runHint").textContent="Run "+S.runs.length+" saved.";
@@ -1285,6 +1366,7 @@ var scene3d=(function(){
     {p:[48,18,-46], l:[-2,4,-6]},    /* 4 advisor */
     {p:[0,120,26],  l:[0,0,-6]}      /* 5 report: top-down */
   ];
+  var offX=0,fogNow=FOGD;
   var cur=0,last=0,look=new THREE.Vector3(),pos=new THREE.Vector3(),tmp=new THREE.Vector3();
   var landSecs=$$(".land");
   function fracIndex(){
@@ -1302,7 +1384,11 @@ var scene3d=(function(){
   function loop(now){
     requestAnimationFrame(loop);
     var dt=Math.min(.05,(now-last)/1000||0);last=now;if(reduce)dt*=.35;tm+=dt;
-    var tgt=fracIndex();cur+=(mode==="dashboard"?0.18:0.06)*(tgt-cur);
+    var onTwin=mode==="dashboard"&&page===8;
+    var tgt=onTwin?(camView==="stack"?3:2):fracIndex();cur+=(mode==="dashboard"?0.18:0.06)*(tgt-cur);
+    var vw=innerWidth,offT=onTwin&&vw>900?vw*.2:0;offX+=(offT-offX)*.1;   /* park the scene in the right-hand stage */
+    if(Math.abs(offX)>.5)camera.setViewOffset(vw,innerHeight,-offX,0,vw,innerHeight);else if(camera.view&&camera.view.enabled)camera.clearViewOffset();
+    var fT=onTwin?FOGD*.4:FOGD;fogNow+=(fT-fogNow)*.08;scene.fog.density=fogNow;smokeU.uFogD.value=fogNow;   /* crisp scene on the Twin page */
     var i=Math.min(Math.floor(cur),keys.length-1),j=Math.min(i+1,keys.length-1),u=cur-i;u=u*u*(3-2*u);
     var a=keys[i],b=keys[j];
     pos.set(a.p[0]+(b.p[0]-a.p[0])*u,a.p[1]+(b.p[1]-a.p[1])*u,a.p[2]+(b.p[2]-a.p[2])*u);
