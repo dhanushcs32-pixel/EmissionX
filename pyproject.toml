@@ -17,6 +17,7 @@ dependencies = [
     "pandas>=2.2.0",
     "scipy>=1.13.0",
     "easyocr>=1.7.0",
+    "imageio-ffmpeg>=0.5.1",
 ]
 
 [build-system]

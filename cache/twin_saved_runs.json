@@ -1,7 +1,7 @@
 [
   {
-    "run_id": "RUN-20261016-081533-121",
-    "timestamp": "2026-10-16T08:15:33.121176+00:00",
+    "run_id": "RUN-20261016-091433-706",
+    "timestamp": "2026-10-16T09:14:33.706175+00:00",
     "label": "Flagship Scenario: 85% Wet Scrubber + Biomass Transition + 40% EV + BS-VI Fleet",
     "params": {
       "ev_adoption_pct": 40.0,
@@ -15,15 +15,15 @@
     "baseline_summary": {
       "industrial": {
         "fuel_type": "coal",
-        "fuel_rate_kg_hr": 1217.6,
-        "smoke_opacity_pct": 46.3,
-        "ringelmann_level": 3,
-        "opacity_multiplier": 1.25,
-        "flue_gas_temp_c": 199.2,
-        "so2_ppm": 203,
-        "baseline_stack_co2_kg_hr": 3683.2,
-        "waste_stack_co2_kg_hr": 736.6,
-        "ideal_stack_co2_kg_hr": 2946.6
+        "fuel_rate_kg_hr": 1200.0,
+        "smoke_opacity_pct": 71.2,
+        "ringelmann_level": 4,
+        "opacity_multiplier": 1.6,
+        "flue_gas_temp_c": 224.0,
+        "so2_ppm": 295,
+        "baseline_stack_co2_kg_hr": 4646.4,
+        "waste_stack_co2_kg_hr": 1742.4,
+        "ideal_stack_co2_kg_hr": 2904.0
       },
       "vehicular": {
         "vehicle_counts": {
@@ -37,32 +37,32 @@
         "dispensed_co2_kg_hr": 5079.7,
         "total_vehicular_co2_kg_hr": 5089.0
       },
-      "total_co2_kg_hr": 8772.2,
-      "total_baseline_co2_kg_hr": 8772.2
+      "total_co2_kg_hr": 9735.4,
+      "total_baseline_co2_kg_hr": 9735.4
     },
     "projected_summary": {
-      "industrial_co2_kg_hr": 86.3,
+      "industrial_co2_kg_hr": 90.7,
       "vehicular_co2_kg_hr": 3623.2,
-      "total_co2_kg_hr": 3709.5,
-      "total_projected_co2_kg_hr": 3709.5,
-      "avoided_co2_kg_hr": 5062.7,
-      "total_avoided_co2_kg_hr": 5062.7,
-      "total_reduction_pct": 57.7,
-      "reduction_pct": 57.7
+      "total_co2_kg_hr": 3713.9,
+      "total_projected_co2_kg_hr": 3713.9,
+      "avoided_co2_kg_hr": 6021.5,
+      "total_avoided_co2_kg_hr": 6021.5,
+      "total_reduction_pct": 61.9,
+      "reduction_pct": 61.9
     },
     "financial_savings": {
       "currency": "INR (\u20b9)",
       "carbon_price_per_tonne_inr": 1350.0,
-      "hourly_inr": 6834.65,
-      "daily_inr": 164031.6,
-      "annual_inr": 59871490.0
+      "hourly_inr": 8129.03,
+      "daily_inr": 195096.72,
+      "annual_inr": 71210259.0
     },
     "cpcb_compliance": [
       {
         "node": "Peenya Smokestack Node",
         "standard_name": "CPCB Industrial Boiler Emission Norms",
         "measured_metric": "Optical Opacity & SO2",
-        "measured_value": "8.2% Opacity | 44 ppm SO2",
+        "measured_value": "12.6% Opacity | 64 ppm SO2",
         "prescribed_limit": "<= 20% Opacity (Ringelmann 1) | <= 100 ppm SO2",
         "status": "COMPLIANT",
         "color_code": "#22c55e",
@@ -80,7 +80,7 @@
       }
     ],
     "result": {
-      "timestamp": "2026-10-16T08:15:33.121176+00:00",
+      "timestamp": "2026-10-16T09:14:33.706175+00:00",
       "parameters_applied": {
         "ev_adoption_pct": 40.0,
         "idle_time_cut_pct": 50.0,
@@ -93,15 +93,15 @@
       "baseline_summary": {
         "industrial": {
           "fuel_type": "coal",
-          "fuel_rate_kg_hr": 1217.6,
-          "smoke_opacity_pct": 46.3,
-          "ringelmann_level": 3,
-          "opacity_multiplier": 1.25,
-          "flue_gas_temp_c": 199.2,
-          "so2_ppm": 203,
-          "baseline_stack_co2_kg_hr": 3683.2,
-          "waste_stack_co2_kg_hr": 736.6,
-          "ideal_stack_co2_kg_hr": 2946.6
+          "fuel_rate_kg_hr": 1200.0,
+          "smoke_opacity_pct": 71.2,
+          "ringelmann_level": 4,
+          "opacity_multiplier": 1.6,
+          "flue_gas_temp_c": 224.0,
+          "so2_ppm": 295,
+          "baseline_stack_co2_kg_hr": 4646.4,
+          "waste_stack_co2_kg_hr": 1742.4,
+          "ideal_stack_co2_kg_hr": 2904.0
         },
         "vehicular": {
           "vehicle_counts": {
@@ -115,26 +115,26 @@
           "dispensed_co2_kg_hr": 5079.7,
           "total_vehicular_co2_kg_hr": 5089.0
         },
-        "total_co2_kg_hr": 8772.2,
-        "total_baseline_co2_kg_hr": 8772.2
+        "total_co2_kg_hr": 9735.4,
+        "total_baseline_co2_kg_hr": 9735.4
       },
       "projected_summary": {
-        "industrial_co2_kg_hr": 86.3,
+        "industrial_co2_kg_hr": 90.7,
         "vehicular_co2_kg_hr": 3623.2,
-        "total_co2_kg_hr": 3709.5,
-        "total_projected_co2_kg_hr": 3709.5,
-        "avoided_co2_kg_hr": 5062.7,
-        "total_avoided_co2_kg_hr": 5062.7,
-        "total_reduction_pct": 57.7,
-        "reduction_pct": 57.7
+        "total_co2_kg_hr": 3713.9,
+        "total_projected_co2_kg_hr": 3713.9,
+        "avoided_co2_kg_hr": 6021.5,
+        "total_avoided_co2_kg_hr": 6021.5,
+        "total_reduction_pct": 61.9,
+        "reduction_pct": 61.9
       },
       "comparative_chart_metrics": [
         {
           "category": "Industrial Smokestack",
-          "baseline_co2": 3683.2,
-          "projected_co2": 86.3,
-          "avoided_co2": 3596.9,
-          "reduction_pct": 97.7
+          "baseline_co2": 4646.4,
+          "projected_co2": 90.7,
+          "avoided_co2": 4555.7,
+          "reduction_pct": 98.0
         },
         {
           "category": "Vehicular Forecourt",
@@ -145,25 +145,25 @@
         },
         {
           "category": "Combined Facility Total",
-          "baseline_co2": 8772.2,
-          "projected_co2": 3709.5,
-          "avoided_co2": 5062.7,
-          "reduction_pct": 57.7
+          "baseline_co2": 9735.4,
+          "projected_co2": 3713.9,
+          "avoided_co2": 6021.5,
+          "reduction_pct": 61.9
         }
       ],
       "financial_savings": {
         "currency": "INR (\u20b9)",
         "carbon_price_per_tonne_inr": 1350.0,
-        "hourly_inr": 6834.65,
-        "daily_inr": 164031.6,
-        "annual_inr": 59871490.0
+        "hourly_inr": 8129.03,
+        "daily_inr": 195096.72,
+        "annual_inr": 71210259.0
       },
       "cpcb_compliance": [
         {
           "node": "Peenya Smokestack Node",
           "standard_name": "CPCB Industrial Boiler Emission Norms",
           "measured_metric": "Optical Opacity & SO2",
-          "measured_value": "8.2% Opacity | 44 ppm SO2",
+          "measured_value": "12.6% Opacity | 64 ppm SO2",
           "prescribed_limit": "<= 20% Opacity (Ringelmann 1) | <= 100 ppm SO2",
           "status": "COMPLIANT",
           "color_code": "#22c55e",
@@ -181,15 +181,15 @@
         }
       ],
       "scene_3d_industrial": {
-        "plume_opacity": 0.08,
+        "plume_opacity": 0.13,
         "plume_color_hex": "#e2e8f0",
         "plume_scale": 0.65,
         "particle_rate": 14,
-        "flue_temp_c": 169.4,
-        "so2_ppm": 44,
+        "flue_temp_c": 194.2,
+        "so2_ppm": 64,
         "scrubber_active": true,
         "scrubber_glow_color": "#22c55e",
-        "chimney_tip_glow": 0.65
+        "chimney_tip_glow": 0.75
       },
       "scene_3d_vehicular": {
         "active_vehicle_counts": {
@@ -212,8 +212,8 @@
     }
   },
   {
-    "run_id": "RUN-20261016-081533-133",
-    "timestamp": "2026-10-16T08:15:33.133020+00:00",
+    "run_id": "RUN-20261016-091433-713",
+    "timestamp": "2026-10-16T09:14:33.713115+00:00",
     "label": "Test Scenario: 90% Scrubber + Biomass",
     "params": {
       "ev_adoption_pct": 50.0,
@@ -227,15 +227,15 @@
     "baseline_summary": {
       "industrial": {
         "fuel_type": "coal",
-        "fuel_rate_kg_hr": 1217.6,
-        "smoke_opacity_pct": 46.3,
-        "ringelmann_level": 3,
-        "opacity_multiplier": 1.25,
-        "flue_gas_temp_c": 199.2,
-        "so2_ppm": 203,
-        "baseline_stack_co2_kg_hr": 3683.2,
-        "waste_stack_co2_kg_hr": 736.6,
-        "ideal_stack_co2_kg_hr": 2946.6
+        "fuel_rate_kg_hr": 1200.0,
+        "smoke_opacity_pct": 71.2,
+        "ringelmann_level": 4,
+        "opacity_multiplier": 1.6,
+        "flue_gas_temp_c": 224.0,
+        "so2_ppm": 295,
+        "baseline_stack_co2_kg_hr": 4646.4,
+        "waste_stack_co2_kg_hr": 1742.4,
+        "ideal_stack_co2_kg_hr": 2904.0
       },
       "vehicular": {
         "vehicle_counts": {
@@ -249,32 +249,32 @@
         "dispensed_co2_kg_hr": 5079.7,
         "total_vehicular_co2_kg_hr": 5089.0
       },
-      "total_co2_kg_hr": 8772.2,
-      "total_baseline_co2_kg_hr": 8772.2
+      "total_co2_kg_hr": 9735.4,
+      "total_baseline_co2_kg_hr": 9735.4
     },
     "projected_summary": {
-      "industrial_co2_kg_hr": 58.2,
+      "industrial_co2_kg_hr": 62.1,
       "vehicular_co2_kg_hr": 4408.9,
-      "total_co2_kg_hr": 4467.1,
-      "total_projected_co2_kg_hr": 4467.1,
-      "avoided_co2_kg_hr": 4305.1,
-      "total_avoided_co2_kg_hr": 4305.1,
-      "total_reduction_pct": 49.1,
-      "reduction_pct": 49.1
+      "total_co2_kg_hr": 4471.0,
+      "total_projected_co2_kg_hr": 4471.0,
+      "avoided_co2_kg_hr": 5264.4,
+      "total_avoided_co2_kg_hr": 5264.4,
+      "total_reduction_pct": 54.1,
+      "reduction_pct": 54.1
     },
     "financial_savings": {
       "currency": "INR (\u20b9)",
       "carbon_price_per_tonne_inr": 1350.0,
-      "hourly_inr": 5811.89,
-      "daily_inr": 139485.36,
-      "annual_inr": 50912113.0
+      "hourly_inr": 7106.94,
+      "daily_inr": 170566.56,
+      "annual_inr": 62256794.0
     },
     "cpcb_compliance": [
       {
         "node": "Peenya Smokestack Node",
         "standard_name": "CPCB Industrial Boiler Emission Norms",
         "measured_metric": "Optical Opacity & SO2",
-        "measured_value": "7.2% Opacity | 34 ppm SO2",
+        "measured_value": "11.1% Opacity | 50 ppm SO2",
         "prescribed_limit": "<= 20% Opacity (Ringelmann 1) | <= 100 ppm SO2",
         "status": "COMPLIANT",
         "color_code": "#22c55e",
@@ -292,7 +292,7 @@
       }
     ],
     "result": {
-      "timestamp": "2026-10-16T08:15:33.133020+00:00",
+      "timestamp": "2026-10-16T09:14:33.713115+00:00",
       "parameters_applied": {
         "ev_adoption_pct": 50.0,
         "idle_time_cut_pct": 0.0,
@@ -305,15 +305,15 @@
       "baseline_summary": {
         "industrial": {
           "fuel_type": "coal",
-          "fuel_rate_kg_hr": 1217.6,
-          "smoke_opacity_pct": 46.3,
-          "ringelmann_level": 3,
-          "opacity_multiplier": 1.25,
-          "flue_gas_temp_c": 199.2,
-          "so2_ppm": 203,
-          "baseline_stack_co2_kg_hr": 3683.2,
-          "waste_stack_co2_kg_hr": 736.6,
-          "ideal_stack_co2_kg_hr": 2946.6
+          "fuel_rate_kg_hr": 1200.0,
+          "smoke_opacity_pct": 71.2,
+          "ringelmann_level": 4,
+          "opacity_multiplier": 1.6,
+          "flue_gas_temp_c": 224.0,
+          "so2_ppm": 295,
+          "baseline_stack_co2_kg_hr": 4646.4,
+          "waste_stack_co2_kg_hr": 1742.4,
+          "ideal_stack_co2_kg_hr": 2904.0
         },
         "vehicular": {
           "vehicle_counts": {
@@ -327,25 +327,237 @@
           "dispensed_co2_kg_hr": 5079.7,
           "total_vehicular_co2_kg_hr": 5089.0
         },
-        "total_co2_kg_hr": 8772.2,
-        "total_baseline_co2_kg_hr": 8772.2
+        "total_co2_kg_hr": 9735.4,
+        "total_baseline_co2_kg_hr": 9735.4
       },
       "projected_summary": {
-        "industrial_co2_kg_hr": 58.2,
+        "industrial_co2_kg_hr": 62.1,
         "vehicular_co2_kg_hr": 4408.9,
-        "total_co2_kg_hr": 4467.1,
-        "total_projected_co2_kg_hr": 4467.1,
-        "avoided_co2_kg_hr": 4305.1,
-        "total_avoided_co2_kg_hr": 4305.1,
-        "total_reduction_pct": 49.1,
-        "reduction_pct": 49.1
+        "total_co2_kg_hr": 4471.0,
+        "total_projected_co2_kg_hr": 4471.0,
+        "avoided_co2_kg_hr": 5264.4,
+        "total_avoided_co2_kg_hr": 5264.4,
+        "total_reduction_pct": 54.1,
+        "reduction_pct": 54.1
       },
       "comparative_chart_metrics": [
         {
           "category": "Industrial Smokestack",
-          "baseline_co2": 3683.2,
-          "projected_co2": 58.2,
-          "avoided_co2": 3625.0,
+          "baseline_co2": 4646.4,
+          "projected_co2": 62.1,
+          "avoided_co2": 4584.3,
+          "reduction_pct": 98.7
+        },
+        {
+          "category": "Vehicular Forecourt",
+          "baseline_co2": 5089.0,
+          "projected_co2": 4408.9,
+          "avoided_co2": 680.1,
+          "reduction_pct": 13.4
+        },
+        {
+          "category": "Combined Facility Total",
+          "baseline_co2": 9735.4,
+          "projected_co2": 4471.0,
+          "avoided_co2": 5264.4,
+          "reduction_pct": 54.1
+        }
+      ],
+      "financial_savings": {
+        "currency": "INR (\u20b9)",
+        "carbon_price_per_tonne_inr": 1350.0,
+        "hourly_inr": 7106.94,
+        "daily_inr": 170566.56,
+        "annual_inr": 62256794.0
+      },
+      "cpcb_compliance": [
+        {
+          "node": "Peenya Smokestack Node",
+          "standard_name": "CPCB Industrial Boiler Emission Norms",
+          "measured_metric": "Optical Opacity & SO2",
+          "measured_value": "11.1% Opacity | 50 ppm SO2",
+          "prescribed_limit": "<= 20% Opacity (Ringelmann 1) | <= 100 ppm SO2",
+          "status": "COMPLIANT",
+          "color_code": "#22c55e",
+          "recommendation": "Complies fully with CPCB / KSPCB Stack Emission Norms (Ringelmann Level 1)."
+        },
+        {
+          "node": "Bengaluru Fuel Forecourt Node",
+          "standard_name": "MoRTH / NCAP Urban Air Quality Protocol",
+          "measured_metric": "Queue Dwell & Fleet BS-VI Ratio",
+          "measured_value": "42.0s Dwell | 50% EV Share",
+          "prescribed_limit": "<= 25s Average Queue Dwell Time",
+          "status": "MODERATE CONCERN",
+          "color_code": "#f59e0b",
+          "recommendation": "Elevated queue dwell detected; optimize pump dispatch or open reserve bays."
+        }
+      ],
+      "scene_3d_industrial": {
+        "plume_opacity": 0.11,
+        "plume_color_hex": "#e2e8f0",
+        "plume_scale": 0.65,
+        "particle_rate": 14,
+        "flue_temp_c": 192.5,
+        "so2_ppm": 50,
+        "scrubber_active": true,
+        "scrubber_glow_color": "#22c55e",
+        "chimney_tip_glow": 0.74
+      },
+      "scene_3d_vehicular": {
+        "active_vehicle_counts": {
+          "car": 21,
+          "truck": 12,
+          "bus": 2,
+          "motorcycle": 5
+        },
+        "ev_vehicle_counts": {
+          "car": 10,
+          "truck": 0,
+          "bus": 0,
+          "motorcycle": 2
+        },
+        "avg_dwell_sec": 42.0,
+        "queue_density_pct": 70.0,
+        "station_smog_opacity": 0.85,
+        "charger_bays_active": 2
+      }
+    }
+  },
+  {
+    "run_id": "RUN-20261016-092222-281",
+    "timestamp": "2026-10-16T09:22:22.281188+00:00",
+    "label": "Test Scenario: 90% Scrubber + Biomass",
+    "params": {
+      "ev_adoption_pct": 50.0,
+      "idle_time_cut_pct": 0.0,
+      "e20_blend_pct": 0.0,
+      "ban_bs3_bs4_heavy": false,
+      "scrubber_efficiency_pct": 90.0,
+      "fuel_type": "biomass",
+      "combustion_tuning_pct": 75.0
+    },
+    "baseline_summary": {
+      "industrial": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1183.5,
+        "smoke_opacity_pct": 47.5,
+        "ringelmann_level": 3,
+        "opacity_multiplier": 1.25,
+        "flue_gas_temp_c": 201.3,
+        "so2_ppm": 206,
+        "baseline_stack_co2_kg_hr": 3580.1,
+        "waste_stack_co2_kg_hr": 716.0,
+        "ideal_stack_co2_kg_hr": 2864.1
+      },
+      "vehicular": {
+        "vehicle_counts": {
+          "car": 21,
+          "truck": 12,
+          "bus": 2,
+          "motorcycle": 5
+        },
+        "avg_dwell_sec": 42.0,
+        "idling_co2_kg_hr": 9.3,
+        "dispensed_co2_kg_hr": 5079.7,
+        "total_vehicular_co2_kg_hr": 5089.0
+      },
+      "total_co2_kg_hr": 8669.1,
+      "total_baseline_co2_kg_hr": 8669.1
+    },
+    "projected_summary": {
+      "industrial_co2_kg_hr": 56.6,
+      "vehicular_co2_kg_hr": 4408.9,
+      "total_co2_kg_hr": 4465.5,
+      "total_projected_co2_kg_hr": 4465.5,
+      "avoided_co2_kg_hr": 4203.6,
+      "total_avoided_co2_kg_hr": 4203.6,
+      "total_reduction_pct": 48.5,
+      "reduction_pct": 48.5
+    },
+    "financial_savings": {
+      "currency": "INR (\u20b9)",
+      "carbon_price_per_tonne_inr": 1350.0,
+      "hourly_inr": 5674.86,
+      "daily_inr": 136196.64,
+      "annual_inr": 49711774.0
+    },
+    "cpcb_compliance": [
+      {
+        "node": "Peenya Smokestack Node",
+        "standard_name": "CPCB Industrial Boiler Emission Norms",
+        "measured_metric": "Optical Opacity & SO2",
+        "measured_value": "7.4% Opacity | 35 ppm SO2",
+        "prescribed_limit": "<= 20% Opacity (Ringelmann 1) | <= 100 ppm SO2",
+        "status": "COMPLIANT",
+        "color_code": "#22c55e",
+        "recommendation": "Complies fully with CPCB / KSPCB Stack Emission Norms (Ringelmann Level 1)."
+      },
+      {
+        "node": "Bengaluru Fuel Forecourt Node",
+        "standard_name": "MoRTH / NCAP Urban Air Quality Protocol",
+        "measured_metric": "Queue Dwell & Fleet BS-VI Ratio",
+        "measured_value": "42.0s Dwell | 50% EV Share",
+        "prescribed_limit": "<= 25s Average Queue Dwell Time",
+        "status": "MODERATE CONCERN",
+        "color_code": "#f59e0b",
+        "recommendation": "Elevated queue dwell detected; optimize pump dispatch or open reserve bays."
+      }
+    ],
+    "result": {
+      "timestamp": "2026-10-16T09:22:22.281188+00:00",
+      "parameters_applied": {
+        "ev_adoption_pct": 50.0,
+        "idle_time_cut_pct": 0.0,
+        "e20_blend_pct": 0.0,
+        "ban_bs3_bs4_heavy": false,
+        "scrubber_efficiency_pct": 90.0,
+        "fuel_type": "biomass",
+        "combustion_tuning_pct": 75.0
+      },
+      "baseline_summary": {
+        "industrial": {
+          "fuel_type": "coal",
+          "fuel_rate_kg_hr": 1183.5,
+          "smoke_opacity_pct": 47.5,
+          "ringelmann_level": 3,
+          "opacity_multiplier": 1.25,
+          "flue_gas_temp_c": 201.3,
+          "so2_ppm": 206,
+          "baseline_stack_co2_kg_hr": 3580.1,
+          "waste_stack_co2_kg_hr": 716.0,
+          "ideal_stack_co2_kg_hr": 2864.1
+        },
+        "vehicular": {
+          "vehicle_counts": {
+            "car": 21,
+            "truck": 12,
+            "bus": 2,
+            "motorcycle": 5
+          },
+          "avg_dwell_sec": 42.0,
+          "idling_co2_kg_hr": 9.3,
+          "dispensed_co2_kg_hr": 5079.7,
+          "total_vehicular_co2_kg_hr": 5089.0
+        },
+        "total_co2_kg_hr": 8669.1,
+        "total_baseline_co2_kg_hr": 8669.1
+      },
+      "projected_summary": {
+        "industrial_co2_kg_hr": 56.6,
+        "vehicular_co2_kg_hr": 4408.9,
+        "total_co2_kg_hr": 4465.5,
+        "total_projected_co2_kg_hr": 4465.5,
+        "avoided_co2_kg_hr": 4203.6,
+        "total_avoided_co2_kg_hr": 4203.6,
+        "total_reduction_pct": 48.5,
+        "reduction_pct": 48.5
+      },
+      "comparative_chart_metrics": [
+        {
+          "category": "Industrial Smokestack",
+          "baseline_co2": 3580.1,
+          "projected_co2": 56.6,
+          "avoided_co2": 3523.5,
           "reduction_pct": 98.4
         },
         {
@@ -357,25 +569,25 @@
         },
         {
           "category": "Combined Facility Total",
-          "baseline_co2": 8772.2,
-          "projected_co2": 4467.1,
-          "avoided_co2": 4305.1,
-          "reduction_pct": 49.1
+          "baseline_co2": 8669.1,
+          "projected_co2": 4465.5,
+          "avoided_co2": 4203.6,
+          "reduction_pct": 48.5
         }
       ],
       "financial_savings": {
         "currency": "INR (\u20b9)",
         "carbon_price_per_tonne_inr": 1350.0,
-        "hourly_inr": 5811.89,
-        "daily_inr": 139485.36,
-        "annual_inr": 50912113.0
+        "hourly_inr": 5674.86,
+        "daily_inr": 136196.64,
+        "annual_inr": 49711774.0
       },
       "cpcb_compliance": [
         {
           "node": "Peenya Smokestack Node",
           "standard_name": "CPCB Industrial Boiler Emission Norms",
           "measured_metric": "Optical Opacity & SO2",
-          "measured_value": "7.2% Opacity | 34 ppm SO2",
+          "measured_value": "7.4% Opacity | 35 ppm SO2",
           "prescribed_limit": "<= 20% Opacity (Ringelmann 1) | <= 100 ppm SO2",
           "status": "COMPLIANT",
           "color_code": "#22c55e",
@@ -397,11 +609,223 @@
         "plume_color_hex": "#e2e8f0",
         "plume_scale": 0.65,
         "particle_rate": 14,
-        "flue_temp_c": 167.7,
-        "so2_ppm": 34,
+        "flue_temp_c": 169.8,
+        "so2_ppm": 35,
         "scrubber_active": true,
         "scrubber_glow_color": "#22c55e",
-        "chimney_tip_glow": 0.64
+        "chimney_tip_glow": 0.65
+      },
+      "scene_3d_vehicular": {
+        "active_vehicle_counts": {
+          "car": 21,
+          "truck": 12,
+          "bus": 2,
+          "motorcycle": 5
+        },
+        "ev_vehicle_counts": {
+          "car": 10,
+          "truck": 0,
+          "bus": 0,
+          "motorcycle": 2
+        },
+        "avg_dwell_sec": 42.0,
+        "queue_density_pct": 70.0,
+        "station_smog_opacity": 0.85,
+        "charger_bays_active": 2
+      }
+    }
+  },
+  {
+    "run_id": "RUN-20261016-092330-471",
+    "timestamp": "2026-10-16T09:23:30.471193+00:00",
+    "label": "Test Scenario: 90% Scrubber + Biomass",
+    "params": {
+      "ev_adoption_pct": 50.0,
+      "idle_time_cut_pct": 0.0,
+      "e20_blend_pct": 0.0,
+      "ban_bs3_bs4_heavy": false,
+      "scrubber_efficiency_pct": 90.0,
+      "fuel_type": "biomass",
+      "combustion_tuning_pct": 75.0
+    },
+    "baseline_summary": {
+      "industrial": {
+        "fuel_type": "coal",
+        "fuel_rate_kg_hr": 1183.5,
+        "smoke_opacity_pct": 47.5,
+        "ringelmann_level": 3,
+        "opacity_multiplier": 1.25,
+        "flue_gas_temp_c": 201.3,
+        "so2_ppm": 206,
+        "baseline_stack_co2_kg_hr": 3580.1,
+        "waste_stack_co2_kg_hr": 716.0,
+        "ideal_stack_co2_kg_hr": 2864.1
+      },
+      "vehicular": {
+        "vehicle_counts": {
+          "car": 21,
+          "truck": 12,
+          "bus": 2,
+          "motorcycle": 5
+        },
+        "avg_dwell_sec": 42.0,
+        "idling_co2_kg_hr": 9.3,
+        "dispensed_co2_kg_hr": 5079.7,
+        "total_vehicular_co2_kg_hr": 5089.0
+      },
+      "total_co2_kg_hr": 8669.1,
+      "total_baseline_co2_kg_hr": 8669.1
+    },
+    "projected_summary": {
+      "industrial_co2_kg_hr": 56.6,
+      "vehicular_co2_kg_hr": 4408.9,
+      "total_co2_kg_hr": 4465.5,
+      "total_projected_co2_kg_hr": 4465.5,
+      "avoided_co2_kg_hr": 4203.6,
+      "total_avoided_co2_kg_hr": 4203.6,
+      "total_reduction_pct": 48.5,
+      "reduction_pct": 48.5
+    },
+    "financial_savings": {
+      "currency": "INR (\u20b9)",
+      "carbon_price_per_tonne_inr": 1350.0,
+      "hourly_inr": 5674.86,
+      "daily_inr": 136196.64,
+      "annual_inr": 49711774.0
+    },
+    "cpcb_compliance": [
+      {
+        "node": "Peenya Smokestack Node",
+        "standard_name": "CPCB Industrial Boiler Emission Norms",
+        "measured_metric": "Optical Opacity & SO2",
+        "measured_value": "7.4% Opacity | 35 ppm SO2",
+        "prescribed_limit": "<= 20% Opacity (Ringelmann 1) | <= 100 ppm SO2",
+        "status": "COMPLIANT",
+        "color_code": "#22c55e",
+        "recommendation": "Complies fully with CPCB / KSPCB Stack Emission Norms (Ringelmann Level 1)."
+      },
+      {
+        "node": "Bengaluru Fuel Forecourt Node",
+        "standard_name": "MoRTH / NCAP Urban Air Quality Protocol",
+        "measured_metric": "Queue Dwell & Fleet BS-VI Ratio",
+        "measured_value": "42.0s Dwell | 50% EV Share",
+        "prescribed_limit": "<= 25s Average Queue Dwell Time",
+        "status": "MODERATE CONCERN",
+        "color_code": "#f59e0b",
+        "recommendation": "Elevated queue dwell detected; optimize pump dispatch or open reserve bays."
+      }
+    ],
+    "result": {
+      "timestamp": "2026-10-16T09:23:30.471193+00:00",
+      "parameters_applied": {
+        "ev_adoption_pct": 50.0,
+        "idle_time_cut_pct": 0.0,
+        "e20_blend_pct": 0.0,
+        "ban_bs3_bs4_heavy": false,
+        "scrubber_efficiency_pct": 90.0,
+        "fuel_type": "biomass",
+        "combustion_tuning_pct": 75.0
+      },
+      "baseline_summary": {
+        "industrial": {
+          "fuel_type": "coal",
+          "fuel_rate_kg_hr": 1183.5,
+          "smoke_opacity_pct": 47.5,
+          "ringelmann_level": 3,
+          "opacity_multiplier": 1.25,
+          "flue_gas_temp_c": 201.3,
+          "so2_ppm": 206,
+          "baseline_stack_co2_kg_hr": 3580.1,
+          "waste_stack_co2_kg_hr": 716.0,
+          "ideal_stack_co2_kg_hr": 2864.1
+        },
+        "vehicular": {
+          "vehicle_counts": {
+            "car": 21,
+            "truck": 12,
+            "bus": 2,
+            "motorcycle": 5
+          },
+          "avg_dwell_sec": 42.0,
+          "idling_co2_kg_hr": 9.3,
+          "dispensed_co2_kg_hr": 5079.7,
+          "total_vehicular_co2_kg_hr": 5089.0
+        },
+        "total_co2_kg_hr": 8669.1,
+        "total_baseline_co2_kg_hr": 8669.1
+      },
+      "projected_summary": {
+        "industrial_co2_kg_hr": 56.6,
+        "vehicular_co2_kg_hr": 4408.9,
+        "total_co2_kg_hr": 4465.5,
+        "total_projected_co2_kg_hr": 4465.5,
+        "avoided_co2_kg_hr": 4203.6,
+        "total_avoided_co2_kg_hr": 4203.6,
+        "total_reduction_pct": 48.5,
+        "reduction_pct": 48.5
+      },
+      "comparative_chart_metrics": [
+        {
+          "category": "Industrial Smokestack",
+          "baseline_co2": 3580.1,
+          "projected_co2": 56.6,
+          "avoided_co2": 3523.5,
+          "reduction_pct": 98.4
+        },
+        {
+          "category": "Vehicular Forecourt",
+          "baseline_co2": 5089.0,
+          "projected_co2": 4408.9,
+          "avoided_co2": 680.1,
+          "reduction_pct": 13.4
+        },
+        {
+          "category": "Combined Facility Total",
+          "baseline_co2": 8669.1,
+          "projected_co2": 4465.5,
+          "avoided_co2": 4203.6,
+          "reduction_pct": 48.5
+        }
+      ],
+      "financial_savings": {
+        "currency": "INR (\u20b9)",
+        "carbon_price_per_tonne_inr": 1350.0,
+        "hourly_inr": 5674.86,
+        "daily_inr": 136196.64,
+        "annual_inr": 49711774.0
+      },
+      "cpcb_compliance": [
+        {
+          "node": "Peenya Smokestack Node",
+          "standard_name": "CPCB Industrial Boiler Emission Norms",
+          "measured_metric": "Optical Opacity & SO2",
+          "measured_value": "7.4% Opacity | 35 ppm SO2",
+          "prescribed_limit": "<= 20% Opacity (Ringelmann 1) | <= 100 ppm SO2",
+          "status": "COMPLIANT",
+          "color_code": "#22c55e",
+          "recommendation": "Complies fully with CPCB / KSPCB Stack Emission Norms (Ringelmann Level 1)."
+        },
+        {
+          "node": "Bengaluru Fuel Forecourt Node",
+          "standard_name": "MoRTH / NCAP Urban Air Quality Protocol",
+          "measured_metric": "Queue Dwell & Fleet BS-VI Ratio",
+          "measured_value": "42.0s Dwell | 50% EV Share",
+          "prescribed_limit": "<= 25s Average Queue Dwell Time",
+          "status": "MODERATE CONCERN",
+          "color_code": "#f59e0b",
+          "recommendation": "Elevated queue dwell detected; optimize pump dispatch or open reserve bays."
+        }
+      ],
+      "scene_3d_industrial": {
+        "plume_opacity": 0.08,
+        "plume_color_hex": "#e2e8f0",
+        "plume_scale": 0.65,
+        "particle_rate": 14,
+        "flue_temp_c": 169.8,
+        "so2_ppm": 35,
+        "scrubber_active": true,
+        "scrubber_glow_color": "#22c55e",
+        "chimney_tip_glow": 0.65
       },
       "scene_3d_vehicular": {
         "active_vehicle_counts": {
