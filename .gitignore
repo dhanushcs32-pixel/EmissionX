@@ -26,15 +26,12 @@ models/*.bin
 
 # Node / Frontend
 node_modules/
-.next/
-dist/
 build/
-.env
-.env.local
-
-# OS & IDE
-Thumbs.db
-[Ee]xcluded/
+dist/
+coverage/
 .DS_Store
-.vscode/
-.idea/
+*.log
+.env*
+!.env.example
+
+*.bak
