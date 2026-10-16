@@ -1,0 +1,25 @@
+{
+  "_notice": "MOCK DATA. Invented records shaped like VAHAN RC details, for demos only. Not from VAHAN or Parivahan; no owner or personal data.",
+  "records": [
+    {"plate": "KA01AB1234", "vehicle_class": "car", "maker_model": "Maruti Suzuki Swift", "fuel_type": "petrol", "emission_norm": "BS-VI", "registration_year": 2021, "registration_category": "private", "puc_valid_until": "2027-03-14"},
+    {"plate": "KA03MN4521", "vehicle_class": "car", "maker_model": "Hyundai Creta", "fuel_type": "diesel", "emission_norm": "BS-VI", "registration_year": 2022, "registration_category": "private", "puc_valid_until": "2027-01-09"},
+    {"plate": "KA05HX7788", "vehicle_class": "car", "maker_model": "Honda City", "fuel_type": "petrol", "emission_norm": "BS-IV", "registration_year": 2016, "registration_category": "private", "puc_valid_until": "2026-12-02"},
+    {"plate": "KA02MB3310", "vehicle_class": "car", "maker_model": "Tata Nexon EV", "fuel_type": "electric", "emission_norm": "Zero tailpipe", "registration_year": 2023, "registration_category": "electric", "puc_valid_until": null},
+    {"plate": "KA04ME2041", "vehicle_class": "car", "maker_model": "Toyota Innova Crysta", "fuel_type": "diesel", "emission_norm": "BS-IV", "registration_year": 2018, "registration_category": "commercial", "puc_valid_until": "2026-11-20"},
+    {"plate": "22BH1234AA", "vehicle_class": "car", "maker_model": "Kia Seltos", "fuel_type": "petrol", "emission_norm": "BS-VI", "registration_year": 2022, "registration_category": "private", "puc_valid_until": "2027-05-30"},
+    {"plate": "DL3CAF0021", "vehicle_class": "car", "maker_model": "Maruti Suzuki Dzire", "fuel_type": "cng", "emission_norm": "BS-VI", "registration_year": 2020, "registration_category": "commercial", "puc_valid_until": "2026-12-18"},
+    {"plate": "TN09BX7788", "vehicle_class": "car", "maker_model": "Mahindra XUV700", "fuel_type": "diesel", "emission_norm": "BS-VI", "registration_year": 2023, "registration_category": "private", "puc_valid_until": "2027-08-11"},
+    {"plate": "KA53MC1199", "vehicle_class": "car", "maker_model": "Hyundai i20", "fuel_type": "petrol", "emission_norm": "BS-IV", "registration_year": 2015, "registration_category": "private", "puc_valid_until": "2026-07-04"},
+    {"plate": "KA51AF4321", "vehicle_class": "bus", "maker_model": "Volvo 8400", "fuel_type": "diesel", "emission_norm": "BS-IV", "registration_year": 2015, "registration_category": "commercial", "puc_valid_until": "2027-02-27"},
+    {"plate": "KA01F5566", "vehicle_class": "bus", "maker_model": "Ashok Leyland Viking", "fuel_type": "diesel", "emission_norm": "BS-III", "registration_year": 2010, "registration_category": "commercial", "puc_valid_until": "2026-10-30"},
+    {"plate": "KA09C2233", "vehicle_class": "truck", "maker_model": "Tata LPT 1613", "fuel_type": "diesel", "emission_norm": "BS-III", "registration_year": 2009, "registration_category": "commercial", "puc_valid_until": "2026-05-12"},
+    {"plate": "KA52A8890", "vehicle_class": "truck", "maker_model": "Eicher Pro 2049", "fuel_type": "diesel", "emission_norm": "BS-VI", "registration_year": 2021, "registration_category": "commercial", "puc_valid_until": "2027-04-16"},
+    {"plate": "MH12DE1433", "vehicle_class": "truck", "maker_model": "BharatBenz 1617R", "fuel_type": "diesel", "emission_norm": "BS-IV", "registration_year": 2017, "registration_category": "commercial", "puc_valid_until": "2026-12-25"},
+    {"plate": "KA03HA4910", "vehicle_class": "motorcycle", "maker_model": "Hero Splendor Plus", "fuel_type": "petrol", "emission_norm": "BS-IV", "registration_year": 2017, "registration_category": "private", "puc_valid_until": "2027-01-21"},
+    {"plate": "KA05NC7732", "vehicle_class": "motorcycle", "maker_model": "Bajaj Pulsar 150", "fuel_type": "petrol", "emission_norm": "BS-VI", "registration_year": 2020, "registration_category": "private", "puc_valid_until": "2027-06-03"},
+    {"plate": "KA01HZ0042", "vehicle_class": "motorcycle", "maker_model": "Ather 450X", "fuel_type": "electric", "emission_norm": "Zero tailpipe", "registration_year": 2023, "registration_category": "electric", "puc_valid_until": null},
+    {"plate": "KA02ET9017", "vehicle_class": "motorcycle", "maker_model": "TVS Apache RTR 160", "fuel_type": "petrol", "emission_norm": "BS-III", "registration_year": 2011, "registration_category": "private", "puc_valid_until": "2026-08-19"},
+    {"plate": "KA01AA2121", "vehicle_class": "auto_rickshaw", "maker_model": "Bajaj RE", "fuel_type": "cng", "emission_norm": "BS-IV", "registration_year": 2016, "registration_category": "commercial", "puc_valid_until": "2026-11-05"},
+    {"plate": "KA05AB6610", "vehicle_class": "auto_rickshaw", "maker_model": "Piaggio Ape City", "fuel_type": "cng", "emission_norm": "BS-VI", "registration_year": 2021, "registration_category": "commercial", "puc_valid_until": "2027-03-08"}
+  ]
+}

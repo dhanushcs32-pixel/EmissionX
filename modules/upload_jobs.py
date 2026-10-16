@@ -21,6 +21,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+from modules import vehicle_registry
+
 logger = logging.getLogger("UploadJobs")
 
 WORKSPACE_ROOT = Path(__file__).resolve().parent.parent
@@ -277,7 +279,10 @@ def tracks_to_fuel_telemetry(summary: Dict[str, Any], node_id: str = "BLR_FUEL_S
 
         logs = [f" [VEH-CV] {len(active)} vehicles in view (cars {cars}, bikes {bikes}, bus/truck {heavy})"]
         for t in [t for t in active if t.get("license_plate")][:2]:
-            logs.append(f" [LPR] Plate {t['license_plate']} ({t['vehicle_class']}, conf {t.get('plate_confidence')})")
+            reg = vehicle_registry.lookup(t["license_plate"], t.get("vehicle_class"))
+            logs.append(f" [LPR] Plate {t['license_plate']} ({t['vehicle_class']}, conf {t.get('plate_confidence')}) -> "
+                        f"MOCK VAHAN: {reg['maker_model']}, {reg['fuel_type']} {reg['emission_norm']}, "
+                        f"{reg['registration_year']}, PUC {reg['puc_status']}")
         logs.append(f" [DWELL] Avg time in view: {dwell}s at t={f / fps:.0f}s of {summary.get('video_source', 'clip')}")
 
         records.append({

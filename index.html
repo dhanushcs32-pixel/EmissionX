@@ -282,7 +282,18 @@ body.dashboard #v3.on::before{background:linear-gradient(90deg,var(--scrim) 0%,v
 .apistat.on{color:var(--ink)}.apistat.on::before{background:#2E9E5B}
 .feed video{width:100%;aspect-ratio:16/10;border-radius:12px;display:block;object-fit:contain;background:#000}
 .tblwrap{overflow-x:auto}
+.grid>*,.twin>*{min-width:0}   /* grid cells may shrink; wide tables scroll inside .tblwrap instead of widening the page */
+#score .big{overflow-wrap:anywhere}
 @media (max-width:700px){.apistat{font-size:0;gap:0;padding:6px}}
+/* phones / small tablets inside the platform: the page menu scrolls sideways instead of running off screen */
+@media (max-width:900px){
+  body.dashboard .top nav{display:flex;flex:1;min-width:0;margin:0 8px;overflow-x:auto;scrollbar-width:none;
+    -webkit-mask-image:linear-gradient(90deg,#000 85%,transparent);mask-image:linear-gradient(90deg,#000 85%,transparent)}
+  body.dashboard .top nav::-webkit-scrollbar{display:none}
+  body.dashboard .top nav button{white-space:nowrap;padding:8px 10px;flex-shrink:0}
+  body.dashboard .top .btn.pri.sm{display:none}
+}
+@media (max-width:520px){body.dashboard .top .logo{font-size:0;gap:0}}
 /* detector output fills the left (map) panel */
 .outv{position:absolute;inset:0;z-index:3;background:#000;display:flex;align-items:center;justify-content:center}
 .outv video{width:100%;height:100%;object-fit:contain;display:block}
@@ -302,6 +313,8 @@ body.dashboard #v3.on::before{background:linear-gradient(90deg,var(--scrim) 0%,v
 .drop.busy{cursor:progress;border-style:solid;border-color:var(--o)}
 .drop .bar{width:100%;margin-top:6px}
 #uplDel{white-space:nowrap;flex-shrink:0}
+.mockpill{display:inline-block;padding:2px 9px;border-radius:999px;background:#7A3D18;color:#FFF8EE;font-size:11px;font-weight:800;letter-spacing:.04em;white-space:nowrap}
+.vahan{margin-top:12px;border:1px dashed var(--line);border-radius:14px;padding:10px 12px;font-size:13px}
 /* clip upload on the Map feed */
 .upl{display:flex;flex-direction:column;gap:6px;margin-top:10px}
 .upl .bar{margin-top:0}
@@ -538,6 +551,7 @@ body.dashboard #v3.on::before{background:linear-gradient(90deg,var(--scrim) 0%,v
           <div class="stat"><span class="k" id="stTopL">Top class</span><b id="stTop">-</b></div>
           <div class="stat"><span class="k" id="stAlL">Alerts</span><b id="stAl">0</b></div>
         </div>
+        <div class="vahan" id="vahanMini" hidden></div>
       </div>
     </div>
   </div>
@@ -646,6 +660,7 @@ body.dashboard #v3.on::before{background:linear-gradient(90deg,var(--scrim) 0%,v
         <div class="row" style="justify-content:space-between;margin-bottom:14px"><b style="font-size:18px">EmmisionX emission report</b><span class="k mono" id="rDate"></span></div>
         <div class="score" id="score"></div>
         <div id="runsWrap" style="margin-top:18px"></div>
+        <div id="vahanWrap" style="margin-top:18px"></div>
       </div>
       <div class="card noprint">
         <label class="tog"><input type="checkbox" id="incRuns" checked> Include all what-if simulation runs</label>
@@ -716,7 +731,7 @@ function setLive(on){
   syncVideo();
 }
 function checkHealth(){
-  return api("/api/health",null,4000).then(function(h){HEALTH=h;setLive(true);syncVideo();showEngine()},function(){HEALTH=null;setLive(false)});
+  return api("/api/health",null,4000).then(function(h){HEALTH=h;setLive(true);syncVideo();showEngine();loadVahan()},function(){HEALTH=null;setLive(false)});
 }
 /* ---------------- clip upload: POST /api/upload/{sector}, then poll /api/upload/status ---------------- */
 var VIDV=0,uplPolling=false;
@@ -816,7 +831,10 @@ $("#uplFile").addEventListener("change",function(){var f=this.files&&this.files[
 function uplResume(){api("/api/upload/status",null,4000).then(function(j){if(j.state==="running")pollUpload()},function(){})}   /* page reloaded mid-analysis */
 
 function showEngine(){   /* which smoke engine produced the factory telemetry (factory_telemetry_meta.json) */
-  var run=dig(HEALTH,"industrial_module.detector_run"),el=$("#engTxt");if(!el||!run)return;
+  var run=dig(HEALTH,"industrial_module.detector_run"),el=$("#engTxt");if(!el||!HEALTH)return;
+  if(!run){   /* repository telemetry with no run metadata (no clip uploaded) */
+    el.textContent="Factory stack: "+dig(HEALTH,"industrial_module.cached_telemetry_frames",0)+
+      " frames of the project's factory telemetry. Upload a factory clip on the Map page to analyse your own video.";return}
   el.textContent="Factory stack: "+(run.detector_mode||run.profile||"auto-routed")+" · "+(run.frames_processed||0)+" frames of "+
     (run.source_video||"video")+" ("+run.width+"×"+run.height+")";
 }
@@ -865,6 +883,8 @@ function showDash(i){
   setMode("dashboard");page=i;
   views.forEach(function(v,k){v.classList.toggle("on",k===i)});
   $$(".top nav button").forEach(function(b){b.classList.toggle("on",+b.dataset.go===i)});
+  var navOn=$(".top nav button.on"),nav=$(".top nav");   /* keep the current page visible in the scrolling phone menu */
+  if(navOn&&nav&&nav.scrollWidth>nav.clientWidth)nav.scrollLeft=navOn.offsetLeft-(nav.clientWidth-navOn.offsetWidth)/2;
   window.scrollTo(0,0);document.title="EmmisionX · "+views[i].dataset.name;
   var pv=$("#pgPrev"),nx=$("#pgNext");
   var ki=RKEYS.indexOf(i),dashN=RKEYS.length-1;
@@ -1151,9 +1171,18 @@ function tick(){
     dig(rec,"cv_telemetry.recent_logs",[]).forEach(function(l){logText(l,/VIOLATION|WARN|ALERT/i.test(l))});
     var cnt=dig(veh,"cv_telemetry.active_counts",{}),keys=Object.keys(cnt),tot=0,top="-",tv=-1;
     keys.forEach(function(k){tot+=+cnt[k]||0;if(+cnt[k]>tv){tv=+cnt[k];top=prettyCls(k)}});
-    if(chCo2&&keys.length){chCo2.data.labels=keys.map(prettyCls);chCo2.data.datasets[0].data=keys.map(function(k){return +cnt[k]||0});chCo2.update()}
     var vehSim=dig(HEALTH,"vehicular_module.cached_telemetry_frames",0)===0;   /* backend stub until a fuel-station clip is analysed */
-    $("#chCo2T").textContent=vehSim?"Vehicle counts (placeholder, no fuel-station clip yet)":"Vehicles on the forecourt camera";$("#stVehL").textContent=vehSim?"Vehicles (placeholder)":"Vehicles seen";$("#chCo2U").textContent="count";$("#stOpL").textContent="Stack opacity";
+    var clipTot=dig(HEALTH,"vehicular_module.clip_totals"),cbc=clipTot&&clipTot.counts_by_class;
+    if(chCo2&&cbc&&Object.keys(cbc).length){   /* totals over the whole clip, not the vehicles in view this second */
+      var ck=["car","motorcycle","bus","truck"].filter(function(k){return k in cbc});
+      chCo2.data.labels=ck.map(prettyCls);chCo2.data.datasets[0].data=ck.map(function(k){return +cbc[k]||0});chCo2.update();
+      $("#chCo2T").textContent="Total vehicles in the clip: "+(clipTot.total_unique_vehicles!=null?clipTot.total_unique_vehicles:ck.reduce(function(a,k){return a+(+cbc[k]||0)},0));
+      $("#chCo2U").textContent="whole clip";$("#chCo2T").title=(clipTot.source_video||"")+(clipTot.duration_seconds?" · "+clipTot.duration_seconds+" s":"");
+    }else{
+      if(chCo2&&keys.length){chCo2.data.labels=keys.map(prettyCls);chCo2.data.datasets[0].data=keys.map(function(k){return +cnt[k]||0});chCo2.update()}
+      $("#chCo2T").textContent=vehSim?"Vehicle counts (placeholder, no fuel-station clip yet)":"Vehicles on the forecourt camera";$("#chCo2U").textContent="count";
+    }
+    $("#stVehL").textContent=vehSim?"Vehicles (placeholder)":"Vehicles seen";$("#stOpL").textContent="Stack opacity";
     S.veh=tot;$("#stVeh").textContent=tot;$("#stTop").textContent=top;
     var total=+dig(HEALTH,"industrial_module.cached_telemetry_frames",0)||3000;S.frames=TELN;
     $("#pBar").style.width=((TELN%total)/total*100)+"%";$("#pLbl").textContent=(TELN%total)+" / "+total+" telemetry frames";
@@ -1309,6 +1338,7 @@ function snap(){
     smoke_opacity_pct:S.opac.length?S.opac[S.opac.length-1]:n.opac,avg_opacity_pct:+avg.toFixed(1),alerts:S.alerts,
     est_total_kg_co2_per_hr:+totalKg(S.co2.car?S.co2:n.base,n.stack).toFixed(1),alert_threshold_pct:LIMIT};
   if(LIVE&&TEL)o.live_telemetry=TEL[S.node==="p2"?"industrial":"vehicular"];
+  if(LIVE&&VAH)o.mock_vehicle_registry_summary={notice:VAH.notice,summary:VAH.summary};
   if(TWR)o.twin_projection={parameters:TWR.parameters_applied,projected:TWR.projected_summary,savings:TWR.financial_savings,cpcb:TWR.cpcb_compliance};
   return o;
 }
@@ -1351,6 +1381,9 @@ function adviceHtml(a){
 function send(q){
   if(!q.trim())return;addMsg(esc(q),"u");
   var d=addMsg("Thinking…","a"),sector=S.node==="p2"?"industrial":"vehicular";
+  /* the question's topic wins over the selected pin for the rule-based fallback */
+  if(/stack|factory|smoke|chimney|boiler|plume|scrubber|ringelmann|opacity|industr|coal|biomass/i.test(q))sector="industrial";
+  else if(/vehicle|car\b|cars|pump|fuel station|forecourt|traffic|idl|\bev\b|truck|bus|bike|plate|queue/i.test(q))sector="vehicular";
   api("/api/chat",{message:q,history:chatHist,context:snap(),allow_write:true},90000)
   .then(function(j){
     chatHist.push({role:"user",content:q},{role:"assistant",content:j.reply});
@@ -1370,6 +1403,33 @@ $$("#quick .chip").forEach(function(c){c.addEventListener("click",function(){sen
 
 /* ---------------- report ---------------- */
 function grade(avg,alerts){var sc=100-avg*1.1-alerts*.4;return sc>=80?"A":sc>=65?"B":sc>=50?"C":"D"}
+/* ---------------- mock vehicle registry: /api/vahan/fleet (MOCK DATA, not VAHAN) ---------------- */
+var VAH=null;
+function loadVahan(){return api("/api/vahan/fleet",null,6000).then(function(v){VAH=v;renderVahanMini();renderVahanTable()},function(){VAH=null;renderVahanMini();renderVahanTable()})}
+function mixText(o){return Object.keys(o||{}).sort(function(a,b){return o[b]-o[a]}).map(function(k){return o[k]+" "+k}).join(", ")}
+function renderVahanMini(){
+  var el=$("#vahanMini");if(!el)return;
+  var show=!!(LIVE&&VAH&&S.node==="p1"&&VAH.vehicles&&VAH.vehicles.length);
+  el.hidden=!show;if(!show)return;
+  var sm=VAH.summary;
+  el.innerHTML='<div class="row" style="justify-content:space-between"><b>Vehicle registry</b><span class="mockpill">MOCK DATA</span></div>'+
+    '<div class="k" style="margin-top:4px">'+sm.vehicles+' vehicles'+(VAH.source_video?' in '+esc(VAH.source_video):'')+' · fuel: '+esc(mixText(sm.fuel_mix))+
+    ' · BS-III/IV buses and trucks: '+sm.bs3_bs4_heavy+' · PUC expired: '+sm.puc_expired+'</div>'+
+    '<div class="k" style="margin-top:4px">From a '+VAH.database_size+'-record mock database, not VAHAN. Full list on the Report page.</div>';
+}
+function renderVahanTable(){
+  var w=$("#vahanWrap");if(!w)return;
+  if(!(LIVE&&VAH&&VAH.vehicles&&VAH.vehicles.length)){w.innerHTML="";return}
+  var vs=VAH.vehicles,sm=VAH.summary,max=25;
+  w.innerHTML='<div class="row" style="justify-content:space-between"><b>Vehicle registry, fuel station</b><span class="mockpill">MOCK DATA, NOT VAHAN</span></div>'+
+    '<p class="k" style="margin:4px 0 8px">'+esc(VAH.notice)+'. Plates read: '+sm.plates_read+' of '+sm.vehicles+'; '+sm.exact_matches+
+    ' found in the mock database, the rest get a mock record of the same vehicle type.</p>'+
+    '<div class="tblwrap"><table><tr><th>Track</th><th>Plate read</th><th>Mock record</th><th>Vehicle</th><th>Fuel</th><th>Norm</th><th>Year</th><th>PUC</th><th>CO₂ g/km</th></tr>'+
+    vs.slice(0,max).map(function(v){return '<tr><td>'+v.track_id+'</td><td>'+(v.plate_read?esc(v.plate_read):'<span class="k">not read</span>')+
+      '</td><td class="mono">'+esc(v.plate)+'</td><td>'+esc(v.maker_model)+'</td><td style="text-transform:capitalize">'+esc(v.fuel_type)+
+      '</td><td>'+esc(v.emission_norm)+'</td><td>'+v.registration_year+'</td><td>'+esc(v.puc_status)+'</td><td>'+(v.est_co2_g_km==null?'-':v.est_co2_g_km)+'</td></tr>'}).join("")+
+    '</table></div>'+(vs.length>max?'<span class="k">and '+(vs.length-max)+' more in the JSON export.</span>':'');
+}
 var REP=null;
 function loadReport(){return api("/api/report/summary",null,8000).then(function(r){REP=r;renderReport()},function(){REP=null;renderReport()})}
 function pct0(x){return Math.round(+x||0)+"%"}
@@ -1411,6 +1471,7 @@ $("#incRuns").addEventListener("change",renderReport);
 function buildJSON(){
   var o={generated_at:new Date().toISOString(),state:{node:snap(),opacity_history_pct:S.opac.slice(),frames_processed:S.frames}};
   if(LIVE&&REP)o.backend_report=REP;
+  if(LIVE&&VAH)o.mock_vehicle_registry=VAH;
   if($("#incRuns").checked)o.simulation_history=S.runs.slice();
   return o;
 }
@@ -1432,7 +1493,7 @@ function setNode(k){
   if(S.node===k)return;
   S.node=k;S.opac=[];S.opSum=0;S.opN=0;S.alerts=0;
   $$("#nodeSeg button").forEach(function(b){b.classList.toggle("on",b.dataset.node===k)});
-  feed.reset();syncVideo();uplLabel();twinUpdate();
+  feed.reset();syncVideo();uplLabel();renderVahanMini();twinUpdate();
   loadCtx("Switched to <b>"+N().id+" "+N().name+"</b>. Telemetry JSON refreshed.");
   tick();
 }

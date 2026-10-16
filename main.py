@@ -52,7 +52,7 @@ from modules.compliance_report import (
     generate_report_summary,
     generate_printable_html_report,
 )
-from modules import upload_jobs
+from modules import upload_jobs, vehicle_registry
 
 # Configure logging
 logging.basicConfig(
@@ -480,6 +480,23 @@ def root():
     }
 
 
+def _vehicular_clip_totals() -> Optional[Dict[str, Any]]:
+    """Unique vehicles counted over the whole fuel-station clip (backend/data/phase1_summary.json)."""
+    try:
+        with open(WORKSPACE_ROOT / "backend" / "data" / "phase1_summary.json", "r", encoding="utf-8") as f:
+            s = json.load(f)
+    except (OSError, ValueError):
+        return None
+    tracks = s.get("tracked_vehicles") or []
+    return {
+        "source_video": Path(str(s.get("video_source") or "")).name or None,
+        "duration_seconds": s.get("duration_seconds"),
+        "total_unique_vehicles": s.get("total_unique_vehicles"),
+        "counts_by_class": s.get("counts_by_class") or {},
+        "plates_read": sum(1 for t in tracks if t.get("license_plate")),
+    }
+
+
 def _file_version(path: Path) -> Optional[int]:
     """Modification time in ms; the website adds it to video URLs so a re-upload is never served from cache."""
     try:
@@ -511,6 +528,7 @@ def get_health() -> Dict[str, Any]:
             "video_version": _file_version(WORKSPACE_ROOT / "cache" / "fuel_annotated.mp4"),
             "video_path": "cache/fuel_annotated.mp4",
             "uploaded_clip": upload_jobs.uploaded_info("vehicular"),
+            "clip_totals": _vehicular_clip_totals(),
         },
         "environment_service": {
             "source": "open-meteo" if (time.time() - _weather_last_fetched < WEATHER_CACHE_TTL_SEC) else "offline-cache",
@@ -936,6 +954,33 @@ def remove_uploaded_clip(sector: str):
     if not removed:
         raise HTTPException(status_code=404, detail=f"No uploaded {sector} clip to remove.")
     return {"removed": True, "sector": sector}
+
+
+# =====================================================================
+# 8. MOCK VEHICLE REGISTRY (VAHAN-STYLE, MOCK DATA ONLY)
+# =====================================================================
+
+@app.get("/api/vahan/lookup")
+def vahan_lookup(
+    plate: Optional[str] = Query(default=None, description="Number plate as read, e.g. KA51AF4321"),
+    vehicle_class: Optional[str] = Query(default=None, description="car, motorcycle, bus, truck or auto_rickshaw"),
+):
+    """Registry details for one plate from the 20-record MOCK database (not real VAHAN data)."""
+    if not plate and not vehicle_class:
+        raise HTTPException(status_code=400, detail="Give a plate, a vehicle_class, or both.")
+    return vehicle_registry.lookup(plate, vehicle_class, key=plate or vehicle_class)
+
+
+@app.get("/api/vahan/fleet")
+def vahan_fleet():
+    """MOCK registry details for every vehicle tracked in the current fuel-station clip, with a fleet summary."""
+    return vehicle_registry.fleet_from_phase1()
+
+
+@app.get("/api/vahan/database")
+def vahan_database():
+    """All records of the MOCK registry database."""
+    return {"data_source": "mock", "notice": vehicle_registry.MOCK_NOTICE, "records": vehicle_registry.records()}
 
 
 # =====================================================================
