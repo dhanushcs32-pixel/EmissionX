@@ -1,4 +1,6 @@
+import collections
 import logging
+import math
 from pathlib import Path
 from typing import Callable, Dict, Generator, List, Optional, Tuple
 
@@ -8,6 +10,7 @@ import supervision as sv
 from ultralytics import YOLO
 
 from .schemas import TARGET_VEHICLE_CLASSES, VehicleTrackRecord, VideoAnalysisSummary
+from .zones import load_forecourt_zones
 
 logger = logging.getLogger("emission_x.detector")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -68,11 +71,13 @@ class VehicleDetectorTracker:
         output_path: Optional[str] = None,
         max_frames: Optional[int] = None,
         progress_cb: Optional[Callable[[int, int], None]] = None,
+        source_name: Optional[str] = None,
     ) -> Tuple[VideoAnalysisSummary, Dict[int, VehicleTrackRecord]]:
         """Processes a video file frame-by-frame, runs YOLO11n + ByteTrack,
         annotates frames, and produces tracking records and summary.
 
         progress_cb(frames_done, total_frames) is called after each frame, if given.
+        source_name: original clip name, used to pick per-video zones (defaults to video_path).
         """
         video_path = str(Path(video_path).resolve())
         cap = cv2.VideoCapture(video_path)
@@ -95,6 +100,14 @@ class VehicleDetectorTracker:
             if not writer.isOpened():
                 writer = cv2.VideoWriter(str(output_p), cv2.VideoWriter_fourcc(*"mp4v"), fps, (width, height))
                 logger.warning("H.264 encoder unavailable; wrote mp4v, which web browsers cannot play.")
+
+        # Forecourt zones: Bay_01 (refuelling) and Queue_01 (waiting), tested on each box's bottom-centre
+        zone_polys, bay_trigger_s, still_frac = load_forecourt_zones(source_name or video_path, width, height)
+        zones = {name: sv.PolygonZone(polygon=poly, triggering_anchors=(sv.Position.BOTTOM_CENTER,))
+                 for name, poly in zone_polys.items()}
+        still_px = still_frac * math.hypot(width, height)
+        anchor_hist: Dict[int, collections.deque] = {}
+        frame_s = 1.0 / fps
 
         vehicle_records: Dict[int, VehicleTrackRecord] = {}
         plate_votes: Dict[int, Dict[str, Tuple[float, float]]] = {}  # track -> plate -> (conf sum, best conf)
@@ -133,7 +146,8 @@ class VehicleDetectorTracker:
                 # Collect track records
                 if detections.tracker_id is not None and len(detections.tracker_id) > 0:
                     labels = []
-                    for xyxy, mask, confidence, class_id, tracker_id, data in detections:
+                    in_zone = {name: zone.trigger(detections=detections) for name, zone in zones.items()}
+                    for det_i, (xyxy, mask, confidence, class_id, tracker_id, data) in enumerate(detections):
                         if tracker_id is None:
                             labels.append(f"{TARGET_VEHICLE_CLASSES.get(class_id, 'vehicle')} {confidence:.2f}")
                             continue
@@ -162,6 +176,28 @@ class VehicleDetectorTracker:
                                 rec.confidence = round(float(confidence), 3)
 
                         rec = vehicle_records[tracker_id]
+
+                        # Zone timing: bay dwell, queue idle, and standing still in the bay (refuel trigger)
+                        anchor = ((float(xyxy[0]) + float(xyxy[2])) / 2.0, float(xyxy[3]))
+                        hist = anchor_hist.setdefault(tracker_id, collections.deque(maxlen=max(2, int(round(fps)))))
+                        hist.append(anchor)
+                        stationary = len(hist) == hist.maxlen and math.dist(hist[0], anchor) <= still_px
+                        if "Bay_01" in in_zone and in_zone["Bay_01"][det_i]:
+                            if "Bay_01" not in rec.zones_entered:
+                                rec.zones_entered.append("Bay_01")
+                                rec.bay_first_frame = frame_idx
+                            rec.bay_last_frame = frame_idx
+                            rec.estimated_dwell_seconds += frame_s
+                            if stationary:
+                                rec.bay_stationary_seconds += frame_s
+                                if rec.refuel_trigger_frame is None and rec.bay_stationary_seconds > bay_trigger_s:
+                                    rec.refuel_trigger_frame = frame_idx
+                        if "Queue_01" in in_zone and in_zone["Queue_01"][det_i]:
+                            if "Queue_01" not in rec.zones_entered:
+                                rec.zones_entered.append("Queue_01")
+                                rec.queue_first_frame = frame_idx
+                            rec.queue_last_frame = frame_idx
+                            rec.queue_idle_seconds += frame_s
 
                         # License Plate Recognition (if enabled)
                         if self.enable_lpr and self.lpr:
@@ -217,6 +253,14 @@ class VehicleDetectorTracker:
                 else:
                     annotated_frame = frame.copy()
 
+                # Forecourt zones overlay
+                for name, poly in zone_polys.items():
+                    col = (12, 88, 234) if name == "Bay_01" else (60, 200, 255)
+                    cv2.polylines(annotated_frame, [poly], True, col, 2, cv2.LINE_AA)
+                    # name at the bottom-left corner: vehicle labels sit on top of their boxes
+                    x0, y0 = int(poly[:, 0].min()) + 6, int(poly[:, 1].max()) - 8
+                    cv2.putText(annotated_frame, name, (x0, y0), cv2.FONT_HERSHEY_SIMPLEX, 0.6, col, 2, cv2.LINE_AA)
+
                 # Add sleek Emission X HUD overlay (cream & orange)
                 plates_count = sum(1 for r in vehicle_records.values() if r.license_plate is not None)
                 hud_text = (
@@ -250,6 +294,11 @@ class VehicleDetectorTracker:
             if writer:
                 writer.release()
                 logger.info(f"Annotated output video saved to: {output_path}")
+
+        for rec in vehicle_records.values():
+            rec.estimated_dwell_seconds = round(rec.estimated_dwell_seconds, 2)
+            rec.queue_idle_seconds = round(rec.queue_idle_seconds, 2)
+            rec.bay_stationary_seconds = round(rec.bay_stationary_seconds, 2)
 
         # Compute summary
         counts_by_class: Dict[str, int] = {name: 0 for name in TARGET_VEHICLE_CLASSES.values()}

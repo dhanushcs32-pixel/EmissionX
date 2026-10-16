@@ -21,7 +21,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from modules import vehicle_registry
+from modules import forecourt_fuel, vehicle_registry
 
 logger = logging.getLogger("UploadJobs")
 
@@ -236,11 +236,14 @@ def _run_vehicular(video_path: Path, original_name: str) -> str:
     tracker = VehicleDetectorTracker(model_name=_vehicle_model(), enable_lpr=True, lpr_interval=10)
     _update(stage="tracking vehicles and reading plates")
     work_video = WORK_DIR / "fuel_annotated.mp4"
-    summary, _ = tracker.process_video(video_path=str(video_path), output_path=str(work_video), progress_cb=_progress)
+    summary, _ = tracker.process_video(video_path=str(video_path), output_path=str(work_video),
+                                       progress_cb=_progress, source_name=original_name)
 
     summary_dict = summary.model_dump()
     summary_dict["video_source"] = original_name
     summary_dict["output_annotated_video"] = "cache/fuel_annotated.mp4"
+    _update(stage="computing fuel, idle and VOC emissions")
+    forecourt_fuel.enrich_summary(summary_dict, temp_c=forecourt_fuel.current_temp_c())
     records = tracks_to_fuel_telemetry(summary_dict)
 
     _update(stage="publishing results")
@@ -250,40 +253,63 @@ def _run_vehicular(video_path: Path, original_name: str) -> str:
     (WORKSPACE_ROOT / "backend" / "data" / "phase1_summary.json").write_text(json.dumps(summary_dict, indent=2), encoding="utf-8")
 
     plates = sum(1 for t in summary_dict["tracked_vehicles"] if t.get("license_plate"))
+    fc = summary_dict.get("forecourt") or {}
     return (f"{summary_dict['total_frames']} frames analysed; {summary_dict['total_unique_vehicles']} vehicles tracked, "
-            f"{plates} number plates read")
+            f"{plates} number plates read, {fc.get('refuels', 0)} refuels ({fc.get('litres_total', 0)} L)")
 
 
 def tracks_to_fuel_telemetry(summary: Dict[str, Any], node_id: str = "BLR_FUEL_STATION_01") -> List[Dict[str, Any]]:
     """Turns per-vehicle tracks into the per-second vehicular telemetry contract served by /api/telemetry.
 
-    Each record counts the vehicles visible in that second of the clip. CO2 uses the same simple
-    forecourt model as the receiver stub in main.py (running burn + per-class load + dwell waste).
+    Counts are the vehicles visible in that second. bay_dwell_sec / queue_idle_sec are the average time the
+    vehicles currently in Bay_01 / Queue_01 have been there. Refuel events (summary["forecourt"], from
+    modules.forecourt_fuel.enrich_summary) are logged in the second they trigger. CO2 rates are the clip's
+    fuel CO2 (scope 3) and queue idling CO2 (scope 1) per hour of footage.
     """
     fps = float(summary.get("fps") or 25.0)
     total = int(summary.get("total_frames") or 0)
     tracks = summary.get("tracked_vehicles") or []
+    fc = summary.get("forecourt") or {}
     step = max(1, int(round(fps)))
+    clip_hr = max(total / fps, 1.0) / 3600.0
+    idle_rate = round(float(fc.get("co2_idle_kg") or 0.0) / clip_hr, 1)
+    base_rate = round((float(fc.get("co2_fuel_kg") or 0.0) + float(fc.get("co2_idle_kg") or 0.0)) / clip_hr, 1)
+    voc_rate = round(float(fc.get("voc_kg") or 0.0) / clip_hr, 3)
+
+    def in_span(t: Dict[str, Any], first: str, last: str, f: int) -> bool:
+        return t.get(first) is not None and t[first] <= f <= (t.get(last) or t[first])
+
     records: List[Dict[str, Any]] = []
     for f in range(0, max(total, 1), step):
         active = [t for t in tracks if t["first_seen_frame"] <= f <= t["last_seen_frame"]]
-        counts = {"car": 0, "motorcycle": 0, "auto_rickshaw": 0, "bus_truck": 0}
+        counts = {"car": 0, "motorcycle": 0, "truck": 0, "bus": 0}
         for t in active:
             cls = t.get("vehicle_class")
-            counts["bus_truck" if cls in ("bus", "truck") else "motorcycle" if cls == "motorcycle" else "car"] += 1
-        durations = [(t["last_seen_frame"] - t["first_seen_frame"]) / fps for t in active]
-        dwell = round(sum(durations) / len(durations), 1) if durations else 0.0
-        cars, bikes, heavy = counts["car"], counts["motorcycle"], counts["bus_truck"]
-        base_co2 = round(110.0 + cars * 6.5 + bikes * 1.8 + heavy * 18.0, 1)
-        waste_co2 = round((dwell / 30.0) * (cars * 3.5 + heavy * 9.0), 1)
+            counts[cls if cls in counts else "car"] += 1
+        in_bay = [t for t in tracks if in_span(t, "bay_first_frame", "bay_last_frame", f)]
+        in_queue = [t for t in tracks if in_span(t, "queue_first_frame", "queue_last_frame", f)]
+        bay_dwell = round(sum((f - t["bay_first_frame"]) / fps for t in in_bay) / len(in_bay), 1) if in_bay else 0.0
+        queue_waits = [(f - t["queue_first_frame"]) / fps for t in in_queue]
+        queue_idle = round(sum(queue_waits) / len(queue_waits), 1) if queue_waits else 0.0
 
-        logs = [f" [VEH-CV] {len(active)} vehicles in view (cars {cars}, bikes {bikes}, bus/truck {heavy})"]
+        logs = [f" [VEH-CV] {len(active)} vehicles in view (cars {counts['car']}, bikes {counts['motorcycle']}, "
+                f"trucks {counts['truck']}, buses {counts['bus']}) | Bay_01: {len(in_bay)} | Queue_01: {len(in_queue)}"]
+        for t in tracks:   # refuel events that trigger in this second
+            trig = t.get("refuel_trigger_frame")
+            ev = (t.get("forecourt") or {}).get("refuel")
+            if ev and trig is not None and f <= trig < f + step:
+                logs.append(ev["log"])
+        long_wait = [w for w in queue_waits if w > 40.0]
+        if long_wait:
+            wasted = sum((t.get("forecourt") or {}).get("co2_idle_kg", 0.0) for t, w in zip(in_queue, queue_waits) if w > 40.0)
+            logs.append(f" [QUEUE-WARN] {len(long_wait)} vehicles idling > 40s in Queue_01 -> +{wasted:.2f} kg wasted CO2")
+        elif in_queue:
+            logs.append(f" [QUEUE] {len(in_queue)} vehicles waiting in Queue_01, avg {queue_idle}s")
         for t in [t for t in active if t.get("license_plate")][:2]:
             reg = vehicle_registry.lookup(t["license_plate"], t.get("vehicle_class"))
             logs.append(f" [LPR] Plate {t['license_plate']} ({t['vehicle_class']}, conf {t.get('plate_confidence')}) -> "
                         f"MOCK VAHAN: {reg['maker_model']}, {reg['fuel_type']} {reg['emission_norm']}, "
                         f"{reg['registration_year']}, PUC {reg['puc_status']}")
-        logs.append(f" [DWELL] Avg time in view: {dwell}s at t={f / fps:.0f}s of {summary.get('video_source', 'clip')}")
 
         records.append({
             "node_id": node_id,
@@ -292,17 +318,17 @@ def tracks_to_fuel_telemetry(summary: Dict[str, Any], node_id: str = "BLR_FUEL_S
             "environment": {},
             "cv_telemetry": {
                 "active_counts": counts,
-                "bay_dwell_sec": dwell,
-                "queue_idle_sec": None,
+                "bay_dwell_sec": bay_dwell,
+                "queue_idle_sec": queue_idle,
                 "smoke_opacity_pct": None,
                 "ringelmann_level": 0,
                 "opacity_multiplier": 1.0,
                 "recent_logs": logs,
             },
-            "emissions": {"baseline_co2_kg_hr": base_co2, "waste_co2_kg_hr": waste_co2},
+            "emissions": {"baseline_co2_kg_hr": base_rate, "waste_co2_kg_hr": idle_rate, "voc_kg_hr": voc_rate},
             "simulation": {
                 "active": False,
-                "projected_co2_kg_hr": base_co2,
+                "projected_co2_kg_hr": base_rate,
                 "reduction_pct": 0.0,
                 "applied_params": {"ev_adoption_pct": 0.0, "e20_blend_pct": 0.0,
                                    "queue_optimization_pct": 0.0, "ban_bs3_bs4_heavy": False},

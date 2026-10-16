@@ -10,6 +10,7 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
 from backend.app.detector import VehicleDetectorTracker
+from modules import forecourt_fuel
 
 logger = logging.getLogger("emission_x.phase1")
 
@@ -106,6 +107,8 @@ def main():
 
     # Save summary JSON
     summary_dict = summary.model_dump()
+    # Tri-modal synthetic fuel, FASTag -> mock VAHAN, BS idle multipliers, VOC penalty (modules/forecourt_fuel.py)
+    forecourt_fuel.enrich_summary(summary_dict, temp_c=forecourt_fuel.current_temp_c())
     with open(summary_path, "w", encoding="utf-8") as f:
         json.dump(summary_dict, f, indent=2)
 

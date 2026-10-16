@@ -254,7 +254,9 @@ def extract_vehicular_baseline() -> Dict[str, Any]:
                 tv = data.get("tracked_vehicles", [])
                 dwells = [t.get("estimated_dwell_seconds", 0.0) for t in tv if t.get("estimated_dwell_seconds", 0.0) > 5.0]
                 if dwells:
-                    avg_dwell = float(sum(dwells) / len(dwells))
+                    # rounded once here: the simulation reuses the reported (rounded) dwell, and a zero
+                    # intervention must reproduce the baseline exactly
+                    avg_dwell = round(float(sum(dwells) / len(dwells)), 1)
         except Exception as e:
             logger.warning(f"Could not read phase1_summary.json ({e}). Using forecourt baseline.")
 

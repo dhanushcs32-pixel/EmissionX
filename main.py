@@ -333,10 +333,10 @@ class VehicularReceiverAdapter:
             "environment": env,
             "cv_telemetry": {
                 "active_counts": {
-                    "car": cars,
+                    "car": cars + autos,
                     "motorcycle": bikes,
-                    "auto_rickshaw": autos,
-                    "bus_truck": trucks,
+                    "truck": trucks,
+                    "bus": 0,
                 },
                 "bay_dwell_sec": dwell_sec,
                 "queue_idle_sec": idle_sec,
@@ -494,6 +494,7 @@ def _vehicular_clip_totals() -> Optional[Dict[str, Any]]:
         "total_unique_vehicles": s.get("total_unique_vehicles"),
         "counts_by_class": s.get("counts_by_class") or {},
         "plates_read": sum(1 for t in tracks if t.get("license_plate")),
+        "forecourt": s.get("forecourt"),
     }
 
 

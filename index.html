@@ -320,11 +320,21 @@ body.dashboard #v3.on::before{background:linear-gradient(90deg,var(--scrim) 0%,v
 .upl .bar{margin-top:0}
 /* print: only the report */
 @media print{
-  #bg,.top,.idx,main>section:not(#v5),footer,.noprint{display:none!important}
-  body{background:#fff;color:#222}
-  #v5{display:block;padding:0;min-height:0}
-  .card{background:#fff;border-color:#ddd;backdrop-filter:none}
+  /* light print palette whatever the screen theme (dark theme text would be white on white) */
+  :root{--bg:#fff!important;--bg2:#fff!important;--card:#fff!important;--glass:#fff!important;--ink:#1A0E04!important;
+    --muted:#5C4A3A!important;--line:rgba(26,14,4,.18)!important;--scrim:transparent!important;color-scheme:light!important}
+  #bg,.top,.idx,.pager,main>section:not(#v5),footer,.noprint{display:none!important}
+  body,body.dashboard main{background:#fff!important;color:#1A0E04}
+  /* the page scrim is positioned above normal content; on screen the glass cards escape it, on paper it would cover the report */
+  .view::before{display:none!important;content:none!important}
+  #v5{display:block!important;padding:0;min-height:0;animation:none!important}
+  .card{background:#fff!important;border-color:#ddd;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;break-inside:avoid}
+  #reportDoc{border:0;padding:0}
   #v5 .wrap{max-width:none;padding:0}
+  .tblwrap{overflow:visible}
+  table{width:100%;font-size:11px}
+  tr{break-inside:avoid}
+  .mockpill,.pill,.grade{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 </style>
 </head>
@@ -1144,11 +1154,11 @@ function liveStats(ind,veh,op,tot,top){
     setStat("stTop","Stack CO₂ (kg/hr)",Math.round(+dig(ind,"emissions.baseline_co2_kg_hr",0)).toLocaleString("en-IN"));
     var so2=dig(ind,"cv_telemetry.cems_metrics.so2_ppm");setStat("stAl","SO₂",so2!=null?so2+" ppm":"-");
   }else if(veh){
-    var sim=dig(HEALTH,"vehicular_module.cached_telemetry_frames",0)===0,dw=dig(veh,"cv_telemetry.bay_dwell_sec");
+    var sim=dig(HEALTH,"vehicular_module.cached_telemetry_frames",0)===0,dw=dig(veh,"cv_telemetry.bay_dwell_sec"),qi=dig(veh,"cv_telemetry.queue_idle_sec");
     setStat("stVeh",sim?"Vehicles (placeholder)":"Vehicles in view",tot||0);
-    setStat("stOp","Forecourt CO₂ (kg/hr)",Math.round(+dig(veh,"emissions.baseline_co2_kg_hr",0)).toLocaleString("en-IN"));
-    setStat("stTop","Top class",top||"-");
-    setStat("stAl","Avg dwell",dw!=null?dw+" s":"-");
+    setStat("stOp","Bay_01 dwell",dw!=null?dw+" s":"-");
+    setStat("stTop","Queue_01 idle",qi!=null?qi+" s":"-");
+    setStat("stAl","Forecourt CO₂ (kg/hr)",Math.round(+dig(veh,"emissions.baseline_co2_kg_hr",0)).toLocaleString("en-IN"));
   }
 }
 function demoStatLabels(){
@@ -1411,12 +1421,21 @@ function renderVahanMini(){
   var el=$("#vahanMini");if(!el)return;
   var show=!!(LIVE&&VAH&&S.node==="p1"&&VAH.vehicles&&VAH.vehicles.length);
   el.hidden=!show;if(!show)return;
-  var sm=VAH.summary;
-  el.innerHTML='<div class="row" style="justify-content:space-between"><b>Vehicle registry</b><span class="mockpill">MOCK DATA</span></div>'+
+  var sm=VAH.summary,fc=dig(HEALTH,"vehicular_module.clip_totals.forecourt");
+  el.innerHTML='<div class="row" style="justify-content:space-between"><b>Forecourt fuel &amp; registry</b><span class="row" style="gap:6px"><span class="mockpill">SIMULATED</span><span class="mockpill">MOCK</span></span></div>'+
+    '<div class="k" style="margin-top:4px">'+forecourtLine(fc)+'</div>'+
     '<div class="k" style="margin-top:4px">'+sm.vehicles+' vehicles'+(VAH.source_video?' in '+esc(VAH.source_video):'')+' · fuel: '+esc(mixText(sm.fuel_mix))+
     ' · BS-III/IV buses and trucks: '+sm.bs3_bs4_heavy+' · PUC expired: '+sm.puc_expired+'</div>'+
     '<div class="k" style="margin-top:4px">From a '+VAH.database_size+'-record mock database, not VAHAN. Full list on the Report page.</div>';
 }
+function forecourtLine(fc){   /* clip totals from modules/forecourt_fuel.py (simulated fuel, mock VAHAN) */
+  if(!fc)return "No zone data for this clip yet. Upload a fuel-station clip to measure Bay_01 / Queue_01 time and refuels.";
+  var m=fc.refuels_by_method||{},n=function(x){return (+x||0).toLocaleString("en-IN",{maximumFractionDigits:2})};
+  return fc.refuels+" refuels (A "+(m.A||0)+" · B "+(m.B||0)+" · C FASTag "+(m.C||0)+") · "+n(fc.litres_total)+" L · fuel CO₂ "+n(fc.co2_fuel_kg)+
+    " kg · idle CO₂ "+n(fc.co2_idle_kg)+" kg · VOC "+n((+fc.voc_kg||0)*1000)+" g"+(fc.temp_c!=null?" at "+fc.temp_c+"°C"+(fc.voc_penalty_pct>0?" (+"+fc.voc_penalty_pct+"% heat penalty)":""):"")+
+    " · avg bay "+(fc.avg_bay_dwell_s!=null?fc.avg_bay_dwell_s+" s":"-")+", queue "+(fc.avg_queue_idle_s!=null?fc.avg_queue_idle_s+" s":"-");
+}
+function refuelCell(f){var r=f&&f.refuel;if(!r)return '<span class="k">-</span>';return esc(r.method)+' · '+r.litres+' L · '+r.co2_fuel_kg+' kg'}
 function renderVahanTable(){
   var w=$("#vahanWrap");if(!w)return;
   if(!(LIVE&&VAH&&VAH.vehicles&&VAH.vehicles.length)){w.innerHTML="";return}
@@ -1424,10 +1443,12 @@ function renderVahanTable(){
   w.innerHTML='<div class="row" style="justify-content:space-between"><b>Vehicle registry, fuel station</b><span class="mockpill">MOCK DATA, NOT VAHAN</span></div>'+
     '<p class="k" style="margin:4px 0 8px">'+esc(VAH.notice)+'. Plates read: '+sm.plates_read+' of '+sm.vehicles+'; '+sm.exact_matches+
     ' found in the mock database, the rest get a mock record of the same vehicle type.</p>'+
-    '<div class="tblwrap"><table><tr><th>Track</th><th>Plate read</th><th>Mock record</th><th>Vehicle</th><th>Fuel</th><th>Norm</th><th>Year</th><th>PUC</th><th>CO₂ g/km</th></tr>'+
+    '<p class="k" style="margin:0 0 8px"><b>Forecourt fuel (simulated):</b> '+forecourtLine(dig(HEALTH,"vehicular_module.clip_totals.forecourt"))+'</p>'+
+    '<div class="tblwrap"><table><tr><th>Track</th><th>Plate read</th><th>Mock record</th><th>Vehicle</th><th>Fuel</th><th>Norm</th><th>Year</th><th>PUC</th><th>CO₂ g/km</th><th>Bay s</th><th>Queue s</th><th>Refuel (method · L · CO₂)</th></tr>'+
     vs.slice(0,max).map(function(v){return '<tr><td>'+v.track_id+'</td><td>'+(v.plate_read?esc(v.plate_read):'<span class="k">not read</span>')+
       '</td><td class="mono">'+esc(v.plate)+'</td><td>'+esc(v.maker_model)+'</td><td style="text-transform:capitalize">'+esc(v.fuel_type)+
-      '</td><td>'+esc(v.emission_norm)+'</td><td>'+v.registration_year+'</td><td>'+esc(v.puc_status)+'</td><td>'+(v.est_co2_g_km==null?'-':v.est_co2_g_km)+'</td></tr>'}).join("")+
+      '</td><td>'+esc(v.emission_norm)+'</td><td>'+v.registration_year+'</td><td>'+esc(v.puc_status)+'</td><td>'+(v.est_co2_g_km==null?'-':v.est_co2_g_km)+
+      '</td><td>'+(v.forecourt?v.forecourt.bay_dwell_s:'-')+'</td><td>'+(v.forecourt?v.forecourt.queue_idle_s:'-')+'</td><td>'+refuelCell(v.forecourt)+'</td></tr>'}).join("")+
     '</table></div>'+(vs.length>max?'<span class="k">and '+(vs.length-max)+' more in the JSON export.</span>':'');
 }
 var REP=null;

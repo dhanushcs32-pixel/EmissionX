@@ -104,6 +104,7 @@ def enrich_tracks(tracks: Iterable[Dict[str, Any]], today: Optional[date] = None
         rec = lookup(t.get("license_plate"), t.get("vehicle_class"), key=f"track-{t.get('track_id')}", today=today)
         rec["track_id"] = t.get("track_id")
         rec["detected_class"] = t.get("vehicle_class")
+        rec["forecourt"] = t.get("forecourt")
         out.append(rec)
     return out
 

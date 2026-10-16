@@ -1,0 +1,15 @@
+{
+  "_help": "Forecourt zones as [x, y] fractions of the frame (0..1). A vehicle is in a zone when the bottom-centre of its box is inside the polygon. 'videos' overrides the default for clips whose file name contains the key. bay_stationary_trigger_s: seconds a vehicle must stand still in Bay_01 before a refuel is recorded. stationary_px_frac: max movement in 1 s, as a fraction of the frame diagonal, to count as standing still.",
+  "default": {
+    "Bay_01": [[0.22, 0.50], [0.78, 0.50], [0.78, 0.93], [0.22, 0.93]],
+    "Queue_01": [[0.0, 0.45], [0.21, 0.45], [0.21, 0.98], [0.0, 0.98]]
+  },
+  "videos": {
+    "12.35.13": {
+      "Bay_01": [[0.66, 0.40], [1.0, 0.40], [1.0, 0.56], [0.66, 0.56]],
+      "Queue_01": [[0.46, 0.40], [0.65, 0.40], [0.65, 0.56], [0.46, 0.56]]
+    }
+  },
+  "bay_stationary_trigger_s": 3.0,
+  "stationary_px_frac": 0.02
+}

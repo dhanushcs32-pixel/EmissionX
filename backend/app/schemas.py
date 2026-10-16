@@ -25,9 +25,16 @@ class VehicleTrackRecord(BaseModel):
     # Phase 2: License Plate Recognition (LPR)
     license_plate: Optional[str] = Field(None, description="Recognized vehicle license plate number")
     plate_confidence: Optional[float] = Field(None, description="Confidence of plate OCR recognition")
-    # Placeholders for future phases (Phase 2 & 3)
+    # Forecourt zones (backend/data/forecourt_zones.json): Bay_01 = refuelling bay, Queue_01 = waiting lane
     zones_entered: List[str] = Field(default_factory=list, description="Zones vehicle entered")
-    estimated_dwell_seconds: float = Field(0.0, description="Dwell time estimate in active bay")
+    estimated_dwell_seconds: float = Field(0.0, description="Seconds spent in Bay_01 (refuelling bay)")
+    queue_idle_seconds: float = Field(0.0, description="Seconds spent in Queue_01 (waiting lane)")
+    bay_stationary_seconds: float = Field(0.0, description="Seconds standing still inside Bay_01")
+    bay_first_frame: Optional[int] = Field(None, description="First frame seen in Bay_01")
+    bay_last_frame: Optional[int] = Field(None, description="Last frame seen in Bay_01")
+    queue_first_frame: Optional[int] = Field(None, description="First frame seen in Queue_01")
+    queue_last_frame: Optional[int] = Field(None, description="Last frame seen in Queue_01")
+    refuel_trigger_frame: Optional[int] = Field(None, description="Frame where the vehicle passed the stationary-in-bay trigger")
     data_quality_flag: str = Field("phase1_tracking_only", description="Quality and verification status")
 
 
