@@ -19,7 +19,7 @@ import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Deque, Dict, Generator, List, Optional, Tuple, Union
+from typing import Any, Callable, Deque, Dict, Generator, List, Optional, Tuple, Union
 
 import cv2
 import numpy as np
@@ -1459,6 +1459,7 @@ def process_video(
     scrubber_efficiency: float = 0.0,
     max_frames: Optional[int] = None,
     profile: Optional[str] = None,
+    progress_cb: Optional[Callable[[int, int], None]] = None,
 ) -> Dict[str, Any]:
     """
     Analyzes pre-recorded CCTV footage of a factory smokestack, segments smoke plume,
@@ -1519,6 +1520,8 @@ def process_video(
                 break
 
             frame_idx += 1
+            if progress_cb:
+                progress_cb(frame_idx, total_frames)
 
             # 1. Segment Smoke Plume (Bbox, Exact Mask, and Smoothed Contours)
             bbox, plume_mask, plume_contours, mode_name = detector.detect_plume(frame, frame_idx=frame_idx)

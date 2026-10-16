@@ -17,6 +17,8 @@ backend/data/*.mp4
 backend/data/*.png
 fuel_station.mp4
 factory_stack.mp4
+# Clips uploaded from the website and their working files
+uploads/
 
 # Models
 *.pt

@@ -23,7 +23,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 import httpx
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse, HTMLResponse
 from pydantic import BaseModel, Field
@@ -52,6 +52,7 @@ from modules.compliance_report import (
     generate_report_summary,
     generate_printable_html_report,
 )
+from modules import upload_jobs
 
 # Configure logging
 logging.basicConfig(
@@ -268,19 +269,37 @@ class VehicularReceiverAdapter:
                 logger.warning(f"Failed to dynamic-link vehicular_detector: {e}")
 
         # Check for pre-generated telemetry cache
-        if self.json_path.is_file():
-            try:
-                with open(self.json_path, "r", encoding="utf-8") as f:
-                    self.records = json.load(f)
-                logger.info(f"Vehicular Receiver Adapter: Loaded {len(self.records)} records from {self.json_path}")
-            except Exception as e:
-                logger.warning(f"Could not load fuel telemetry JSON: {e}")
+        self._mtime: Optional[float] = None
+        self.load_json()
+
+    def load_json(self) -> None:
+        if not self.json_path.is_file():
+            self.records, self._mtime = [], None
+            return
+        try:
+            self._mtime = self.json_path.stat().st_mtime
+            with open(self.json_path, "r", encoding="utf-8") as f:
+                self.records = json.load(f)
+            self.frame_idx = 0
+            logger.info(f"Vehicular Receiver Adapter: Loaded {len(self.records)} records from {self.json_path}")
+        except Exception as e:
+            logger.warning(f"Could not load fuel telemetry JSON: {e}")
+
+    def reload_if_changed(self) -> None:
+        """Picks up a newly analysed fuel-station clip (website upload) without a restart."""
+        try:
+            mtime = self.json_path.stat().st_mtime if self.json_path.is_file() else None
+        except OSError:
+            return
+        if mtime != self._mtime:
+            self.load_json()
 
     def is_dynamically_linked(self) -> bool:
         return self.vehicular_module is not None
 
     def get_next_record(self, env: Dict[str, Any]) -> Dict[str, Any]:
         """Provides next vehicular telemetry frame."""
+        self.reload_if_changed()
         now_iso = datetime.now(timezone.utc).isoformat()
 
         if self.records:
@@ -834,6 +853,59 @@ def stream_video(sector: str):
         media_type="video/mp4",
         filename=video_path.name,
     )
+
+
+# =====================================================================
+# 7. CLIP UPLOAD FROM THE WEBSITE
+# =====================================================================
+
+@app.post("/api/upload/{sector}")
+async def upload_clip(sector: str, request: Request, filename: str = Query(..., description="Original file name")):
+    """
+    Receives a CCTV clip as the raw request body and analyses it in the background:
+    'industrial' runs the smoke-plume detector, 'vehicular' the vehicle tracker + plate reader.
+    Results replace the factory / fuel-station data the API serves. Poll /api/upload/status.
+    """
+    sector = sector.lower()
+    if sector not in upload_jobs.SECTORS:
+        raise HTTPException(status_code=400, detail=f"Invalid sector '{sector}'. Must be 'industrial' or 'vehicular'.")
+    if upload_jobs.is_running():
+        raise HTTPException(status_code=409, detail="Another clip is still being analysed. Try again when it finishes.")
+    size_hdr = request.headers.get("content-length")
+    if size_hdr and size_hdr.isdigit() and int(size_hdr) > upload_jobs.MAX_UPLOAD_BYTES:
+        raise HTTPException(status_code=413, detail="Clip is larger than 1 GB.")
+    try:
+        dest = upload_jobs.new_upload_path(sector, filename)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+    written = 0
+    try:
+        with open(dest, "wb") as f:
+            async for chunk in request.stream():
+                written += len(chunk)
+                if written > upload_jobs.MAX_UPLOAD_BYTES:
+                    raise HTTPException(status_code=413, detail="Clip is larger than 1 GB.")
+                f.write(chunk)
+    except BaseException:
+        dest.unlink(missing_ok=True)
+        raise
+    if written == 0:
+        dest.unlink(missing_ok=True)
+        raise HTTPException(status_code=400, detail="Empty upload.")
+
+    try:
+        job = upload_jobs.start(sector, dest, Path(filename).name)
+    except RuntimeError as e:
+        raise HTTPException(status_code=409, detail=str(e))
+    logger.info(f"Clip upload accepted: {filename} ({written / 1e6:.1f} MB) -> {sector} analysis")
+    return {"accepted": True, "bytes": written, "job": job}
+
+
+@app.get("/api/upload/status")
+def upload_status():
+    """State of the current or last clip analysis: idle, running (with frame progress), done or error."""
+    return upload_jobs.status()
 
 
 # =====================================================================

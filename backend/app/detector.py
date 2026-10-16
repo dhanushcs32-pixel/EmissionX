@@ -1,6 +1,6 @@
 import logging
 from pathlib import Path
-from typing import Dict, Generator, List, Optional, Tuple
+from typing import Callable, Dict, Generator, List, Optional, Tuple
 
 import cv2
 import numpy as np
@@ -67,9 +67,12 @@ class VehicleDetectorTracker:
         video_path: str,
         output_path: Optional[str] = None,
         max_frames: Optional[int] = None,
+        progress_cb: Optional[Callable[[int, int], None]] = None,
     ) -> Tuple[VideoAnalysisSummary, Dict[int, VehicleTrackRecord]]:
         """Processes a video file frame-by-frame, runs YOLO11n + ByteTrack,
         annotates frames, and produces tracking records and summary.
+
+        progress_cb(frames_done, total_frames) is called after each frame, if given.
         """
         video_path = str(Path(video_path).resolve())
         cap = cv2.VideoCapture(video_path)
@@ -87,9 +90,11 @@ class VehicleDetectorTracker:
         if output_path:
             output_p = Path(output_path).resolve()
             output_p.parent.mkdir(parents=True, exist_ok=True)
-            # Use mp4v or avc1 codec
-            fourcc = cv2.VideoWriter_fourcc(*"mp4v")
-            writer = cv2.VideoWriter(str(output_p), fourcc, fps, (width, height))
+            # H.264 (avc1) so browsers can play it via /api/video/vehicular; mp4v (not browser-playable) as fallback
+            writer = cv2.VideoWriter(str(output_p), cv2.VideoWriter_fourcc(*"avc1"), fps, (width, height))
+            if not writer.isOpened():
+                writer = cv2.VideoWriter(str(output_p), cv2.VideoWriter_fourcc(*"mp4v"), fps, (width, height))
+                logger.warning("H.264 encoder unavailable; wrote mp4v, which web browsers cannot play.")
 
         vehicle_records: Dict[int, VehicleTrackRecord] = {}
         plate_votes: Dict[int, Dict[str, Tuple[float, float]]] = {}  # track -> plate -> (conf sum, best conf)
@@ -235,6 +240,8 @@ class VehicleDetectorTracker:
                     writer.write(annotated_frame)
 
                 frame_idx += 1
+                if progress_cb:
+                    progress_cb(frame_idx, total_frames)
                 if frame_idx % 50 == 0:
                     logger.info(f"Processed {frame_idx}/{total_frames} frames ({len(vehicle_records)} vehicles tracked)...")
 

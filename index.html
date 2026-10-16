@@ -283,6 +283,9 @@ body.dashboard #v3.on::before{background:linear-gradient(90deg,var(--scrim) 0%,v
 .feed video{width:100%;aspect-ratio:16/10;border-radius:12px;display:block;object-fit:contain;background:#000}
 .tblwrap{overflow-x:auto}
 @media (max-width:700px){.apistat{font-size:0;gap:0;padding:6px}}
+/* clip upload on the Map feed */
+.upl{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.upl .bar{margin-top:0}
 /* print: only the report */
 @media print{
   #bg,.top,.idx,main>section:not(#v5),footer,.noprint{display:none!important}
@@ -489,7 +492,7 @@ body.dashboard #v3.on::before{background:linear-gradient(90deg,var(--scrim) 0%,v
         <div class="row" style="justify-content:space-between;margin-bottom:10px">
           <div class="seg" id="nodeSeg"><button data-node="p1" class="on">Pin 1 Fuel</button><button data-node="p2">Pin 2 Factory</button></div>
         </div>
-        <canvas id="feedCv"></canvas><video id="feedVid" muted loop playsinline hidden></video><span class="k" id="feedSrc" style="display:block;margin-top:6px">Simulated camera view</span>
+        <canvas id="feedCv"></canvas><video id="feedVid" muted loop playsinline hidden></video><span class="k" id="feedSrc" style="display:block;margin-top:6px">Simulated camera view</span><div class="upl"><input type="file" id="uplFile" accept="video/*,.mp4,.mov,.avi,.mkv,.webm" hidden><div class="row"><button class="btn sm" id="uplBtn" type="button">Upload fuel-station clip</button><span class="k" id="uplHint">Runs the detector on your clip and shows the result here.</span></div><div class="bar" id="uplBarW" hidden><i id="uplBar"></i></div><span class="k" id="uplMsg" aria-live="polite"></span></div>
         <div class="stats">
           <div class="stat"><span class="k">Vehicles seen</span><b id="stVeh">0</b></div>
           <div class="stat"><span class="k" id="stOpL">Smoke opacity</span><b id="stOp">0%</b></div>
@@ -676,6 +679,51 @@ function setLive(on){
 function checkHealth(){
   return api("/api/health",null,4000).then(function(h){HEALTH=h;setLive(true);syncVideo();showEngine()},function(){HEALTH=null;setLive(false)});
 }
+/* ---------------- clip upload: POST /api/upload/{sector}, then poll /api/upload/status ---------------- */
+var VIDV=0,uplPolling=false;
+function uplSector(){return S.node==="p2"?"industrial":"vehicular"}
+function uplLabel(){var b=$("#uplBtn");if(b&&!b.disabled)b.textContent=S.node==="p2"?"Upload factory clip":"Upload fuel-station clip"}
+function uplShow(pct,msg){$("#uplBarW").hidden=pct==null;if(pct!=null)$("#uplBar").style.width=Math.max(2,Math.min(100,pct))+"%";$("#uplMsg").textContent=msg||""}
+function uplBusy(on,label){var b=$("#uplBtn");b.disabled=on;if(on)b.textContent=label||"Analysing…";else uplLabel()}
+function uplErr(x){try{return JSON.parse(x.responseText).detail}catch(e){return "HTTP "+x.status}}
+function uploadClip(f){
+  var sector=uplSector(),x=new XMLHttpRequest();
+  x.open("POST",API_BASE+"/api/upload/"+sector+"?filename="+encodeURIComponent(f.name));
+  x.setRequestHeader("Content-Type",f.type||"application/octet-stream");
+  x.upload.onprogress=function(e){if(e.lengthComputable){var p=e.loaded/e.total*100;uplShow(p,"Uploading "+f.name+" · "+Math.round(p)+"%")}};
+  x.onload=function(){
+    if(x.status>=200&&x.status<300){uplShow(0,"Uploaded. Starting the "+(sector==="industrial"?"smoke":"vehicle")+" detector…");pollUpload()}
+    else{uplBusy(false);uplShow(null,"Upload failed: "+uplErr(x))}
+  };
+  x.onerror=function(){uplBusy(false);uplShow(null,"Upload failed: backend not reachable.")};
+  uplBusy(true,"Uploading…");x.send(f);
+}
+function pollUpload(){
+  if(uplPolling)return;uplPolling=true;
+  (function step(){
+    api("/api/upload/status",null,5000).then(function(j){
+      if(j.state==="running"){
+        uplBusy(true);
+        var p=j.total_frames?j.frames_done/j.total_frames*100:0;
+        uplShow(p,"Analysing "+(j.filename||"clip")+" · "+(j.frames_done||0)+(j.total_frames?" / "+j.total_frames:"")+" frames"+(j.stage?" · "+j.stage:""));
+        setTimeout(step,1000);return;
+      }
+      uplPolling=false;uplBusy(false);
+      if(j.state==="done"){
+        uplShow(100,"Done: "+(j.message||"")+". Pick "+(j.sector==="industrial"?"Pin 2 Factory":"Pin 1 Fuel")+" to see it.");
+        VIDV=Date.now();checkHealth();loadReport();twinUpdate();
+      }else if(j.state==="error")uplShow(null,"Detector failed: "+(j.error||"unknown error"));
+      else uplShow(null,"");
+    },function(){setTimeout(step,2000)});
+  })();
+}
+$("#uplBtn").addEventListener("click",function(){
+  if(!LIVE){uplShow(null,"The backend is not connected. Start it (start_platform.bat), then try again.");return}
+  $("#uplFile").click();
+});
+$("#uplFile").addEventListener("change",function(){var f=this.files&&this.files[0];this.value="";if(f)uploadClip(f)});
+function uplResume(){api("/api/upload/status",null,4000).then(function(j){if(j.state==="running")pollUpload()},function(){})}   /* page reloaded mid-analysis */
+
 function showEngine(){   /* which smoke engine produced the factory telemetry (factory_telemetry_meta.json) */
   var run=dig(HEALTH,"industrial_module.detector_run"),el=$("#engTxt");if(!el||!run)return;
   el.textContent="Factory stack: "+(run.detector_mode||run.profile||"auto-routed")+" · "+(run.frames_processed||0)+" frames of "+
@@ -683,7 +731,7 @@ function showEngine(){   /* which smoke engine produced the factory telemetry (f
 }
 function syncVideo(){   /* annotated CCTV from /api/video/{sector} when the backend has it, else the simulated canvas */
   var vid=$("#feedVid"),cv=$("#feedCv");if(!vid)return;
-  var sector=S.node==="p2"?"industrial":"vehicular",src=API_BASE+"/api/video/"+sector;
+  var sector=S.node==="p2"?"industrial":"vehicular",src=API_BASE+"/api/video/"+sector+(VIDV?"?v="+VIDV:"");
   if(LIVE&&dig(HEALTH,sector+"_module.video_available",false)){
     if(vid.dataset.src!==src){vid.dataset.src=src;vid.src=src;if(vid.play)vid.play().catch(function(){})}
     var eng=sector==="industrial"?dig(HEALTH,"industrial_module.detector_run.detector_mode"):null;
@@ -1201,7 +1249,7 @@ function setNode(k){
   if(S.node===k)return;
   S.node=k;S.opac=[];S.opSum=0;S.opN=0;S.alerts=0;
   $$("#nodeSeg button").forEach(function(b){b.classList.toggle("on",b.dataset.node===k)});
-  feed.reset();syncVideo();twinUpdate();
+  feed.reset();syncVideo();uplLabel();twinUpdate();
   loadCtx("Switched to <b>"+N().id+" "+N().name+"</b>. Telemetry JSON refreshed.");
   tick();
 }
@@ -1606,7 +1654,7 @@ if(window.matchMedia){var mq=matchMedia("(prefers-color-scheme: dark)");
 
 /* init */
 twinUpdate();loadCtx();tick();renderReport();
-checkHealth();pollTelemetry();loadSaved();loadReport();
+checkHealth();pollTelemetry();loadSaved();loadReport();uplResume();
 setInterval(pollTelemetry,1000);setInterval(checkHealth,15000);
 document.body.className="landing";route();
 })();
