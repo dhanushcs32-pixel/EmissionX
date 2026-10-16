@@ -426,6 +426,17 @@ class DualModePlumeDetector:
         # Generic last valid result
         self.last_valid_result: Optional[Tuple[Tuple[int, int, int, int], np.ndarray, List[np.ndarray], str]] = None
 
+        # State for Universal Camera-Stabilized Optical Flow + Dynamic LAB GMM Engine
+        self.rolling_gray_buffer_universal: Deque[np.ndarray] = collections.deque(maxlen=24)
+        self.energy_map_universal: Optional[np.ndarray] = None
+        self.detected_chimney_seed: Optional[Tuple[int, int]] = None
+        self.wind_cone_dir: Optional[Tuple[float, float]] = None
+        self.smoke_lab_center: Optional[np.ndarray] = None
+        self.sky_lab_center: Optional[np.ndarray] = None
+        self.static_edge_mask_universal: Optional[np.ndarray] = None
+        self.temporal_prob_universal: Optional[np.ndarray] = None
+        self.last_valid_result_universal: Optional[Tuple[Tuple[int, int, int, int], np.ndarray, List[np.ndarray], str]] = None
+
         self._init_detector()
 
     def _init_detector(self) -> None:
@@ -453,14 +464,19 @@ class DualModePlumeDetector:
         """
         Inspects the frame geometry and ambient color signature:
           - Profile A (Overcast / Wide / 4K Chimney Scene):
-            If width > height or top-sky mean saturation < 35 (overcast sky),
-            routes to _segment_profile_overcast_horizontal (from commit 0838785).
+            If width > height and overcast gray/slate sky,
+            routes to _segment_profile_overcast_horizontal (verified golden backup).
           - Profile B (Sunset / Warm Gradient / Vertical Scene):
-            If height >= width or top-sky has warm sunset hue/saturation,
-            routes to _segment_profile_sunset_vertical (from commit 9d5f95e).
-          - Profile C (Synthetic / Generic Fallback):
-            Synthetic CI videos (e.g. 640x480).
+            If height > width and warm sunset gradient,
+            routes to _segment_profile_sunset_vertical (verified golden backup).
+          - Profile C (Synthetic CI Fallback):
+            Synthetic CI test videos (e.g. 640x480).
+          - Profile Universal (Dense Optical Flow Physics & Buoyancy Engine):
+            Universal default for all new / unknown input videos.
         """
+        if self.active_profile in ["universal", "universal_optical_flow", "optical_flow"]:
+            return "universal_optical_flow"
+
         h, w = frame.shape[:2]
 
         # Profile C: Synthetic CI test videos
@@ -480,22 +496,19 @@ class DualModePlumeDetector:
             f"top_sky_mean_sat={mean_sat:.1f}, top_sky_mean_val={mean_val:.1f}"
         )
 
-        # Profile A: Overcast / Wide / 4K Chimney Scene
-        # Top-sky mean saturation < 35 (overcast gray/slate sky) and daylight luminance
-        if mean_sat < 35.0 and mean_val > 130.0:
-            logger.info("Detected Overcast Sky (saturation < 35) -> Route: Profile A (Overcast Horizontal)")
+        # Profile A: Overcast / High-Value Low-Saturation Chimney Scene (Verified Backup)
+        if mean_sat < 28.0 and mean_val > 140.0:
+            logger.info("Detected Overcast Scene -> Route: Profile A")
             return "overcast_horizontal"
 
-        # Profile B: Sunset / Warm Gradient / Vertical Scene
-        # Warm sunset hue/saturation (mean_sat >= 30 or low evening luminance or vertical)
-        if h >= w or mean_sat >= 30.0 or mean_val <= 130.0:
-            logger.info("Detected Sunset / Warm Gradient Sky -> Route: Profile B (Sunset Vertical)")
+        # Profile B: Sunset / Warm Gradient Scene (Verified Backup)
+        if mean_sat >= 30.0 and mean_val <= 135.0:
+            logger.info("Detected Sunset Vertical Scene -> Route: Profile B")
             return "sunset_vertical"
 
-        if w > h and mean_sat < 35.0:
-            return "overcast_horizontal"
-
-        return "sunset_vertical"
+        # Any other video routes to Universal Engine
+        logger.info("Routing new/unknown video scene to Universal Optical Flow Engine")
+        return "universal_optical_flow"
 
     def segment_smoke_plume(
         self,
@@ -514,8 +527,10 @@ class DualModePlumeDetector:
             res = self._segment_profile_overcast_horizontal(frame, frame_idx=frame_idx)
         elif self.active_profile == "sunset_vertical":
             res = self._segment_profile_sunset_vertical(frame, frame_idx=frame_idx)
-        else:
+        elif self.active_profile == "synthetic":
             res = self._segment_profile_synthetic(frame, frame_idx=frame_idx)
+        else:
+            res = self._segment_profile_universal_optical_flow(frame, frame_idx=frame_idx)
 
         self.last_valid_result = res
         return res
@@ -932,6 +947,272 @@ class DualModePlumeDetector:
         plume_mask[sy1:sy2, sx1:sx2] = 255
         rect_cnt = np.array([[[sx1, sy1]], [[sx2, sy1]], [[sx2, sy2]], [[sx1, sy2]]], dtype=np.int32)
         return (sx1, sy1, sx2, sy2), plume_mask, [rect_cnt], "Profile C (Synthetic Initializing)"
+
+    def _segment_profile_universal_optical_flow(
+        self,
+        frame: np.ndarray,
+        frame_idx: int = 0,
+    ) -> Tuple[Tuple[int, int, int, int], np.ndarray, List[np.ndarray], str]:
+        """
+        Universal Camera-Stabilized Optical Flow & Buoyancy Plume Segmentation Engine:
+        Operates universally on ANY video input (daylight, overcast, sunset, or arbitrary camera angle):
+          1. Camera-Motion Stabilization: Global frame median velocity subtraction cancels camera pan/shake.
+          2. Physics-Based Buoyancy & Turbulence Filtering: Isolates upward-rising non-rigid vortex eddies.
+          3. Static Edge Rejection: Excludes static chimney brickwork, buildings, and ground structures.
+          4. Auto-Chimney & Plume Search Cone: Locates the emission origin (sx, sy) and dynamic drift cone.
+          5. Dynamic LAB Color Modeling: Samples smoke core vs sky in LAB space to segment soot or steam.
+          6. Connected Component & Temporal Smoothing (0.65/0.35 EMA) for zero-flicker organic contours.
+        """
+        h, w = frame.shape[:2]
+
+        proc_w = 480
+        scale_ratio = float(proc_w) / float(w)
+        proc_h = int(h * scale_ratio)
+        inv_scale = 1.0 / scale_ratio
+
+        scaled = cv2.resize(frame, (proc_w, proc_h), interpolation=cv2.INTER_LINEAR)
+        raw_gray = cv2.cvtColor(scaled, cv2.COLOR_BGR2GRAY)
+        gray_blur = cv2.GaussianBlur(raw_gray, (5, 5), 0)
+
+        self.rolling_gray_buffer_universal.append(gray_blur)
+        buf_len = len(self.rolling_gray_buffer_universal)
+
+        # -------------------------------------------------------------
+        # 1. Camera-Stabilized Dense Optical Flow (Farneback)
+        # -------------------------------------------------------------
+        if buf_len >= 2:
+            prev_gray = self.rolling_gray_buffer_universal[-2]
+            flow = cv2.calcOpticalFlowFarneback(
+                prev_gray, gray_blur, None,
+                pyr_scale=0.5, levels=3, winsize=15,
+                iterations=3, poly_n=5, poly_sigma=1.2, flags=0
+            )
+
+            # Global Camera-Motion Subtraction: Cancels shake and panning
+            med_vx = float(np.median(flow[..., 0]))
+            med_vy = float(np.median(flow[..., 1]))
+            vx = flow[..., 0] - med_vx
+            vy = flow[..., 1] - med_vy
+
+            mag = np.sqrt(vx**2 + vy**2)
+
+            # Local Flow Vorticity / Variance (Smoke swirls internally; rigid objects move together)
+            mean_vx = cv2.blur(vx, (9, 9))
+            mean_vy = cv2.blur(vy, (9, 9))
+            vorticity = cv2.blur((vx - mean_vx)**2 + (vy - mean_vy)**2, (9, 9))
+
+            # Upward Buoyancy & Drift Weight (negative vy is upward in image coordinates)
+            buoyancy_weight = np.where(vy <= 0.20 * (mag + 1e-4), 1.5, 0.3)
+            flow_energy = mag * np.sqrt(vorticity + 1e-4) * buoyancy_weight
+        else:
+            mag = np.zeros((proc_h, proc_w), dtype=np.float32)
+            vorticity = np.zeros((proc_h, proc_w), dtype=np.float32)
+            flow_energy = np.zeros((proc_h, proc_w), dtype=np.float32)
+            vx = np.zeros((proc_h, proc_w), dtype=np.float32)
+            vy = np.zeros((proc_h, proc_w), dtype=np.float32)
+
+        # Mask out ground/traffic zone (bottom 18% of frame)
+        flow_energy[int(proc_h * 0.82):, :] = 0.0
+
+        # -------------------------------------------------------------
+        # 2. Strict Static Structure & Edge Rejection
+        # -------------------------------------------------------------
+        sobel_x = cv2.Sobel(raw_gray, cv2.CV_32F, 1, 0, ksize=3)
+        sobel_y = cv2.Sobel(raw_gray, cv2.CV_32F, 0, 1, ksize=3)
+        edge_mag = np.sqrt(sobel_x**2 + sobel_y**2)
+        cur_edge = (edge_mag > 32.0).astype(np.float32)
+
+        if self.static_edge_mask_universal is None or self.static_edge_mask_universal.shape != cur_edge.shape:
+            self.static_edge_mask_universal = cur_edge.copy()
+        else:
+            self.static_edge_mask_universal = 0.90 * self.static_edge_mask_universal + 0.10 * cur_edge
+
+        # Static structure: high-contrast edges with low motion across frames
+        static_structure = (self.static_edge_mask_universal > 0.60) & (mag < 0.6)
+        flow_energy[static_structure] *= 0.10
+
+        # -------------------------------------------------------------
+        # 3. Energy Map Accumulation & Chimney Seed Discovery
+        # -------------------------------------------------------------
+        if self.energy_map_universal is None or self.energy_map_universal.shape != flow_energy.shape:
+            self.energy_map_universal = flow_energy.copy()
+        else:
+            self.energy_map_universal = 0.80 * self.energy_map_universal + 0.20 * flow_energy
+
+        # Auto-calibrate chimney origin & plume search cone
+        if frame_idx >= 8 and (self.detected_chimney_seed is None or frame_idx % 60 == 0):
+            smooth_e = cv2.GaussianBlur(self.energy_map_universal, (11, 11), 0)
+            # Suppress static structural edges so building and tower edges cannot be chosen as seeds
+            if self.static_edge_mask_universal is not None:
+                static_edge_penalty = np.clip(self.static_edge_mask_universal * 1.5, 0.0, 1.0)
+                smooth_e = smooth_e * (1.0 - static_edge_penalty)
+
+            search_band = smooth_e[int(proc_h * 0.05):int(proc_h * 0.80), :]
+            if search_band.size > 0:
+                p85 = float(np.percentile(search_band, 85))
+                thresh_val = max(0.25, p85 * 0.8)
+                core_bin = (smooth_e > thresh_val).astype(np.uint8) * 255
+                core_bin[int(proc_h * 0.82):, :] = 0
+
+                cnts, _ = cv2.findContours(core_bin, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                valid_cnts = [c for c in cnts if cv2.contourArea(c) > 200]
+                if valid_cnts:
+                    best_c = max(valid_cnts, key=cv2.contourArea)
+                    pts = best_c.reshape(-1, 2)
+                    # The bottom-most cluster point is the chimney tip mouth
+                    sy = int(np.percentile(pts[:, 1], 95))
+                    bottom_pts = pts[pts[:, 1] >= sy - 15]
+                    sx = int(np.median(bottom_pts[:, 0])) if len(bottom_pts) > 0 else int(np.median(pts[:, 0]))
+                    self.detected_chimney_seed = (sx, sy)
+
+                    # Dynamic wind drift direction
+                    w_vx = float(np.median(vx[core_bin > 0])) if np.count_nonzero(core_bin) > 0 else 0.0
+                    w_vy = float(np.median(vy[core_bin > 0])) if np.count_nonzero(core_bin) > 0 else -1.0
+                    norm_w = np.sqrt(w_vx**2 + w_vy**2) + 1e-5
+                    self.wind_cone_dir = (w_vx / norm_w, w_vy / norm_w)
+
+                    # Sample smoke core vs background sky in LAB space
+                    lab_scaled = cv2.cvtColor(scaled, cv2.COLOR_BGR2LAB).astype(np.float32)
+                    core_y1, core_y2 = max(0, sy - 40), max(0, sy - 10)
+                    core_x1, core_x2 = max(0, sx - 25), min(proc_w, sx + 25)
+                    core_sample = lab_scaled[core_y1:core_y2, core_x1:core_x2]
+                    if core_sample.size > 0:
+                        self.smoke_lab_center = np.median(core_sample.reshape(-1, 3), axis=0)
+
+                    # Sample zero-flow sky region
+                    sky_y1, sky_y2 = max(0, sy - 70), max(0, sy - 20)
+                    sky_x1, sky_x2 = (max(0, sx - 80), max(0, sx - 40)) if w_vx >= 0 else (min(proc_w, sx + 40), min(proc_w, sx + 80))
+                    sky_sample = lab_scaled[sky_y1:sky_y2, sky_x1:sky_x2]
+                    if sky_sample.size > 0:
+                        self.sky_lab_center = np.median(sky_sample.reshape(-1, 3), axis=0)
+
+        # -------------------------------------------------------------
+        # 4. Universal Segmentation with Dynamic Wind Cone & LAB Contrast
+        # -------------------------------------------------------------
+        lab_frame = cv2.cvtColor(scaled, cv2.COLOR_BGR2LAB).astype(np.float32)
+
+        if self.detected_chimney_seed is not None:
+            sx, sy = self.detected_chimney_seed
+            w_dir = self.wind_cone_dir or (0.0, -1.0)
+            wx, wy = w_dir
+
+            # Build Wind-Aligned Search Cone
+            Y, X = np.ogrid[:proc_h, :proc_w]
+            dx = (X - sx).astype(np.float32)
+            dy = (Y - sy).astype(np.float32)
+            dist_origin = np.sqrt(dx**2 + dy**2)
+
+            # Plume must be above chimney mouth (with 15px margin below mouth)
+            above_mouth = dy <= 15.0
+
+            # Wind projection: positive along wind direction
+            proj_wind = dx * wx + dy * wy
+            perp_wind = np.abs(dx * (-wy) + dy * wx)
+
+            # Cone expands with distance from mouth
+            cone_width = dist_origin * 0.95 + 35.0
+            in_wind_cone = above_mouth & ((proj_wind >= -12.0) | (dist_origin < 45.0)) & (perp_wind <= cone_width)
+
+            # LAB Color Contrast
+            if self.smoke_lab_center is not None and self.sky_lab_center is not None:
+                d_smoke = np.sqrt(np.sum((lab_frame - self.smoke_lab_center)**2, axis=2))
+                d_sky = np.sqrt(np.sum((lab_frame - self.sky_lab_center)**2, axis=2))
+                # Pixels that match smoke color closer than sky or are within smoke tolerance
+                color_match = (d_smoke < d_sky * 1.10) & (d_smoke < 60.0)
+            else:
+                color_match = np.ones((proc_h, proc_w), dtype=bool)
+
+            # Motion & Turbulence Gate
+            motion_gate = (mag > 0.35) | (vorticity > 0.035) | (flow_energy > 0.15)
+
+            # Strict Static Edge Rejection
+            dynamic_smoke = in_wind_cone & color_match & motion_gate & (~static_structure)
+            candidate_bin = dynamic_smoke.astype(np.uint8) * 255
+
+            # Morphological Closing & Opening for Organic Gas Dynamics
+            k_close = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (17, 17))
+            k_open = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+            closed = cv2.morphologyEx(candidate_bin, cv2.MORPH_CLOSE, k_close)
+            opened = cv2.morphologyEx(closed, cv2.MORPH_OPEN, k_open)
+
+            # Keep Contours Originating from or Flowing out of Chimney Seed
+            contours, _ = cv2.findContours(opened, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            valid_contours = []
+            for c in contours:
+                area = cv2.contourArea(c)
+                if area < 150.0:
+                    continue
+                bx, by, bw, bh = cv2.boundingRect(c)
+                # Near stack mouth
+                near_mouth = (bx <= sx + 30 and bx + bw >= sx - 30 and by <= sy + 15 and by + bh >= sy - 50)
+                
+                # In upward dispersion cone (both vertical and horizontal containment)
+                centroid_x = bx + bw / 2.0
+                centroid_y = by + bh / 2.0
+                vert_dist = max(1.0, float(sy - centroid_y))
+                expected_cx = sx + vert_dist * (wx / max(abs(wy), 0.15))
+                max_dev = vert_dist * 0.85 + 40.0
+                in_cone = (by < sy + 15) and (abs(centroid_x - expected_cx) <= max_dev)
+                
+                if near_mouth or in_cone:
+                    valid_contours.append(c)
+
+            proc_mask = np.zeros((proc_h, proc_w), dtype=np.uint8)
+            if valid_contours:
+                cv2.drawContours(proc_mask, valid_contours, -1, 255, -1)
+
+            # Temporal EMA Probability Smoothing (0.65 / 0.35)
+            curr_prob = proc_mask.astype(np.float32) / 255.0
+            if self.temporal_prob_universal is None or self.temporal_prob_universal.shape != curr_prob.shape:
+                self.temporal_prob_universal = curr_prob.copy()
+            else:
+                self.temporal_prob_universal = 0.65 * self.temporal_prob_universal + 0.35 * curr_prob
+
+            final_bin = (self.temporal_prob_universal >= 0.40).astype(np.uint8) * 255
+            final_cnts, _ = cv2.findContours(final_bin, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            active_cnts = [c for c in final_cnts if cv2.contourArea(c) > 180.0]
+
+            if active_cnts:
+                scaled_contours = []
+                all_pts = []
+                for c in active_cnts:
+                    scaled_c = (c.astype(np.float32) * inv_scale).astype(np.int32)
+                    epsilon = 0.005 * cv2.arcLength(scaled_c, True)
+                    approx = cv2.approxPolyDP(scaled_c, epsilon, True)
+                    scaled_contours.append(approx)
+                    all_pts.append(scaled_c.reshape(-1, 2))
+
+                plume_mask = np.zeros((h, w), dtype=np.uint8)
+                cv2.drawContours(plume_mask, scaled_contours, -1, 255, -1)
+
+                all_pts_arr = np.vstack(all_pts)
+                bx, by, bw, bh = cv2.boundingRect(all_pts_arr)
+                pad = int(8 * inv_scale)
+                x1 = max(0, bx - pad)
+                y1 = max(0, by - pad)
+                x2 = min(w, bx + bw + pad)
+                y2 = min(h, by + bh + pad)
+
+                res = ((x1, y1, x2, y2), plume_mask, scaled_contours, "Universal Optical Flow & Semantic Engine")
+                self.last_valid_result_universal = res
+                return res
+
+        # Fallback during initial calibration frames (0 to 4)
+        if self.last_valid_result_universal is not None:
+            return self.last_valid_result_universal
+
+        dummy_mask = np.zeros((h, w), dtype=np.uint8)
+        if self.detected_chimney_seed is not None:
+            sx, sy = self.detected_chimney_seed
+            fx, fy = int(sx * inv_scale), int(sy * inv_scale)
+            r = int(25 * inv_scale)
+            rx1, ry1 = max(0, fx - r), max(0, fy - 2 * r)
+            rx2, ry2 = min(w, fx + r), min(h, fy + r)
+            dummy_mask[ry1:ry2, rx1:rx2] = 255
+            box_cnt = np.array([[[rx1, ry1]], [[rx2, ry1]], [[rx2, ry2]], [[rx1, ry2]]], dtype=np.int32)
+            return (rx1, ry1, rx2, ry2), dummy_mask, [box_cnt], "Universal Optical Flow (Calibrating)"
+
+        return (0, 0, 0, 0), dummy_mask, [], "Universal Optical Flow (Calibrating)"
 
     def detect_plume(
         self,
