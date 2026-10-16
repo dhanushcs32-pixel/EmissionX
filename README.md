@@ -55,18 +55,6 @@ A procedural 3D scene of factories, roads and vehicles sits behind the whole app
 
 ---
 
-### Map & Live Feed
-
-<div align="center">
-
-<img src="./docs/screenshots/map.png" width="440" alt="Map with fuel station and factory pins and wind dispersion"/>
-<img src="./docs/screenshots/live-feed.png" width="440" alt="Simulated camera feed with detections"/>
-
-<br><br>
-
-Two camera nodes, one air shed: a **fuel station** and a **factory**. Pick a pin to see how its plume drifts with the wind and what the camera is catching right now. Drop in your own video (MP4, MOV, AVI, MKV or WebM, up to 1 GB) to run the detector on it.
-
-</div>
 
 ---
 
