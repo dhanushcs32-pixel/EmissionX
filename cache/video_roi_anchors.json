@@ -1,0 +1,17 @@
+{
+  "factory_stack.mp4_8684128_2160x3840_232": {
+    "smoke_bbox": [
+      884,
+      584,
+      2133,
+      2694
+    ],
+    "chimney_tip": [
+      1508,
+      2694
+    ],
+    "method": "yolo_smoke_weights",
+    "fingerprint": "factory_stack.mp4_8684128_2160x3840_232",
+    "detections_count": 5
+  }
+}

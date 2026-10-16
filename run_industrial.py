@@ -323,6 +323,8 @@ def main() -> None:
         choices=["auto", "universal_optical_flow", "overcast_horizontal", "sunset_vertical", "synthetic"],
         help="Smoke segmentation engine; 'auto' routes by scene (unknown scenes use the universal optical-flow engine)",
     )
+    parser.add_argument("--calibrate", action="store_true", help="Launch interactive cv2.selectROI to select smoke plume")
+    parser.add_argument("--roi", type=str, default=None, help="Manual bounding box as x1,y1,x2,y2")
     args, _ = parser.parse_known_args()
 
     print("=" * 65)
@@ -348,6 +350,8 @@ def main() -> None:
         output_json_path=output_json,
         model_path=model_weight,
         profile=None if args.profile == "auto" else args.profile,
+        calibrate=args.calibrate,
+        manual_roi=args.roi,
     )
 
     print("\n[PIPELINE SUMMARY]")
