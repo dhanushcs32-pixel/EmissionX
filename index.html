@@ -276,6 +276,13 @@ body.dashboard #v3.on::before{background:linear-gradient(90deg,var(--scrim) 0%,v
 .sw{display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:700}
 .sw input{width:20px;height:20px;accent-color:var(--o)}
 @media (max-width:900px){.twin{grid-template-columns:1fr}.stage{order:-1;min-height:300px}body.dashboard #v3.on::before{background:linear-gradient(180deg,transparent 0%,transparent 30%,var(--scrim) 55%)}}
+/* backend connection badge, live video feed */
+.apistat{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:5px 10px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.apistat::before{content:"";width:7px;height:7px;border-radius:50%;background:#B8A48E}
+.apistat.on{color:var(--ink)}.apistat.on::before{background:#2E9E5B}
+.feed video{width:100%;aspect-ratio:16/10;border-radius:12px;display:block;object-fit:contain;background:#000}
+.tblwrap{overflow-x:auto}
+@media (max-width:700px){.apistat{font-size:0;gap:0;padding:6px}}
 /* print: only the report */
 @media print{
   #bg,.top,.idx,main>section:not(#v5),footer,.noprint{display:none!important}
@@ -297,7 +304,7 @@ body.dashboard #v3.on::before{background:linear-gradient(90deg,var(--scrim) 0%,v
   <nav>
     <button data-go="6">Map</button><button data-go="7">Telemetry</button><button data-go="8">Twin</button><button data-go="9">Advisor</button><button data-go="10">Report</button>
   </nav>
-  <button class="btn pri sm" data-go="6">Enter Platform</button>
+  <div class="row" style="gap:10px;flex-wrap:nowrap"><span class="apistat" id="apiStat" title="Backend not reachable, showing simulated data">Demo data</span><button class="btn pri sm" data-go="6">Enter Platform</button></div>
 </header>
 
 <div class="idx" id="idx" aria-label="Sections"></div>
@@ -482,10 +489,10 @@ body.dashboard #v3.on::before{background:linear-gradient(90deg,var(--scrim) 0%,v
         <div class="row" style="justify-content:space-between;margin-bottom:10px">
           <div class="seg" id="nodeSeg"><button data-node="p1" class="on">Pin 1 Fuel</button><button data-node="p2">Pin 2 Factory</button></div>
         </div>
-        <canvas id="feedCv"></canvas>
+        <canvas id="feedCv"></canvas><video id="feedVid" muted loop playsinline hidden></video><span class="k" id="feedSrc" style="display:block;margin-top:6px">Simulated camera view</span>
         <div class="stats">
           <div class="stat"><span class="k">Vehicles seen</span><b id="stVeh">0</b></div>
-          <div class="stat"><span class="k">Smoke opacity</span><b id="stOp">0%</b></div>
+          <div class="stat"><span class="k" id="stOpL">Smoke opacity</span><b id="stOp">0%</b></div>
           <div class="stat"><span class="k">Top class</span><b id="stTop">-</b></div>
           <div class="stat"><span class="k">Alerts</span><b id="stAl">0</b></div>
         </div>
@@ -502,7 +509,7 @@ body.dashboard #v3.on::before{background:linear-gradient(90deg,var(--scrim) 0%,v
     <p class="lead">Charts refresh every second. The terminal shows the raw JSON the backend would send.</p>
     <div class="grid g3">
       <div class="card">
-        <div class="row" style="justify-content:space-between"><b>CO₂ by vehicle class</b><span class="k mono">g/km</span></div>
+        <div class="row" style="justify-content:space-between"><b id="chCo2T">CO₂ by vehicle class</b><span class="k mono" id="chCo2U">g/km</span></div>
         <div class="chart"><canvas id="chCo2"></canvas></div>
       </div>
       <div class="card">
@@ -512,7 +519,7 @@ body.dashboard #v3.on::before{background:linear-gradient(90deg,var(--scrim) 0%,v
       <div class="card">
         <div class="row" style="justify-content:space-between"><b>Clip analysis</b><span class="k mono" id="pLbl">0 / 3000 frames</span></div>
         <div class="bar"><i id="pBar"></i></div>
-        <p class="k" style="margin-top:12px">Model reads each frame, tags the vehicle, estimates CO₂ and smoke opacity, then logs one JSON line.</p>
+        <p class="k" style="margin-top:12px" id="engTxt">Model reads each frame, tags the vehicle, estimates CO₂ and smoke opacity, then logs one JSON line.</p>
       </div>
       <div class="term mono" id="term" aria-live="off">
         <div class="termhead"><i></i><i></i><i></i><span class="d" style="margin-left:6px">emmisionx-backend, tail -f</span></div>
@@ -532,17 +539,16 @@ body.dashboard #v3.on::before{background:linear-gradient(90deg,var(--scrim) 0%,v
         <div class="card">
           <div class="seg tabs" id="twTabs"><button data-pane="paneV" class="on">Vehicular</button><button data-pane="paneI">Industrial</button></div>
           <div class="sl pane" id="paneV">
-            <div><label>Traffic reduction <span id="vT">10%</span></label><input type="range" id="sT" min="0" max="50" value="10"></div>
-            <div><label>EV share <span id="vE">15%</span></label><input type="range" id="sE" min="0" max="60" value="15"></div>
-            <div><label>Idle time cut <span id="vI">25%</span></label><input type="range" id="sI" min="0" max="50" value="25"></div>
-            <div><label>E20 ethanol blend <span id="vE20">0%</span></label><input type="range" id="sE20" min="0" max="20" value="0"></div>
+            <div><label>EV share <span id="vE">15%</span></label><input type="range" id="sE" min="0" max="100" value="15"></div>
+            <div><label>Idle time cut <span id="vI">25%</span></label><input type="range" id="sI" min="0" max="100" value="25"></div>
+            <div><label>E20 ethanol blend <span id="vE20">0%</span></label><input type="range" id="sE20" min="0" max="100" value="0"></div>
             <label class="sw"><span>Ban BS3 / BS4 trucks</span><input type="checkbox" id="sBan"></label>
           </div>
           <div class="sl pane" id="paneI" hidden>
-            <div><label>Scrubber efficiency <span id="vF">20%</span></label><input type="range" id="sF" min="0" max="90" value="20"></div>
-            <div><label>Boiler air-fuel tuning <span id="vTu">0%</span></label><input type="range" id="sTu" min="0" max="30" value="0"></div>
+            <div><label>Scrubber efficiency <span id="vF">20%</span></label><input type="range" id="sF" min="0" max="95" value="20"></div>
+            <div><label>Boiler air-fuel tuning <span id="vTu">0%</span></label><input type="range" id="sTu" min="0" max="100" value="0"></div>
             <div><label>Boiler fuel</label>
-              <div class="seg" id="fuelSeg" style="margin-top:6px"><button data-fuel="coal" class="on">Coal</button><button data-fuel="biomass">Biomass</button></div></div>
+              <div class="seg" id="fuelSeg" style="margin-top:6px"><button data-fuel="coal" class="on">Coal</button><button data-fuel="furnace_oil">Oil</button><button data-fuel="natural_gas">Gas</button><button data-fuel="biomass">Biomass</button></div></div>
           </div>
           <div class="row" style="margin-top:16px"><button class="btn pri sm" id="saveRun">Save this run</button><span class="k" id="runHint">Saved runs appear in your report.</span></div>
         </div>
@@ -603,7 +609,7 @@ body.dashboard #v3.on::before{background:linear-gradient(90deg,var(--scrim) 0%,v
         <label class="tog"><input type="checkbox" id="incRuns" checked> Include all what-if simulation runs</label>
         <div class="row" style="margin-top:14px">
           <button class="btn" id="dlJson">Download Raw JSON</button>
-          <button class="btn pri" id="dlPdf">Download PDF Report</button>
+          <button class="btn pri" id="dlPdf">Download PDF Report</button><button class="btn" id="dlCert" disabled title="Generated by the backend; available when it is connected">CPCB Form-V certificate</button>
         </div>
         <p class="k" style="margin-top:10px">PDF opens your print dialog. Choose "Save as PDF".</p>
         <div id="jsonWrap" hidden>
@@ -646,6 +652,48 @@ var CLS=["car","truck","bus","bike"];
 var LIMIT=35;
 var S={node:"p1",co2:{car:0,truck:0,bus:0,bike:0},opac:[],frames:0,veh:0,alerts:0,runs:[],opSum:0,opN:0};
 function N(){return NODES[S.node]}
+
+/* ---------------- backend API (FastAPI main.py) ----------------
+   Relative /api URLs go through the Vite proxy (vite.config.ts). Every caller falls back to the
+   simulated demo data when the backend is down or an endpoint changes shape. */
+var API_BASE=window.EMISSIONX_API!=null?window.EMISSIONX_API:(location.protocol==="file:"?"http://localhost:8000":"");
+var LIVE=false,HEALTH=null;
+function api(path,body,ms){
+  var ctl=window.AbortController?new AbortController():null,t=ctl?setTimeout(function(){ctl.abort()},ms||5000):0;
+  return fetch(API_BASE+path,{method:body?"POST":"GET",headers:body?{"Content-Type":"application/json"}:{},
+      body:body?JSON.stringify(body):undefined,signal:ctl?ctl.signal:undefined})
+    .then(function(r){clearTimeout(t);if(!r.ok)throw new Error(path+" HTTP "+r.status);return r.json()},
+          function(e){clearTimeout(t);throw e});
+}
+function dig(o,path,def){var v=o;path.split(".").forEach(function(k){v=v==null?undefined:v[k]});return v==null?def:v}
+function setLive(on){
+  if(on===LIVE)return;LIVE=on;LIMIT=on?20:35;   /* CPCB stack norm: <= 20% opacity (Ringelmann 1) */
+  var b=$("#apiStat");if(b){b.className="apistat"+(on?" on":"");b.textContent=on?"Live backend":"Demo data";
+    b.title=on?"Connected to the EmissionX API":"Backend not reachable, showing simulated data"}
+  var c=$("#dlCert");if(c)c.disabled=!on;
+  syncVideo();
+}
+function checkHealth(){
+  return api("/api/health",null,4000).then(function(h){HEALTH=h;setLive(true);syncVideo();showEngine()},function(){HEALTH=null;setLive(false)});
+}
+function showEngine(){   /* which smoke engine produced the factory telemetry (factory_telemetry_meta.json) */
+  var run=dig(HEALTH,"industrial_module.detector_run"),el=$("#engTxt");if(!el||!run)return;
+  el.textContent="Factory stack: "+(run.detector_mode||run.profile||"auto-routed")+" · "+(run.frames_processed||0)+" frames of "+
+    (run.source_video||"video")+" ("+run.width+"×"+run.height+")";
+}
+function syncVideo(){   /* annotated CCTV from /api/video/{sector} when the backend has it, else the simulated canvas */
+  var vid=$("#feedVid"),cv=$("#feedCv");if(!vid)return;
+  var sector=S.node==="p2"?"industrial":"vehicular",src=API_BASE+"/api/video/"+sector;
+  if(LIVE&&dig(HEALTH,sector+"_module.video_available",false)){
+    if(vid.dataset.src!==src){vid.dataset.src=src;vid.src=src;if(vid.play)vid.play().catch(function(){})}
+    var eng=sector==="industrial"?dig(HEALTH,"industrial_module.detector_run.detector_mode"):null;
+    vid.hidden=false;cv.hidden=true;$("#feedSrc").textContent="Annotated CCTV from the backend ("+sector+")"+(eng?" · "+eng:"");
+  }else{
+    if(vid.dataset.src){vid.pause();vid.removeAttribute("src");vid.dataset.src="";vid.load()}
+    vid.hidden=true;cv.hidden=false;
+    $("#feedSrc").textContent=LIVE?"Simulated camera view · no annotated "+sector+" video on the backend yet":"Simulated camera view";
+  }
+}
 function totalKg(co2,stack){var t=stack;CLS.forEach(function(c){t+=co2[c]*FLOW[c]/1000});return t}
 
 /* ---------------- header / index / nav ---------------- */
@@ -679,7 +727,7 @@ function showDash(i){
   pv.disabled=ki<1;nx.disabled=ki>=RKEYS.length-1;
   $("#pgNum").textContent=(ki)+" / "+dashN;
   [chCo2,chOp,chTwin].forEach(function(c){if(c)requestAnimationFrame(function(){c.resize()})});
-  if(i===10)renderReport();
+  if(i===10){renderReport();loadReport()}
 }
 function route(){var slug=(location.hash||"").replace("#/","");
   var found=0;for(var r in ROUTES){if(ROUTES[r]===slug){found=+r;break}}
@@ -779,7 +827,7 @@ function Detector(cv,big,onCount){
   return api;
 }
 var mini=Detector($("#miniCv"),false,function(n){$("#miniCount").textContent=n+" vehicles"});
-var feed=Detector($("#feedCv"),true,function(n){S.veh=n;$("#stVeh").textContent=n});
+var feed=Detector($("#feedCv"),true,function(n){if(LIVE&&TEL)return;S.veh=n;$("#stVeh").textContent=n});
 
 /* ---------------- map ---------------- */
 (function(){
@@ -796,13 +844,22 @@ var feed=Detector($("#feedCv"),true,function(n){S.veh=n;$("#stVeh").textContent=
     p.setAttribute("fill","none");p.setAttribute("stroke","#C24E12");p.setAttribute("stroke-width","2");p.setAttribute("stroke-linecap","round");
     p.setAttribute("data-x",x);p.setAttribute("data-y",y);wg.appendChild(p)}
   var ang=35,speed=12;
+  var CMP=["N","NE","E","SE","S","SW","W","NW"];
   function wind(){
-    ang+=rand(-1.2,1.2);speed=Math.max(6,Math.min(22,speed+rand(-.4,.4)));
+    var env=LIVE&&TEL?dig(TEL,"industrial.environment"):null;
+    if(env&&env.wind_deg!=null){   /* arrows point where the wind blows to: met. bearing + 180, SVG 0deg = east */
+      var dlt=((+env.wind_deg+90-ang)%360+540)%360-180;   /* shortest turn towards the live heading */
+      ang+=Math.max(-4,Math.min(4,dlt*.5))+rand(-.6,.6);speed=+env.wind_kmh||speed;
+    }else{ang+=rand(-1.2,1.2);speed=Math.max(6,Math.min(22,speed+rand(-.4,.4)))}
     $$("#windG path").forEach(function(p){p.setAttribute("transform","translate("+p.dataset.x+" "+p.dataset.y+") rotate("+ang+")")});
-    ["p1","p2"].forEach(function(k,i){var n=NODES[k],sc=.55+n.opac/50;
+    ["p1","p2"].forEach(function(k,i){var n=NODES[k],sc=Math.min(2,.55+n.opac/50);
       $("#pl"+(i+1)).setAttribute("transform","translate("+n.x+" "+n.y+") rotate("+ang+") scale("+sc+")")});
-    var dirs=["E","SE","S","SW","W","NW","N","NE"];var a=((ang%360)+360)%360;
-    $("#windTxt").textContent="Wind "+dirs[Math.round(((360-a+90)%360)/45)%8]+" "+Math.round(speed)+" km/h";
+    if(env&&env.wind_deg!=null){
+      $("#windTxt").textContent="Wind from "+CMP[Math.round(env.wind_deg/45)%8]+" "+Math.round(speed)+" km/h"+(env.aqi!=null?" · AQI "+env.aqi:"");
+    }else{
+      var dirs=["E","SE","S","SW","W","NW","N","NE"];var a=((ang%360)+360)%360;
+      $("#windTxt").textContent="Wind "+dirs[Math.round(((360-a+90)%360)/45)%8]+" "+Math.round(speed)+" km/h";
+    }
   }
   wind();setInterval(wind,500);
   $$(".chip[data-ov]").forEach(function(c){c.addEventListener("click",function(){
@@ -841,21 +898,51 @@ function logLine(o,warn){
   term.appendChild(d);while(term.children.length>60)term.removeChild(term.children[1]);
   term.scrollTop=term.scrollHeight;
 }
+var TEL=null,TELN=0;
+function pollTelemetry(){
+  api("/api/telemetry?sector=all",null,4000).then(function(d){TEL=d;TELN++;setLive(true)},function(){TEL=null;setLive(false)});
+}
+function logText(txt,warn){
+  var d=document.createElement("div");d.className="ln";var t=esc(String(txt).trim());
+  d.innerHTML='<span class="d">&gt;</span> '+(warn?'<span class="w">'+t+'</span>':t);
+  term.appendChild(d);while(term.children.length>60)term.removeChild(term.children[1]);
+  term.scrollTop=term.scrollHeight;
+}
+var CLSNAME={motorcycle:"Bike",auto_rickshaw:"Auto",bus_truck:"Bus/Truck"};
+function prettyCls(k){return CLSNAME[k]||String(k).replace(/_/g," ").replace(/\b\w/g,function(c){return c.toUpperCase()})}
 function tick(){
-  var n=N();
+  var n=N(),ind=LIVE&&TEL?TEL.industrial:null,veh=LIVE&&TEL?TEL.vehicular:null,rec=S.node==="p2"?ind:veh;
   CLS.forEach(function(c){S.co2[c]=Math.round(n.base[c]*rand(.88,1.12))});
-  var op=Math.max(2,Math.round(n.opac+rand(-6,6)));
+  var lop=ind?dig(ind,"cv_telemetry.smoke_opacity_pct"):null;   /* the stack is the only live smoke sensor */
+  var op=lop!=null?+lop:Math.max(2,Math.round(n.opac+rand(-6,6)));
+  if(lop!=null)NODES.p2.opac=op;
   S.opac.push(op);if(S.opac.length>30)S.opac.shift();
   S.opSum+=op;S.opN++;
-  S.frames+=Math.round(rand(20,28));
-  var cls=CLS[Math.floor(Math.random()*4)];
   var warn=op>LIMIT;if(warn)S.alerts++;
-  logLine({ts:new Date().toISOString().slice(11,19),node:n.id,cls:cls,co2_g_km:S.co2[cls],opacity_pct:op,conf:+rand(.86,.98).toFixed(2),alert:warn},warn);
-  if(chCo2){chCo2.data.datasets[0].data=CLS.map(function(c){return S.co2[c]});chCo2.update()}
-  if(chOp){chOp.data.labels=S.opac.map(function(_,i){return i});chOp.data.datasets[0].data=S.opac.slice();chOp.data.datasets[1].data=S.opac.map(function(){return LIMIT});chOp.update()}
-  var pc=(S.frames%3000)/3000*100;$("#pBar").style.width=pc+"%";$("#pLbl").textContent=(S.frames%3000)+" / 3000 frames";
+  if(rec){
+    logLine({ts:String(rec.timestamp||"").slice(11,19),node:rec.node_id,co2_kg_hr:dig(rec,"emissions.baseline_co2_kg_hr"),
+      waste_kg_hr:dig(rec,"emissions.waste_co2_kg_hr"),opacity_pct:dig(rec,"cv_telemetry.smoke_opacity_pct"),
+      ringelmann:dig(rec,"cv_telemetry.ringelmann_level")},warn&&S.node==="p2");
+    dig(rec,"cv_telemetry.recent_logs",[]).forEach(function(l){logText(l,/VIOLATION|WARN|ALERT/i.test(l))});
+    var cnt=dig(veh,"cv_telemetry.active_counts",{}),keys=Object.keys(cnt),tot=0,top="-",tv=-1;
+    keys.forEach(function(k){tot+=+cnt[k]||0;if(+cnt[k]>tv){tv=+cnt[k];top=prettyCls(k)}});
+    if(chCo2&&keys.length){chCo2.data.labels=keys.map(prettyCls);chCo2.data.datasets[0].data=keys.map(function(k){return +cnt[k]||0});chCo2.update()}
+    $("#chCo2T").textContent="Vehicles on the forecourt camera";$("#chCo2U").textContent="count";$("#stOpL").textContent="Stack opacity";
+    S.veh=tot;$("#stVeh").textContent=tot;$("#stTop").textContent=top;
+    var total=+dig(HEALTH,"industrial_module.cached_telemetry_frames",0)||3000;S.frames=TELN;
+    $("#pBar").style.width=((TELN%total)/total*100)+"%";$("#pLbl").textContent=(TELN%total)+" / "+total+" telemetry frames";
+  }else{
+    S.frames+=Math.round(rand(20,28));
+    var cls=CLS[Math.floor(Math.random()*4)];
+    logLine({ts:new Date().toISOString().slice(11,19),node:n.id,cls:cls,co2_g_km:S.co2[cls],opacity_pct:op,conf:+rand(.86,.98).toFixed(2),alert:warn},warn);
+    if(chCo2){chCo2.data.labels=["Car","Truck","Bus","Bike"];chCo2.data.datasets[0].data=CLS.map(function(c){return S.co2[c]});chCo2.update()}
+    $("#chCo2T").textContent="CO₂ by vehicle class";$("#chCo2U").textContent="g/km";$("#stOpL").textContent="Smoke opacity";
+    var pc=(S.frames%3000)/3000*100;$("#pBar").style.width=pc+"%";$("#pLbl").textContent=(S.frames%3000)+" / 3000 frames";
+    $("#stTop").textContent=CLS.slice().sort(function(a,b){return S.co2[b]-S.co2[a]})[0];
+  }
+  if(chOp){chOp.options.scales.y.max=Math.max(70,Math.ceil(Math.max.apply(null,S.opac)/10)*10);
+    chOp.data.labels=S.opac.map(function(_,i){return i});chOp.data.datasets[0].data=S.opac.slice();chOp.data.datasets[1].data=S.opac.map(function(){return LIMIT});chOp.update()}
   $("#stOp").textContent=op+"%";var se=$("#sOpDisp");if(se)se.textContent=op+"%";$("#stAl").textContent=S.alerts;
-  var top=CLS.slice().sort(function(a,b){return S.co2[b]-S.co2[a]})[0];$("#stTop").textContent=top;
   /* hero holographic badges */
   var fl=0,fc=0;CLS.forEach(function(c){fl+=FLOW[c];fc+=S.co2[c]*FLOW[c]});
   $("#hbCo2").textContent=Math.round(fc/fl);
@@ -865,60 +952,88 @@ function tick(){
 }
 setInterval(tick,1000);
 
-/* ---------------- digital twin ---------------- */
-var CREDIT_INR=1000,BIO=.19,HRS_YR=8760;   /* assumed carbon credit price (INR per t CO2); biomass net lifecycle 0.45/2.42 vs coal */
+/* ---------------- digital twin: POST /api/twin/simulate, local estimate if the backend is down ---------------- */
+var FUELF={coal:1,furnace_oil:3.15/2.42,natural_gas:1.93/2.42,biomass:.45/2.42},CREDIT_INR=1350,HRS_YR=8760;   /* local fallback only */
 var twFuel="coal";
 function twinVals(){
-  return {t:+$("#sT").value/100,e:+$("#sE").value/100,f:+$("#sF").value/100,i:+$("#sI").value/100,
-    e20:+$("#sE20").value/100,tu:+$("#sTu").value/100,ban:$("#sBan").checked,bio:twFuel==="biomass"};
+  return {e:+$("#sE").value/100,f:+$("#sF").value/100,i:+$("#sI").value/100,
+    e20:+$("#sE20").value/100,tu:+$("#sTu").value/100,ban:$("#sBan").checked,fuel:twFuel};
 }
-function twinCalc(){
-  var v=twinVals(),t=v.t,e=v.e,f=v.f,i=v.i,b=N().base;
-  var act={},sim={};
+function twinParams(){   /* DigitalTwinParams in modules/digital_twin.py */
+  var v=twinVals();
+  return {ev_adoption_pct:v.e*100,idle_time_cut_pct:v.i*100,e20_blend_pct:v.e20*100,ban_bs3_bs4_heavy:v.ban,
+    scrubber_efficiency_pct:v.f*100,fuel_type:v.fuel,combustion_tuning_pct:v.tu*100};
+}
+function twinCalc(){   /* rough browser-side estimate, used only when the backend is not reachable */
+  var v=twinVals(),e=v.e,i=v.i,b=N().base,act={},sim={};
   CLS.forEach(function(c){act[c]=b[c]*FLOW[c]/1000});
   act.stack=N().stack;
-  var eth=1-v.e20*.3;                       /* E20 cuts petrol CO2 by about 6% */
-  var ban=v.ban?1:0;
-  sim.car=act.car*(1-t)*(1-e)*(1-i*.25)*eth;
-  sim.truck=act.truck*(1-t*.6)*(1-f*0)*(1-i*.25)*(1-ban*.3);
-  sim.bus=act.bus*(1-t*.6)*(1-e*.5)*(1-i*.25)*(1-ban*.15);
-  sim.bike=act.bike*(1-t)*(1-e)*eth;
-  var stackF=(1-f)*(1-v.tu*.5)*(v.bio?BIO:1);
+  var eth=1-v.e20*.18,ban=v.ban?.35:0;
+  sim.car=act.car*(1-e)*(1-i*.25)*eth;
+  sim.truck=act.truck*(1-i*.25)*(1-ban);
+  sim.bus=act.bus*(1-e*.5)*(1-i*.25)*(1-ban);
+  sim.bike=act.bike*(1-e)*eth;
+  var stackF=(1-v.f)*(1-v.tu*.2)*(FUELF[v.fuel]||1);
   sim.stack=act.stack*stackF;
   var A=0,B=0;Object.keys(act).forEach(function(k){A+=act[k];B+=sim[k]});
-  return {act:act,sim:sim,A:A,B:B,pct:A?(1-B/A)*100:0,stackF:stackF,
-    p:{traffic:t*100,ev:e*100,filter:f*100,idle:i*100,e20:v.e20*100,ban_bs3_bs4:ban?1:0,air_fuel_tuning:v.tu*100,fuel:v.bio?"biomass":"coal"}};
+  return {act:act,sim:sim,A:A,B:B,pct:A?(1-B/A)*100:0,stackF:stackF};
 }
-var twinSaved=0;
-var TW={t:.1,e:.15,f:.2,i:.25};   /* live slider values, read every frame by the 3D scene */
+var twinSaved=0,TWR=null,twReq=0,twTimer=0;
+var TW={t:.1,e:.15,f:.2,i:.25,plume:null};   /* read every frame by the 3D scene */
 function levelOf(op){return Math.max(1,Math.min(5,Math.ceil(op/20)))}
-function twinDock(r){
-  var op=S.node==="p2"&&S.opac.length?S.opac[S.opac.length-1]:NODES.p2.opac;
-  var now=levelOf(op),sim=levelOf(op*r.stackF);
-  $("#lvlNow").textContent="Level "+now;$("#lvlSim").textContent="Level "+sim;
-  var pc=$("#cpcb");pc.textContent=sim<=1?"Compliant":sim<=3?"Warning":"Violation";pc.className="pill"+(sim<=1?"":sim<=3?" warn":" bad");
-  var tons=Math.max(0,(r.A-r.B))*HRS_YR/1000;
-  tickTo.target=tons*CREDIT_INR;
-  $("#inrNote").textContent=Math.round(tons).toLocaleString("en-IN")+" t CO₂/yr at an assumed ₹"+CREDIT_INR.toLocaleString("en-IN")+"/t";
-}
+function inr(x){x=+x||0;return x>=1e7?"₹"+(x/1e7).toFixed(2)+" Cr":x>=1e5?"₹"+(x/1e5).toFixed(2)+" L":"₹"+Math.round(x).toLocaleString("en-IN")}
+function setPill(text,cls){var pc=$("#cpcb");pc.textContent=text;pc.className="pill"+(cls?" "+cls:"")}
 var tickTo={cur:0,target:0};
 (function tk(){requestAnimationFrame(tk);var d=tickTo.target-tickTo.cur;
   if(Math.abs(d)>.5)tickTo.cur+=d*.12;else tickTo.cur=tickTo.target;
-  var el=$("#inr");if(el)el.textContent=Math.round(tickTo.cur).toLocaleString("en-IN")})();
-function twinUpdate(){
-  var v=twinVals();
-  $("#vT").textContent=$("#sT").value+"%";$("#vE").textContent=$("#sE").value+"%";$("#vF").textContent=$("#sF").value+"%";$("#vI").textContent=$("#sI").value+"%";
-  $("#vE20").textContent=$("#sE20").value+"%";$("#vTu").textContent=$("#sTu").value+"%";
-  TW.t=v.t;TW.e=v.e;TW.i=v.i;
-  TW.f=1-(1-v.f)*(1-v.tu*.4)*(v.bio?.35:1);   /* smoke density in the 3D scene */
-  var r=twinCalc();twinSaved=r.pct;
+  var el=$("#inr");if(el)el.textContent=inr(tickTo.cur).slice(1)})();   /* "6.08 Cr", the ₹ sits in the markup */
+function twinChart(labels,base,proj){if(!chTwin)return;chTwin.data.labels=labels;chTwin.data.datasets[0].data=base;chTwin.data.datasets[1].data=proj;chTwin.update()}
+function twinLocal(){
+  var r=twinCalc(),ks=["car","truck","bus","bike","stack"];twinSaved=r.pct;
   $("#saved").innerHTML="-"+r.pct.toFixed(1)+"%<small>saved</small>";
-  if(chTwin){var ks=["car","truck","bus","bike","stack"];
-    chTwin.data.datasets[0].data=ks.map(function(k){return +r.act[k].toFixed(1)});
-    chTwin.data.datasets[1].data=ks.map(function(k){return +r.sim[k].toFixed(1)});chTwin.update()}
-  twinDock(r);
+  twinChart(["Cars","Trucks","Buses","Bikes","Stack"],ks.map(function(k){return +r.act[k].toFixed(1)}),ks.map(function(k){return +r.sim[k].toFixed(1)}));
+  var op=NODES.p2.opac,sim=levelOf(op*r.stackF);
+  $("#lvlNow").textContent="Level "+levelOf(op);$("#lvlSim").textContent="Level "+sim;
+  setPill(sim<=1?"Compliant":sim<=3?"Warning":"Violation",sim<=1?"":sim<=3?"warn":"bad");
+  var tons=Math.max(0,r.A-r.B)*HRS_YR/1000;tickTo.target=tons*CREDIT_INR;
+  $("#inrNote").textContent=Math.round(tons).toLocaleString("en-IN")+" t CO₂/yr at ₹"+CREDIT_INR.toLocaleString("en-IN")+"/t · offline estimate";
 }
-["sT","sE","sF","sI","sE20","sTu","sBan"].forEach(function(id){$("#"+id).addEventListener("input",twinUpdate)});
+function twinApply(r){   /* render a DigitalTwinResponse */
+  var m=r.comparative_chart_metrics||[];
+  if(m.length)twinChart(m.map(function(x){return String(x.category).split(" ")}),
+    m.map(function(x){return +x.baseline_co2||0}),m.map(function(x){return +x.projected_co2||0}));
+  var pct=+dig(r,"projected_summary.total_reduction_pct",0);twinSaved=pct;
+  $("#saved").innerHTML="-"+pct.toFixed(1)+"%<small>saved</small>";
+  var stack=(r.cpcb_compliance||[]).filter(function(c){return /stack/i.test(c.node||"")})[0];
+  var op0=+dig(r,"baseline_summary.industrial.smoke_opacity_pct",NODES.p2.opac);
+  var mo=stack&&/([\d.]+)\s*%/.exec(stack.measured_value||""),op1=mo?+mo[1]:+dig(r,"scene_3d_industrial.plume_opacity",op0/100)*100;
+  $("#lvlNow").textContent="Level "+dig(r,"baseline_summary.industrial.ringelmann_level",levelOf(op0));
+  $("#lvlSim").textContent="Level "+levelOf(op1);
+  if(stack){var st=String(stack.status||""),ok=/^COMPLIANT/.test(st),mid=/MODERATE/.test(st);
+    setPill(ok?"Compliant":mid?"Moderate concern":"Violation",ok?"":mid?"warn":"bad");$("#cpcb").title=stack.recommendation||""}
+  var fs=r.financial_savings||{},price=+fs.carbon_price_per_tonne_inr||CREDIT_INR;
+  var tons=+dig(r,"projected_summary.total_avoided_co2_kg_hr",0)*HRS_YR/1000;
+  tickTo.target=fs.annual_inr!=null?+fs.annual_inr:tons*price;
+  $("#inrNote").textContent=Math.round(tons).toLocaleString("en-IN")+" t CO₂/yr at ₹"+price.toLocaleString("en-IN")+"/t (CCTS)";
+  /* 3D scene follows the backend's scene parameters */
+  var si=r.scene_3d_industrial||{},sv=r.scene_3d_vehicular||{},tot=0,ev=0;
+  if(si.plume_opacity!=null)TW.plume=+si.plume_opacity;
+  Object.keys(sv.active_vehicle_counts||{}).forEach(function(k){tot+=+sv.active_vehicle_counts[k]||0;ev+=+dig(sv,"ev_vehicle_counts."+k,0)});
+  if(tot)TW.e=ev/tot;
+}
+function twinUpdate(){
+  ["E","F","I","E20","Tu"].forEach(function(k){$("#v"+k).textContent=$("#s"+k).value+"%"});
+  var v=twinVals();
+  TW.i=v.i;TW.t=v.i*.4;TW.e=v.e;
+  TW.f=1-(1-v.f)*(1-v.tu*.2)*(v.fuel==="biomass"?.35:v.fuel==="natural_gas"?.6:1);
+  if(!LIVE)twinLocal();   /* while live, wait for the backend so the chart does not flicker between two models */
+  clearTimeout(twTimer);var id=++twReq;
+  twTimer=setTimeout(function(){
+    api("/api/twin/simulate",twinParams(),6000).then(function(r){if(id!==twReq)return;TWR=r;setLive(true);twinApply(r)},
+      function(){if(id!==twReq)return;TWR=null;TW.plume=null;twinLocal()});
+  },150);
+}
+["sE","sF","sI","sE20","sTu","sBan"].forEach(function(id){$("#"+id).addEventListener("input",twinUpdate)});
 $$("#twTabs button").forEach(function(b){b.addEventListener("click",function(){
   $$("#twTabs button").forEach(function(x){x.classList.toggle("on",x===b)});
   ["paneV","paneI"].forEach(function(id){$("#"+id).hidden=id!==b.dataset.pane})})});
@@ -928,23 +1043,43 @@ var camView="fore";
 $$("#camSeg button").forEach(function(b){b.addEventListener("click",function(){
   camView=b.dataset.cam;$$("#camSeg button").forEach(function(x){x.classList.toggle("on",x===b)})})});
 $("#saveRun").addEventListener("click",function(){
-  var r=twinCalc();
-  S.runs.push({run:S.runs.length+1,node:N().id+" "+N().name,levers_pct:{traffic_reduction:r.p.traffic,ev_share:r.p.ev,filter_coverage:r.p.filter,idle_cut:r.p.idle,
-    e20_blend:r.p.e20,ban_bs3_bs4_trucks:!!r.p.ban_bs3_bs4,air_fuel_tuning:r.p.air_fuel_tuning,boiler_fuel:r.p.fuel},
-    actual_kg_per_hr:+r.A.toFixed(1),simulated_kg_per_hr:+r.B.toFixed(1),saved_pct:+r.pct.toFixed(1)});
-  renderRuns();renderReport();
-  $("#runHint").textContent="Run "+S.runs.length+" saved.";
+  var p=twinParams(),label="Website run · EV "+Math.round(p.ev_adoption_pct)+"% · scrubber "+Math.round(p.scrubber_efficiency_pct)+"% · "+p.fuel_type.replace("_"," ");
+  api("/api/twin/save",{params:p,label:label},8000).then(function(res){
+    $("#runHint").textContent="Saved on the backend ("+(res.total_saved_runs||res.total_count||"?")+" runs in total).";
+    loadSaved();loadReport();
+  },function(){
+    var r=twinCalc();
+    S.runs.push({run:S.runs.length+1,label:label+" (this browser only)",params:p,saved_pct:+r.pct.toFixed(1),
+      annual_inr:Math.max(0,r.A-r.B)*HRS_YR/1000*CREDIT_INR,source:"local"});
+    renderRuns();renderReport();
+    $("#runHint").textContent="Backend not reachable: run "+S.runs.length+" kept in this browser only.";
+  });
 });
+function runFromBackend(x){
+  return {label:x.label,id:x.run_id,params:x.params||{},saved_pct:+dig(x,"projected_summary.total_reduction_pct",0),
+    annual_inr:+dig(x,"financial_savings.annual_inr",0),source:"backend"};
+}
+function loadSaved(){
+  return api("/api/twin/saved",null,6000).then(function(list){
+    var local=S.runs.filter(function(r){return r.source==="local"});
+    S.runs=(Array.isArray(list)?list:(list&&list.runs)||[]).map(runFromBackend).concat(local);
+    S.runs.forEach(function(r,i){r.run=i+1});
+    renderRuns();renderReport();
+  },function(){});
+}
 function renderRuns(){
-  $("#runChips").innerHTML=S.runs.map(function(r){return '<span class="chip on">Run '+r.run+': -'+r.saved_pct+'%</span>'}).join("");
+  $("#runChips").innerHTML=S.runs.map(function(r){return '<span class="chip on" title="'+esc(r.label||"")+'">Run '+r.run+': -'+(+r.saved_pct).toFixed(1)+'%</span>'}).join("");
 }
 
 /* ---------------- advisor ---------------- */
 function snap(){
   var n=N(),avg=S.opN?S.opSum/S.opN:n.opac;
-  return {node:n.id,site:n.name,timestamp:new Date().toISOString(),co2_g_km:Object.assign({},S.co2.car?S.co2:n.base),
+  var o={data_source:LIVE?"live backend":"simulated demo",node:n.id,site:n.name,timestamp:new Date().toISOString(),co2_g_km:Object.assign({},S.co2.car?S.co2:n.base),
     smoke_opacity_pct:S.opac.length?S.opac[S.opac.length-1]:n.opac,avg_opacity_pct:+avg.toFixed(1),alerts:S.alerts,
     est_total_kg_co2_per_hr:+totalKg(S.co2.car?S.co2:n.base,n.stack).toFixed(1),alert_threshold_pct:LIMIT};
+  if(LIVE&&TEL)o.live_telemetry=TEL[S.node==="p2"?"industrial":"vehicular"];
+  if(TWR)o.twin_projection={parameters:TWR.parameters_applied,projected:TWR.projected_summary,savings:TWR.financial_savings,cpcb:TWR.cpcb_compliance};
+  return o;
 }
 var msgs=$("#msgs");
 function addMsg(html,who){var d=document.createElement("div");d.className="m "+who;d.innerHTML=html;msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;return d}
@@ -976,20 +1111,26 @@ function advise(q){
     "</ul><h4>Monitoring</h4>Weekly EmmisionX report, alert on any opacity reading above "+LIMIT+"%, and rerun the twin each month.<br><span class='k'>Indicative draft. Verify against local norms.</span>";
   }
 }
-var API_BASE=window.EMISSIONX_API||"http://localhost:8000",chatHist=[];
+var chatHist=[];
 function esc(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+function adviceHtml(a){
+  return "<b>"+esc(a.headline||"Advice")+"</b><ul>"+(a.immediate_actions||[]).map(function(x){return "<li>"+esc(x)+"</li>"}).join("")+"</ul>"+
+    (a.regulatory_status?"<span class='k'>"+esc(a.regulatory_status)+"</span><br>":"")+(a.capex_roi_estimate?esc(a.capex_roi_estimate):"");
+}
 function send(q){
   if(!q.trim())return;addMsg(esc(q),"u");
-  var d=addMsg("Thinking…","a");
-  fetch(API_BASE+"/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({message:q,history:chatHist,context:snap(),allow_write:true})})
-  .then(function(r){if(!r.ok)throw new Error(r.status);return r.json()})
+  var d=addMsg("Thinking…","a"),sector=S.node==="p2"?"industrial":"vehicular";
+  api("/api/chat",{message:q,history:chatHist,context:snap(),allow_write:true},90000)
   .then(function(j){
     chatHist.push({role:"user",content:q},{role:"assistant",content:j.reply});
     var t=(j.tool_calls||[]).map(function(c){return c.tool}).join(", ");
     d.innerHTML=esc(j.reply).replace(/\n/g,"<br>")+(t?"<br><span class='k'>Tools used: "+esc(t)+"</span>":"");
   })
-  .catch(function(){d.innerHTML=advise(q)+"<br><span class='k'>Offline demo answer: chat backend not reachable.</span>"})
+  .catch(function(){   /* no chat model configured, or backend down: backend rule-based advice, then the local one */
+    return api("/api/ai-advice",{sector:sector,telemetry:LIVE&&TEL?TEL[sector]:null,query:q},6000)
+      .then(function(a){d.innerHTML=adviceHtml(a)+"<br><span class='k'>Rule-based advice from the backend. Set MIMO_API_KEY, MIMO_BASE_URL and MIMO_MODEL on the backend for the full chatbot.</span>"})
+      .catch(function(){d.innerHTML=advise(q)+"<br><span class='k'>Offline demo answer: backend not reachable.</span>"});
+  })
   .then(function(){msgs.scrollTop=msgs.scrollHeight});
 }
 $("#chatSend").addEventListener("click",function(){var i=$("#chatIn");send(i.value);i.value=""});
@@ -998,7 +1139,25 @@ $$("#quick .chip").forEach(function(c){c.addEventListener("click",function(){sen
 
 /* ---------------- report ---------------- */
 function grade(avg,alerts){var sc=100-avg*1.1-alerts*.4;return sc>=80?"A":sc>=65?"B":sc>=50?"C":"D"}
+var REP=null;
+function loadReport(){return api("/api/report/summary",null,8000).then(function(r){REP=r;renderReport()},function(){REP=null;renderReport()})}
+function pct0(x){return Math.round(+x||0)+"%"}
+function reportCard(k,v,sub){return '<div class="card"><span class="k">'+k+'</span><div class="big" style="font-size:22px">'+v+'</div>'+(sub?'<span class="k">'+sub+'</span>':'')+'</div>'}
+function renderReportLive(R){
+  var k=R.executive_kpis||{},ind=R.node_2_audit_industrial||{},veh=R.node_1_audit_vehicular||{},b=R.sebi_brsr_breakdown||{};
+  var vc=veh.vehicle_counts||{},vt=0;Object.keys(vc).forEach(function(x){vt+=+vc[x]||0});
+  var plates=(veh.lpr_plate_samples||[]).filter(Boolean);
+  $("#score").innerHTML=
+    reportCard("Audit",esc(R.audit_id||"-"),esc(R.reporting_period||""))+
+    reportCard("CO₂ baseline → mitigated",(+k.baseline_total_co2_kg_hr||0).toLocaleString("en-IN")+" → "+(+k.mitigated_total_co2_kg_hr||0).toLocaleString("en-IN"),"kg per hour · −"+(+k.reduction_pct||0).toFixed(1)+"%")+
+    reportCard("Annual carbon credits",inr(k.annual_carbon_credit_inr),"payback "+(k.capex_payback_months!=null?k.capex_payback_months+" months":"-"))+
+    reportCard("CPCB stack status",esc(String(ind.cpcb_mitigated_status||"-")),"was "+esc(String(ind.cpcb_baseline_status||"-"))+" · Ringelmann "+(ind.baseline_ringelmann||"-")+" → "+(ind.mitigated_ringelmann||"-"))+
+    reportCard("SEBI BRSR scope 1 / 3",(+b.scope_1_direct_kg_hr||0).toLocaleString("en-IN")+" / "+(+b.scope_3_downstream_kg_hr||0).toLocaleString("en-IN"),"kg CO₂ per hour, baseline")+
+    reportCard("Forecourt",vt+" vehicles","dwell "+(veh.baseline_dwell_sec||"-")+"s → "+(veh.mitigated_dwell_sec||"-")+"s"+(plates.length?" · plates: "+esc(plates.slice(0,3).join(", ")):""));
+}
 function renderReport(){
+  $("#rDate").textContent=new Date().toLocaleString();
+  if(LIVE&&REP){renderReportLive(REP);renderRunsTable();return}
   var s=snap(),cls=CLS.slice().sort(function(a,b){return s.co2_g_km[b]-s.co2_g_km[a]})[0];
   $("#rDate").textContent=new Date().toLocaleString();
   $("#score").innerHTML=
@@ -1008,14 +1167,19 @@ function renderReport(){
    '<div class="card"><span class="k">Total CO₂ estimate</span><div class="big">'+s.est_total_kg_co2_per_hr+'<span class="k"> kg/hr</span></div></div>'+
    '<div class="card"><span class="k">Top emitter</span><div class="big" style="text-transform:capitalize">'+cls+'</div></div>'+
    '<div class="card"><span class="k">Alerts</span><div class="big">'+s.alerts+'</div></div>';
+  renderRunsTable();
+}
+function renderRunsTable(){
   var inc=$("#incRuns").checked;
-  $("#runsWrap").innerHTML=inc?(S.runs.length?'<b>What-if runs</b><table><tr><th>Run</th><th>Traffic</th><th>EV</th><th>Filters</th><th>Idle</th><th>Saved</th></tr>'+
-    S.runs.map(function(r){var l=r.levers_pct;return '<tr><td>'+r.run+'</td><td>'+l.traffic_reduction+'%</td><td>'+l.ev_share+'%</td><td>'+l.filter_coverage+'%</td><td>'+l.idle_cut+'%</td><td><b>'+r.saved_pct+'%</b></td></tr>'}).join("")+'</table>':
+  $("#runsWrap").innerHTML=inc?(S.runs.length?'<b>What-if runs</b><div class="tblwrap"><table><tr><th>Run</th><th>EV</th><th>Idle cut</th><th>E20</th><th>BS3/4 ban</th><th>Scrubber</th><th>Fuel</th><th>Tuning</th><th>Saved</th><th>₹ / year</th></tr>'+
+    S.runs.map(function(r){var p=r.params||{};return '<tr title="'+esc(r.label||"")+'"><td>'+r.run+(r.source==="local"?"*":"")+'</td><td>'+pct0(p.ev_adoption_pct)+'</td><td>'+pct0(p.idle_time_cut_pct)+'</td><td>'+pct0(p.e20_blend_pct)+'</td><td>'+(p.ban_bs3_bs4_heavy?"Yes":"No")+'</td><td>'+pct0(p.scrubber_efficiency_pct)+'</td><td style="text-transform:capitalize">'+esc(String(p.fuel_type||"coal").replace("_"," "))+'</td><td>'+pct0(p.combustion_tuning_pct)+'</td><td><b>'+(+r.saved_pct||0).toFixed(1)+'%</b></td><td>'+inr(r.annual_inr)+'</td></tr>'}).join("")+'</table></div>'+
+    (S.runs.some(function(r){return r.source==="local"})?'<span class="k">* kept in this browser only; the backend was not reachable when it was saved.</span>':''):
     '<span class="k">No saved runs yet. Save one in the twin view.</span>'):"";
 }
 $("#incRuns").addEventListener("change",renderReport);
 function buildJSON(){
   var o={generated_at:new Date().toISOString(),state:{node:snap(),opacity_history_pct:S.opac.slice(),frames_processed:S.frames}};
+  if(LIVE&&REP)o.backend_report=REP;
   if($("#incRuns").checked)o.simulation_history=S.runs.slice();
   return o;
 }
@@ -1030,13 +1194,14 @@ $("#cpJson").addEventListener("click",function(){
   catch(e){m.textContent="Copy blocked. Select the text below."}
 });
 $("#dlPdf").addEventListener("click",function(){renderReport();try{window.print()}catch(e){}});
+$("#dlCert").addEventListener("click",function(){window.open(API_BASE+"/api/report/export?format=html","_blank","noopener")});
 
 /* ---------------- node switching ---------------- */
 function setNode(k){
   if(S.node===k)return;
   S.node=k;S.opac=[];S.opSum=0;S.opN=0;S.alerts=0;
   $$("#nodeSeg button").forEach(function(b){b.classList.toggle("on",b.dataset.node===k)});
-  feed.reset();twinUpdate();
+  feed.reset();syncVideo();twinUpdate();
   loadCtx("Switched to <b>"+N().id+" "+N().name+"</b>. Telemetry JSON refreshed.");
   tick();
 }
@@ -1250,7 +1415,8 @@ var scene3d=(function(){
 
   function updEmitters(dt){
     var op=S.opac.length?S.opac[S.opac.length-1]:N().opac;
-    var inten=Math.max(.12,Math.min(1.6,op/30))*Math.max(.2,1-TW.f*1.9);
+    var inten=TW.plume!=null?Math.max(.08,Math.min(1.6,TW.plume*3.3))   /* backend scene_3d_industrial.plume_opacity */
+      :Math.max(.12,Math.min(1.6,op/30))*Math.max(.2,1-TW.f*1.9);
     var lift=.5+.5*Math.min(inten,1.3);
     for(var i=0;i<emitters.length;i++){var e=emitters[i];
       e.acc+=(e.steam?4.5:12*inten)*dt;
@@ -1440,6 +1606,8 @@ if(window.matchMedia){var mq=matchMedia("(prefers-color-scheme: dark)");
 
 /* init */
 twinUpdate();loadCtx();tick();renderReport();
+checkHealth();pollTelemetry();loadSaved();loadReport();
+setInterval(pollTelemetry,1000);setInterval(checkHealth,15000);
 document.body.className="landing";route();
 })();
 </script>
