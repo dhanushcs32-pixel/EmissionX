@@ -55,7 +55,20 @@ A procedural 3D scene of factories, roads and vehicles sits behind the whole app
 
 ---
 
+### Map & Live Feed
 
+<div align="center">
+
+<img src="./docs/screenshots/map.png" width="440" alt="Map with fuel station and factory pins and wind dispersion"/>
+<img src="./docs/screenshots/live-feed.png" width="440" alt="Simulated camera feed with detections"/>
+
+<br><br>
+
+Two camera nodes, one air shed: a **fuel station** and a **factory**. Pick a pin to see how its plume drifts with the wind and what the camera is catching right now. Drop in your own video (MP4, MOV, AVI, MKV or WebM, up to 1 GB) to run the detector on it.
+
+</div>
+
+---
 
 ### Telemetry
 
@@ -302,7 +315,35 @@ All demo data is simulated. Thresholds and advice are indicative; check local po
 
 ## Team
 
-Built for the **DSU Hackathon** by [@dhanushcs32-pixel](https://github.com/dhanushcs32-pixel) _
+Built for the **DSU Hackathon**.
+
+<div align="center">
+
+<table>
+  <tr>
+    <td align="center" width="160">
+      <a href="https://github.com/dhanushcs32-pixel">
+        <img src="https://github.com/dhanushcs32-pixel.png?size=100" width="100" style="border-radius:50%" alt="dhanushcs32-pixel"/><br/>
+        <sub><b>dhanushcs32-pixel</b></sub>
+      </a>
+    </td>
+    <td align="center" width="160">
+      <a href="https://github.com/krtxnsh">
+        <img src="https://github.com/krtxnsh.png?size=100" width="100" style="border-radius:50%" alt="krtxnsh"/><br/>
+        <sub><b>krtxnsh</b></sub>
+      </a>
+    </td>
+    <td align="center" width="160">
+      <a href="https://github.com/aryaaditya067-lab">
+        <img src="https://github.com/aryaaditya067-lab.png?size=100" width="100" style="border-radius:50%" alt="aryaaditya067-lab"/><br/>
+        <sub><b>aryaaditya067-lab</b></sub>
+      </a>
+    </td>
+  </tr>
+</table>
+
+</div>
+
 <div align="center">
 
 <br>
