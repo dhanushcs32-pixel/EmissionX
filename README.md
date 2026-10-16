@@ -55,6 +55,20 @@ A procedural 3D scene of factories, roads and vehicles sits behind the whole app
 
 ---
 
+### Map & Live Feed
+
+<div align="center">
+
+<img src="./docs/screenshots/map.png" width="440" alt="Map with fuel station and factory pins and wind dispersion"/>
+<img src="./docs/screenshots/live-feed.png" width="440" alt="Simulated camera feed with detections"/>
+
+<br><br>
+
+Two camera nodes, one air shed: a **fuel station** and a **factory**. Pick a pin to see how its plume drifts with the wind and what the camera is catching right now. Drop in your own video (MP4, MOV, AVI, MKV or WebM, up to 1 GB) to run the detector on it.
+
+</div>
+
+---
 
 ### Telemetry
 
@@ -134,7 +148,7 @@ flowchart LR
 
 ### Ringelmann scale
 
-$$\text{opacity\_pct} = \text{clamp}\left(\left(1 - \frac{\text{mean\_brightness}}{255}\right) \times 100,\ 0,\ 100\right)$$
+$$\text{Opacity \%} = \text{clamp}\left(\left(1 - \frac{\text{Mean Brightness}}{255}\right) \times 100,\ 0,\ 100\right)$$
 
 | Opacity | Grade | Status | Multiplier |
 |---|---|---|---|
@@ -144,7 +158,7 @@ $$\text{opacity\_pct} = \text{clamp}\left(\left(1 - \frac{\text{mean\_brightness
 
 ### Industrial formula
 
-$$\text{CO}_2 = \text{Fuel\_Rate} \times \text{EF} \times \text{Opacity\_Mult} \times (1 - \text{Scrubber\_Eff})$$
+$$\text{CO}_2 = \text{Fuel Rate} \times \text{EF} \times \text{Opacity Mult} \times (1 - \text{Scrubber Eff})$$
 
 | Fuel | Emission factor |
 |---|---|
