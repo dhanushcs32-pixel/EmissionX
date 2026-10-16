@@ -301,3 +301,82 @@ def test_digital_twin_physics_engine():
     ind_metric = [m for m in res_biomass.comparative_chart_metrics if m.category == "Industrial Smokestack"][0]
     assert ind_metric.reduction_pct > 75.0
 
+
+def test_saved_twin_runs_endpoints():
+    """Validates the Saved Digital Twin Runs persistence bridge and auto-seeding."""
+    from fastapi.testclient import TestClient
+    from main import app
+
+    client = TestClient(app)
+
+    # 1. GET /api/twin/saved (auto-seeds default flagship run if empty)
+    r_get = client.get("/api/twin/saved")
+    assert r_get.status_code == 200
+    runs = r_get.json()
+    assert isinstance(runs, list)
+    assert len(runs) >= 1
+    assert "run_id" in runs[0]
+    assert "params" in runs[0]
+    assert "projected_summary" in runs[0]
+
+    # 2. POST /api/twin/save (saves new scenario)
+    r_save = client.post("/api/twin/save", json={
+        "params": {
+            "ev_adoption_pct": 50.0,
+            "scrubber_efficiency_pct": 90.0,
+            "fuel_type": "biomass",
+            "combustion_tuning_pct": 75.0,
+        },
+        "label": "Test Scenario: 90% Scrubber + Biomass"
+    })
+    assert r_save.status_code == 200
+    save_data = r_save.json()
+    assert save_data["success"] is True
+    assert "saved_run" in save_data
+    assert save_data["saved_run"]["label"] == "Test Scenario: 90% Scrubber + Biomass"
+    assert save_data["total_saved_runs"] >= 2
+
+
+def test_compliance_report_endpoints():
+    """Validates CPCB Form-V & SEBI BRSR compliance report generation & export endpoints."""
+    from fastapi.testclient import TestClient
+    from main import app
+
+    client = TestClient(app)
+
+    # 1. GET /api/report/summary (React tab JSON payload)
+    r_sum = client.get("/api/report/summary")
+    assert r_sum.status_code == 200
+    summary = r_sum.json()
+    assert "audit_id" in summary
+    assert summary["audit_id"].startswith("CPCB-BRSR-")
+    assert "facility_metadata" in summary
+    assert "executive_kpis" in summary
+    assert "sebi_brsr_breakdown" in summary
+    assert "scope_1_direct_kg_hr" in summary["sebi_brsr_breakdown"]
+    assert "scope_3_downstream_kg_hr" in summary["sebi_brsr_breakdown"]
+    assert "node_1_vehicular_forecourt" in summary
+    assert "node_2_industrial_smokestack" in summary
+    assert "carbon_economics_inr" in summary
+    assert summary["carbon_economics_inr"]["annual_inr"] > 0
+    assert summary["carbon_economics_inr"]["trees_equivalent_annual"] > 0
+    assert summary["saved_scenarios_count"] >= 1
+
+    # 2. GET /api/report/export?format=html (Print-ready certificate)
+    r_html = client.get("/api/report/export?format=html")
+    assert r_html.status_code == 200
+    assert "text/html" in r_html.headers.get("content-type", "")
+    html_content = r_html.text
+    assert "Central Pollution Control Board" in html_content
+    assert "SEBI BRSR" in html_content
+    assert "window.print()" in html_content
+    assert "CPCB-BRSR-" in html_content
+    assert "Environmental Compliance Audit Certificate" in html_content
+
+    # 3. GET /api/report/export?format=json (JSON export)
+    r_json = client.get("/api/report/export?format=json")
+    assert r_json.status_code == 200
+    json_data = r_json.json()
+    assert json_data["audit_id"] == summary["audit_id"]
+
+

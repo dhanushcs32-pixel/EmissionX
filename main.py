@@ -25,7 +25,7 @@ from typing import Any, Dict, List, Optional, Union
 import httpx
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, HTMLResponse
 from pydantic import BaseModel, Field
 
 # Ensure project root is in path
@@ -45,6 +45,12 @@ from modules.digital_twin import (
     DigitalTwinParams,
     DigitalTwinResponse,
     simulate_digital_twin,
+    save_twin_run,
+    get_saved_twin_runs,
+)
+from modules.compliance_report import (
+    generate_report_summary,
+    generate_printable_html_report,
 )
 
 # Configure logging
@@ -705,6 +711,79 @@ def get_twin_state_endpoint():
     except Exception as e:
         logger.error(f"Digital Twin state error: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Could not fetch Digital Twin state: {str(e)}")
+
+
+class SaveTwinRunRequest(BaseModel):
+    params: DigitalTwinParams = Field(default_factory=DigitalTwinParams)
+    label: Optional[str] = None
+
+
+@app.post("/api/twin/save")
+def save_twin_run_endpoint(req: SaveTwinRunRequest):
+    """
+    Saves a digital twin simulation scenario run to cache/twin_saved_runs.json
+    and returns the persisted record along with total saved run count.
+    """
+    try:
+        saved_entry = save_twin_run(req.params, label=req.label)
+        all_runs = get_saved_twin_runs()
+        return {
+            "success": True,
+            "status": "success",
+            "saved_run": saved_entry,
+            "total_count": len(all_runs),
+            "total_saved_runs": len(all_runs),
+        }
+    except Exception as e:
+        logger.error(f"Failed to save twin run: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Could not save twin run: {str(e)}")
+
+
+@app.get("/api/twin/saved")
+def get_saved_twin_runs_endpoint():
+    """
+    Returns all saved digital twin runs from cache/twin_saved_runs.json.
+    Automatically seeds a flagship scenario if empty.
+    """
+    try:
+        return get_saved_twin_runs()
+    except Exception as e:
+        logger.error(f"Failed to fetch saved twin runs: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Could not fetch saved twin runs: {str(e)}")
+
+
+# =====================================================================
+# 6. CPCB FORM-V & SEBI BRSR COMPLIANCE REPORTING
+# =====================================================================
+
+@app.get("/api/report/summary")
+def get_report_summary_endpoint():
+    """
+    Returns multi-node environmental audit aggregator JSON payload for React Report tab:
+    SEBI BRSR Scope 1 vs Scope 3, CPCB compliance matrix, CapEx ROI, and saved scenarios.
+    """
+    try:
+        return generate_report_summary()
+    except Exception as e:
+        logger.error(f"Failed to generate report summary: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Could not generate report summary: {str(e)}")
+
+
+@app.get("/api/report/export")
+def export_report_endpoint(format: str = Query("html", pattern="^(html|json)$")):
+    """
+    Exports official CPCB Form-V & SEBI BRSR Environmental Compliance Audit Certificate.
+    - format=html: Standalone print-ready certificate with window.print() trigger.
+    - format=json: Raw audit telemetry payload.
+    """
+    try:
+        if format.lower() == "json":
+            return generate_report_summary()
+        html_content = generate_printable_html_report()
+        return HTMLResponse(content=html_content, media_type="text/html")
+    except Exception as e:
+        logger.error(f"Failed to export compliance report: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Could not export compliance report: {str(e)}")
 
 
 @app.get("/api/video/{sector}")

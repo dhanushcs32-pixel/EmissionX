@@ -566,3 +566,109 @@ def simulate_digital_twin(params: Optional[DigitalTwinParams] = None) -> Digital
         scene_3d_industrial=scene_ind,
         scene_3d_vehicular=scene_veh,
     )
+
+
+# =====================================================================
+# 5. SAVED TWIN RUNS PERSISTENCE BRIDGE
+# =====================================================================
+
+SAVED_RUNS_FILE = WORKSPACE_ROOT / "cache" / "twin_saved_runs.json"
+MAX_SAVED_RUNS = 20
+
+
+def get_saved_twin_runs() -> List[Dict[str, Any]]:
+    """
+    Reads all saved digital twin runs from cache/twin_saved_runs.json.
+    If empty or file missing, auto-seeds with 1 flagship scenario so
+    the Report tab always has rich data on first load.
+    """
+    SAVED_RUNS_FILE.parent.mkdir(parents=True, exist_ok=True)
+    if SAVED_RUNS_FILE.is_file():
+        try:
+            with open(SAVED_RUNS_FILE, "r", encoding="utf-8") as f:
+                runs = json.load(f)
+                if isinstance(runs, list) and len(runs) > 0:
+                    return runs
+        except Exception as e:
+            logger.warning(f"Could not load twin_saved_runs.json ({e}). Seeding flagship run.")
+
+    # Auto-seed with 1 flagship scenario
+    flagship_params = DigitalTwinParams(
+        ev_adoption_pct=40.0,
+        idle_time_cut_pct=50.0,
+        e20_blend_pct=20.0,
+        ban_bs3_bs4_heavy=True,
+        scrubber_efficiency_pct=85.0,
+        fuel_type="biomass",
+        combustion_tuning_pct=80.0,
+    )
+    flagship_run = save_twin_run(
+        params=flagship_params,
+        label="Flagship Scenario: 85% Wet Scrubber + Biomass Transition + 40% EV + BS-VI Fleet",
+    )
+    return [flagship_run]
+
+
+def save_twin_run(params: DigitalTwinParams, label: Optional[str] = None) -> Dict[str, Any]:
+    """
+    Executes simulate_digital_twin(params), attaches unique run_id, timestamp,
+    and human-readable label, and appends to cache/twin_saved_runs.json
+    (retaining up to 20 most recent runs).
+    """
+    SAVED_RUNS_FILE.parent.mkdir(parents=True, exist_ok=True)
+
+    sim_res = simulate_digital_twin(params)
+
+    now = datetime.now(timezone.utc)
+    run_id = f"RUN-{now.strftime('%Y%m%d-%H%M%S')}-{int(now.timestamp() * 1000) % 1000:03d}"
+
+    if not label or not label.strip():
+        parts = []
+        if params.scrubber_efficiency_pct > 0:
+            parts.append(f"{params.scrubber_efficiency_pct:.0f}% Scrubber")
+        if params.fuel_type != "coal":
+            parts.append(params.fuel_type.title())
+        if params.combustion_tuning_pct > 0:
+            parts.append(f"{params.combustion_tuning_pct:.0f}% Tuning")
+        if params.ev_adoption_pct > 0:
+            parts.append(f"{params.ev_adoption_pct:.0f}% EV")
+        if params.idle_time_cut_pct > 0:
+            parts.append(f"{params.idle_time_cut_pct:.0f}% IdleCut")
+        label = "Scenario: " + (" + ".join(parts) if parts else "Baseline Sandbox Run")
+
+    res_dict = sim_res.model_dump()
+    saved_entry = {
+        "run_id": run_id,
+        "timestamp": now.isoformat(),
+        "label": label.strip(),
+        "params": params.model_dump(),
+        "baseline_summary": res_dict.get("baseline_summary", {}),
+        "projected_summary": res_dict.get("projected_summary", {}),
+        "financial_savings": res_dict.get("financial_savings", {}),
+        "cpcb_compliance": res_dict.get("cpcb_compliance", []),
+        "result": res_dict,
+    }
+
+    existing_runs: List[Dict[str, Any]] = []
+    if SAVED_RUNS_FILE.is_file():
+        try:
+            with open(SAVED_RUNS_FILE, "r", encoding="utf-8") as f:
+                loaded = json.load(f)
+                if isinstance(loaded, list):
+                    existing_runs = loaded
+        except Exception:
+            existing_runs = []
+
+    existing_runs.append(saved_entry)
+    if len(existing_runs) > MAX_SAVED_RUNS:
+        existing_runs = existing_runs[-MAX_SAVED_RUNS:]
+
+    try:
+        with open(SAVED_RUNS_FILE, "w", encoding="utf-8") as f:
+            json.dump(existing_runs, f, indent=2)
+        logger.info(f"Saved twin run {run_id} ({label}) to {SAVED_RUNS_FILE}")
+    except Exception as e:
+        logger.error(f"Failed to persist twin_saved_runs.json: {e}")
+
+    return saved_entry
+
