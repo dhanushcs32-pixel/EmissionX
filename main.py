@@ -41,6 +41,11 @@ from modules.industrial_detector import (
     IndustrialTelemetryPayload,
     EMISSION_FACTORS,
 )
+from modules.digital_twin import (
+    DigitalTwinParams,
+    DigitalTwinResponse,
+    simulate_digital_twin,
+)
 
 # Configure logging
 logging.basicConfig(
@@ -668,6 +673,38 @@ async def chat_endpoint(req: ChatRequest):
         return await asyncio.to_thread(chat, req.message, req.history, req.allow_write, req.context)
     except ChatUnavailable as e:
         raise HTTPException(status_code=503, detail=str(e))
+
+
+# =====================================================================
+# 5. DIGITAL TWIN SIMULATION & CROSS-NODE SANDBOX
+# =====================================================================
+
+@app.post("/api/twin/simulate", response_model=DigitalTwinResponse)
+def simulate_twin_endpoint(params: DigitalTwinParams):
+    """
+    Deterministic Digital Twin Simulation Engine.
+    Combines live physical CCTV telemetry baselines (Industrial Stack & Fuel Forecourt),
+    evaluates multi-parameter What-If interventions, calculates CPCB compliance,
+    derives financial ₹ INR carbon savings, and outputs synchronized 3D scene parameters.
+    """
+    try:
+        return simulate_digital_twin(params)
+    except Exception as e:
+        logger.error(f"Digital Twin simulation error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Digital Twin simulation failed: {str(e)}")
+
+
+@app.get("/api/twin/state", response_model=DigitalTwinResponse)
+def get_twin_state_endpoint():
+    """
+    Returns the live Digital Twin state reflecting current physical CCTV baseline
+    telemetry from both nodes under standard default operating conditions.
+    """
+    try:
+        return simulate_digital_twin(DigitalTwinParams())
+    except Exception as e:
+        logger.error(f"Digital Twin state error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Could not fetch Digital Twin state: {str(e)}")
 
 
 @app.get("/api/video/{sector}")

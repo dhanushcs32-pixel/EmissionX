@@ -245,3 +245,59 @@ def test_api_video_streaming():
     # Invalid sector returns 400
     r_inv = client.get("/api/video/unknown_sector")
     assert r_inv.status_code == 400
+
+
+def test_api_digital_twin_endpoints():
+    """Validates Digital Twin simulation & state endpoints."""
+    from fastapi.testclient import TestClient
+    from main import app
+
+    client = TestClient(app)
+
+    # 1. Test GET /api/twin/state
+    r_state = client.get("/api/twin/state")
+    assert r_state.status_code == 200
+    data_state = r_state.json()
+    assert "baseline_summary" in data_state
+    assert "projected_summary" in data_state
+    assert "comparative_chart_metrics" in data_state
+    assert "financial_savings" in data_state
+    assert "cpcb_compliance" in data_state
+    assert "scene_3d_industrial" in data_state
+    assert "scene_3d_vehicular" in data_state
+
+    # 2. Test POST /api/twin/simulate with multi-parameter interventions
+    r_sim = client.post("/api/twin/simulate", json={
+        "ev_adoption_pct": 40.0,
+        "idle_time_cut_pct": 50.0,
+        "e20_blend_pct": 20.0,
+        "ban_bs3_bs4_heavy": True,
+        "scrubber_efficiency_pct": 85.0,
+        "fuel_type": "biomass",
+        "combustion_tuning_pct": 80.0,
+    })
+    assert r_sim.status_code == 200
+    sim_data = r_sim.json()
+    assert sim_data["projected_summary"]["total_avoided_co2_kg_hr"] > 0
+    assert sim_data["projected_summary"]["total_reduction_pct"] > 50.0
+    assert sim_data["financial_savings"]["annual_inr"] > 10000000.0  # > ₹1 Crore annual carbon savings
+    assert sim_data["scene_3d_industrial"]["scrubber_active"] is True
+    assert sim_data["scene_3d_industrial"]["plume_color_hex"] == "#e2e8f0"  # Clean white steam
+    assert len(sim_data["comparative_chart_metrics"]) == 3
+    assert len(sim_data["cpcb_compliance"]) == 2
+    assert sim_data["cpcb_compliance"][0]["status"] == "COMPLIANT"
+
+
+def test_digital_twin_physics_engine():
+    """Validates baseline extraction fallbacks and calculation mechanics."""
+    from modules.digital_twin import simulate_digital_twin, DigitalTwinParams
+
+    res_default = simulate_digital_twin()
+    assert res_default.baseline_summary["total_baseline_co2_kg_hr"] > 0
+    assert res_default.financial_savings.hourly_inr == 0.0  # Zero intervention = zero avoided carbon
+
+    # Fuel switch to biomass alone cuts industrial baseline by >80%
+    res_biomass = simulate_digital_twin(DigitalTwinParams(fuel_type="biomass"))
+    ind_metric = [m for m in res_biomass.comparative_chart_metrics if m.category == "Industrial Smokestack"][0]
+    assert ind_metric.reduction_pct > 75.0
+
