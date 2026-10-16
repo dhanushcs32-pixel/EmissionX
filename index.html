@@ -283,6 +283,25 @@ body.dashboard #v3.on::before{background:linear-gradient(90deg,var(--scrim) 0%,v
 .feed video{width:100%;aspect-ratio:16/10;border-radius:12px;display:block;object-fit:contain;background:#000}
 .tblwrap{overflow-x:auto}
 @media (max-width:700px){.apistat{font-size:0;gap:0;padding:6px}}
+/* detector output fills the left (map) panel */
+.outv{position:absolute;inset:0;z-index:3;background:#000;display:flex;align-items:center;justify-content:center}
+.outv video{width:100%;height:100%;object-fit:contain;display:block}
+.outbar{position:absolute;left:12px;right:12px;bottom:12px;display:flex;gap:8px;justify-content:space-between;align-items:center}
+.outbtns{position:absolute;top:12px;right:12px;display:flex;gap:8px}   /* top-right: clear of the video HUD and the page pager */
+.outbar .chip,.outbtns .chip{background:rgba(20,12,6,.72);color:#FCF0E0;border-color:rgba(255,255,255,.2);white-space:nowrap}
+.outbar .chip.mono{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.map.has-view{min-height:420px}
+.sim{position:absolute;inset:0;z-index:3;background:var(--bg2)}
+.sim canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.outbtns,.outbar{z-index:4}
+.drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;min-height:210px;padding:18px;
+  border:2px dashed var(--line);border-radius:16px;cursor:pointer;transition:border-color .2s,background .2s}
+.drop svg{width:34px;height:34px;color:var(--o)}
+.drop b{font-size:16px}
+.drop:hover,.drop:focus-visible,.drop.over{border-color:var(--o);background:var(--glow);outline:none}
+.drop.busy{cursor:progress;border-style:solid;border-color:var(--o)}
+.drop .bar{width:100%;margin-top:6px}
+#uplDel{white-space:nowrap;flex-shrink:0}
 /* clip upload on the Map feed */
 .upl{display:flex;flex-direction:column;gap:6px;margin-top:10px}
 .upl .bar{margin-top:0}
@@ -330,9 +349,9 @@ body.dashboard #v3.on::before{background:linear-gradient(90deg,var(--scrim) 0%,v
         <canvas id="miniCv"></canvas>
         <div class="cap mono"><span>Sample detection, looping</span><span id="miniCount">0 vehicles</span></div>
       </div>
-      <div class="hb b1"><span><i class="dot"></i>CO₂ fleet avg</span><b id="hbCo2">–</b><small>g/km</small></div>
+      <div class="hb b1"><span id="hbCo2L"><i class="dot"></i>CO₂ fleet avg</span><b id="hbCo2">–</b><small id="hbCo2U">g/km</small></div>
       <div class="hb b2"><span><i class="dot"></i>Smoke opacity</span><b id="hbOp">–</b><small>%</small></div>
-      <div class="hb b3"><span><i class="dot"></i>Active vehicles</span><b id="hbVeh">–</b><small>on roads</small></div>
+      <div class="hb b3"><span id="hbVehL"><i class="dot"></i>Active vehicles</span><b id="hbVeh">–</b><small id="hbVehU">on roads</small></div>
     </div>
   </div>
   <div class="tick mono"><div id="tickTxt" style="color:var(--ink);font-weight:600;text-shadow:0 1px 3px rgba(0,0,0,0.5),0 2px 8px rgba(0,0,0,0.3)"></div></div>
@@ -454,6 +473,7 @@ body.dashboard #v3.on::before{background:linear-gradient(90deg,var(--scrim) 0%,v
         <div class="mapbar">
           <button class="chip on" data-ov="wind">Wind</button>
           <button class="chip on" data-ov="plume">Dispersion</button>
+          <button class="chip" id="showOut" type="button" hidden>Show camera view</button>
         </div>
         <svg id="mapSvg" viewBox="0 0 800 480" role="img" aria-label="Map with fuel station and factory pins">
           <defs>
@@ -487,17 +507,36 @@ body.dashboard #v3.on::before{background:linear-gradient(90deg,var(--scrim) 0%,v
         <div class="row" style="position:absolute;left:12px;bottom:12px;gap:10px">
           <span class="chip mono" id="windTxt">Wind NE 12 km/h</span>
         </div>
+        <div class="sim" id="simWrap">
+          <canvas id="feedCv"></canvas><canvas id="facCv" hidden></canvas>
+        </div>
+        <div class="outv" id="outWrap" hidden>
+          <video id="feedVid" muted loop playsinline></video>
+        </div>
+        <div class="outbtns" id="viewBtns"><button class="chip" id="fullVid" type="button" hidden>Full screen</button><button class="chip" id="showMap" type="button">Show map</button></div>
+        <div class="outbar" id="viewBar"><span class="chip mono" id="outCap">Simulated camera</span></div>
       </div>
       <div class="card feed">
         <div class="row" style="justify-content:space-between;margin-bottom:10px">
           <div class="seg" id="nodeSeg"><button data-node="p1" class="on">Pin 1 Fuel</button><button data-node="p2">Pin 2 Factory</button></div>
         </div>
-        <canvas id="feedCv"></canvas><video id="feedVid" muted loop playsinline hidden></video><span class="k" id="feedSrc" style="display:block;margin-top:6px">Simulated camera view</span><div class="upl"><input type="file" id="uplFile" accept="video/*,.mp4,.mov,.avi,.mkv,.webm" hidden><div class="row"><button class="btn sm" id="uplBtn" type="button">Upload fuel-station clip</button><span class="k" id="uplHint">Runs the detector on your clip and shows the result here.</span></div><div class="bar" id="uplBarW" hidden><i id="uplBar"></i></div><span class="k" id="uplMsg" aria-live="polite"></span></div>
+        <input type="file" id="uplFile" accept="video/*,.mp4,.mov,.avi,.mkv,.webm,.m4v" hidden>
+        <div class="drop" id="dropZone" role="button" tabindex="0" aria-label="Upload a video clip">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0-5 5m5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <b id="dropTitle">Drop your fuel-station video here</b>
+          <span class="k" id="dropSub">or click to choose a file · or paste it with Ctrl+V</span>
+          <div class="bar" id="uplBarW" hidden><i id="uplBar"></i></div>
+          <span class="k" id="uplMsg" aria-live="polite"></span>
+        </div>
+        <div class="row" style="margin-top:10px;justify-content:space-between;flex-wrap:nowrap;gap:12px">
+          <span class="k" id="uplHint">MP4, MOV, AVI, MKV or WebM, up to 1 GB. The detector output appears on the left.</span>
+          <button class="btn sm" id="uplDel" type="button" hidden>Remove uploaded clip</button>
+        </div>
         <div class="stats">
-          <div class="stat"><span class="k">Vehicles seen</span><b id="stVeh">0</b></div>
+          <div class="stat"><span class="k" id="stVehL">Vehicles seen</span><b id="stVeh">0</b></div>
           <div class="stat"><span class="k" id="stOpL">Smoke opacity</span><b id="stOp">0%</b></div>
-          <div class="stat"><span class="k">Top class</span><b id="stTop">-</b></div>
-          <div class="stat"><span class="k">Alerts</span><b id="stAl">0</b></div>
+          <div class="stat"><span class="k" id="stTopL">Top class</span><b id="stTop">-</b></div>
+          <div class="stat"><span class="k" id="stAlL">Alerts</span><b id="stAl">0</b></div>
         </div>
       </div>
     </div>
@@ -682,9 +721,28 @@ function checkHealth(){
 /* ---------------- clip upload: POST /api/upload/{sector}, then poll /api/upload/status ---------------- */
 var VIDV=0,uplPolling=false;
 function uplSector(){return S.node==="p2"?"industrial":"vehicular"}
-function uplLabel(){var b=$("#uplBtn");if(b&&!b.disabled)b.textContent=S.node==="p2"?"Upload factory clip":"Upload fuel-station clip"}
+var UPLBUSY=false;
+function uplLabel(){if(!UPLBUSY)$("#dropTitle").textContent=S.node==="p2"?"Drop your factory video here":"Drop your fuel-station video here"}
 function uplShow(pct,msg){$("#uplBarW").hidden=pct==null;if(pct!=null)$("#uplBar").style.width=Math.max(2,Math.min(100,pct))+"%";$("#uplMsg").textContent=msg||""}
-function uplBusy(on,label){var b=$("#uplBtn");b.disabled=on;if(on)b.textContent=label||"Analysing…";else uplLabel()}
+function uplBusy(on,label){
+  UPLBUSY=on;$("#dropZone").classList.toggle("busy",on);$("#dropZone").setAttribute("aria-busy",on?"true":"false");
+  var d=$("#uplDel");if(d)d.disabled=on;
+  if(on)$("#dropTitle").textContent=label||"Analysing…";else uplLabel();
+}
+function uplButtons(){   /* Remove is offered only while this pin shows an uploaded clip */
+  var d=$("#uplDel");if(!d)return;
+  var clip=LIVE?dig(HEALTH,uplSector()+"_module.uploaded_clip"):null;
+  d.hidden=!clip;d.disabled=UPLBUSY;
+  $("#uplHint").textContent=clip?"Showing your clip "+(clip.source_video||"")+". Drop another to replace it, or remove it to go back to the original data."
+    :"MP4, MOV, AVI, MKV or WebM, up to 1 GB. The detector output appears on the left.";
+}
+var VIDEO_EXT=/\.(mp4|mov|avi|mkv|webm|m4v)$/i;
+function startUpload(f){
+  if(!f||UPLBUSY)return;
+  if(!LIVE){uplShow(null,"The backend is not connected. Start it (start_platform.bat), then try again.");return}
+  if(!VIDEO_EXT.test(f.name||"")&&!/^video\//.test(f.type||"")){uplShow(null,"That is not a video file. Use MP4, MOV, AVI, MKV or WebM.");return}
+  uploadClip(f);
+}
 function uplErr(x){try{return JSON.parse(x.responseText).detail}catch(e){return "HTTP "+x.status}}
 function uploadClip(f){
   var sector=uplSector(),x=new XMLHttpRequest();
@@ -710,18 +768,51 @@ function pollUpload(){
       }
       uplPolling=false;uplBusy(false);
       if(j.state==="done"){
-        uplShow(100,"Done: "+(j.message||"")+". Pick "+(j.sector==="industrial"?"Pin 2 Factory":"Pin 1 Fuel")+" to see it.");
-        VIDV=Date.now();checkHealth();loadReport();twinUpdate();
+        uplShow(100,"Done: "+(j.message||"")+". The output is on the left.");
+        VIDV=Date.now();showMapPref=false;setNode(j.sector==="industrial"?"p2":"p1");checkHealth();loadReport();twinUpdate();
       }else if(j.state==="error")uplShow(null,"Detector failed: "+(j.error||"unknown error"));
       else uplShow(null,"");
     },function(){setTimeout(step,2000)});
   })();
 }
-$("#uplBtn").addEventListener("click",function(){
-  if(!LIVE){uplShow(null,"The backend is not connected. Start it (start_platform.bat), then try again.");return}
-  $("#uplFile").click();
+(function(){
+  var dz=$("#dropZone");
+  function pick(){if(UPLBUSY)return;if(!LIVE){uplShow(null,"The backend is not connected. Start it (start_platform.bat), then try again.");return}$("#uplFile").click()}
+  dz.addEventListener("click",pick);
+  dz.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();pick()}});
+  ["dragenter","dragover"].forEach(function(t){dz.addEventListener(t,function(e){e.preventDefault();if(!UPLBUSY)dz.classList.add("over")})});
+  ["dragleave","dragend"].forEach(function(t){dz.addEventListener(t,function(){dz.classList.remove("over")})});
+  dz.addEventListener("drop",function(e){e.preventDefault();dz.classList.remove("over");var f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];startUpload(f)});
+  /* Ctrl+V a video file copied in Explorer, while the Map page is open */
+  document.addEventListener("paste",function(e){
+    if(mode!=="dashboard"||page!==6)return;
+    var fs=e.clipboardData&&e.clipboardData.files;if(!fs||!fs.length)return;
+    e.preventDefault();startUpload(fs[0]);
+  });
+})();
+$("#uplDel").addEventListener("click",function(){
+  var sector=uplSector(),name=sector==="industrial"?"factory":"fuel-station";
+  if(!window.confirm("Remove the uploaded "+name+" clip and go back to the original data?"))return;
+  var vid=$("#feedVid");vid.pause();vid.removeAttribute("src");vid.dataset.src="";vid.load();   /* release the file so Windows can delete it */
+  uplBusy(true,"Removing…");
+  setTimeout(function(){
+    fetch(API_BASE+"/api/upload/"+sector,{method:"DELETE"})
+      .then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j.detail||("HTTP "+r.status));return j})})
+      .then(function(){uplBusy(false);uplShow(null,"Removed. Back to the original "+name+" data.");VIDV=Date.now();checkHealth();loadReport();twinUpdate()},
+            function(e){uplBusy(false);uplShow(null,"Could not remove: "+e.message);checkHealth()});
+  },300);
 });
-$("#uplFile").addEventListener("change",function(){var f=this.files&&this.files[0];this.value="";if(f)uploadClip(f)});
+$("#showMap").addEventListener("click",function(){showMapPref=true;syncVideo()});
+$("#fullVid").addEventListener("click",function(){   /* whole clip, full screen, with play / seek controls */
+  var v=$("#feedVid");v.controls=true;
+  var rq=v.requestFullscreen||v.webkitRequestFullscreen||v.webkitEnterFullscreen;
+  function newTab(){v.controls=false;window.open(v.currentSrc||v.src,"_blank","noopener")}   /* browser blocked full screen */
+  if(!rq)return newTab();
+  try{var pr=rq.call(v);if(pr&&pr.catch)pr.catch(newTab)}catch(e){newTab()}
+});
+document.addEventListener("fullscreenchange",function(){if(!document.fullscreenElement)$("#feedVid").controls=false});
+$("#showOut").addEventListener("click",function(){showMapPref=false;syncVideo()});
+$("#uplFile").addEventListener("change",function(){var f=this.files&&this.files[0];this.value="";startUpload(f)});
 function uplResume(){api("/api/upload/status",null,4000).then(function(j){if(j.state==="running")pollUpload()},function(){})}   /* page reloaded mid-analysis */
 
 function showEngine(){   /* which smoke engine produced the factory telemetry (factory_telemetry_meta.json) */
@@ -729,18 +820,25 @@ function showEngine(){   /* which smoke engine produced the factory telemetry (f
   el.textContent="Factory stack: "+(run.detector_mode||run.profile||"auto-routed")+" · "+(run.frames_processed||0)+" frames of "+
     (run.source_video||"video")+" ("+run.width+"×"+run.height+")";
 }
-function syncVideo(){   /* annotated CCTV from /api/video/{sector} when the backend has it, else the simulated canvas */
-  var vid=$("#feedVid"),cv=$("#feedCv");if(!vid)return;
-  var sector=S.node==="p2"?"industrial":"vehicular",src=API_BASE+"/api/video/"+sector+(VIDV?"?v="+VIDV:"");
-  if(LIVE&&dig(HEALTH,sector+"_module.video_available",false)){
-    if(vid.dataset.src!==src){vid.dataset.src=src;vid.src=src;if(vid.play)vid.play().catch(function(){})}
-    var eng=sector==="industrial"?dig(HEALTH,"industrial_module.detector_run.detector_mode"):null;
-    vid.hidden=false;cv.hidden=true;$("#feedSrc").textContent="Annotated CCTV from the backend ("+sector+")"+(eng?" · "+eng:"");
-  }else{
-    if(vid.dataset.src){vid.pause();vid.removeAttribute("src");vid.dataset.src="";vid.load()}
-    vid.hidden=true;cv.hidden=false;
-    $("#feedSrc").textContent=LIVE?"Simulated camera view · no annotated "+sector+" video on the backend yet":"Simulated camera view";
-  }
+var showMapPref=false;
+function syncVideo(){   /* left panel: this pin's detector output if it has one, else its simulated camera; or the map */
+  var vid=$("#feedVid"),out=$("#outWrap"),sim=$("#simWrap");if(!vid||!out||!sim)return;
+  var sector=uplSector(),src=API_BASE+"/api/video/"+sector+"?v="+(dig(HEALTH,sector+"_module.video_version")||VIDV||0);
+  var has=LIVE&&dig(HEALTH,sector+"_module.video_available",false);
+  var clip=dig(HEALTH,sector+"_module.uploaded_clip.source_video");
+  var eng=sector==="industrial"?dig(HEALTH,"industrial_module.detector_run.detector_mode"):"vehicle tracking + plate reading";
+  var view=showMapPref?"map":has?"out":"sim",fac=sector==="industrial";
+  if(has){if(vid.dataset.src!==src){vid.dataset.src=src;vid.src=src}}
+  else if(vid.dataset.src){vid.pause();vid.removeAttribute("src");vid.dataset.src="";vid.load()}
+  out.hidden=view!=="out";sim.hidden=view!=="sim";
+  if(view==="out"){if(vid.play)vid.play().catch(function(){})}else vid.pause();
+  $("#feedCv").hidden=fac;$("#facCv").hidden=!fac;
+  $("#viewBtns").hidden=$("#viewBar").hidden=view==="map";$("#fullVid").hidden=view!=="out";$("#showOut").hidden=view!=="map";
+  out.parentNode.classList.toggle("has-view",view!=="map");
+  $("#outCap").textContent=$("#outCap").title=view==="out"
+    ?(fac?"Factory":"Fuel station")+" · "+(clip||"detector output")+(eng?" · "+eng:"")
+    :"Simulated "+(fac?"factory":"forecourt")+" camera · upload a clip on the right for real detection";
+  uplButtons();
 }
 function totalKg(co2,stack){var t=stack;CLS.forEach(function(c){t+=co2[c]*FLOW[c]/1000});return t}
 
@@ -809,7 +907,7 @@ $("#tickTxt").innerHTML=("CO₂ per vehicle class &nbsp;&nbsp; smoke opacity &nb
 function Detector(cv,big,onCount){
   var ctx=cv.getContext("2d"),W=0,H=0,veh=[],smoke=[],last=0,run=false,idc=100,seen=0,spawnT=0;
   function size(){var d=Math.min(window.devicePixelRatio||1,2);W=cv.clientWidth;H=cv.clientHeight;if(!W)return;cv.width=W*d;cv.height=H*d;ctx.setTransform(d,0,0,d,0,0)}
-  size();window.addEventListener("resize",size);
+  size();window.addEventListener("resize",size);if(window.ResizeObserver)new ResizeObserver(size).observe(cv);
   var T={car:{w:.12,h:.068,col:"#D4520E",cab:.55,cabH:.6},truck:{w:.22,h:.1,col:"#7A3D18",cab:.28,cabH:.75},bus:{w:.2,h:.09,col:"#FFA94D",cab:.92,cabH:.35},bike:{w:.055,h:.05,col:"#5E3316",cab:.4,cabH:.8}};
   function spawn(){
     var r=Math.random(),c=r<.5?"car":r<.72?"truck":r<.85?"bus":"bike",lane=Math.random()<.5?0:1;
@@ -876,6 +974,67 @@ function Detector(cv,big,onCount){
 }
 var mini=Detector($("#miniCv"),false,function(n){$("#miniCount").textContent=n+" vehicles"});
 var feed=Detector($("#feedCv"),true,function(n){if(LIVE&&TEL)return;S.veh=n;$("#stVeh").textContent=n});
+
+/* ---------------- simulated factory camera: smokestack whose plume follows the live stack opacity and wind ---------------- */
+function FactoryCam(cv){
+  var ctx=cv.getContext("2d"),W=0,H=0,run=false,last=0,parts=[],acc=0;
+  function size(){var d=Math.min(window.devicePixelRatio||1,2);W=cv.clientWidth;H=cv.clientHeight;if(!W)return;cv.width=W*d;cv.height=H*d;ctx.setTransform(d,0,0,d,0,0)}
+  size();window.addEventListener("resize",size);if(window.ResizeObserver)new ResizeObserver(size).observe(cv);
+  function opNow(){return S.opac.length?S.opac[S.opac.length-1]:NODES.p2.opac}
+  function windX(){var d=LIVE&&TEL?dig(TEL,"industrial.environment.wind_deg"):null;return d==null?.35:Math.sin((+d+180)*Math.PI/180)}   /* drift toward bearing+180 */
+  function hall(x,y,w,h){
+    ctx.fillStyle="#5A3A26";ctx.fillRect(x,y,w,h);
+    var n=4,tw=w/n;ctx.fillStyle="#6E4A31";
+    for(var i=0;i<n;i++){ctx.beginPath();ctx.moveTo(x+i*tw,y);ctx.lineTo(x+i*tw,y-h*.28);ctx.lineTo(x+(i+1)*tw,y);ctx.fill()}
+    ctx.fillStyle="rgba(255,214,150,.35)";for(var j=0;j<n*2;j++)ctx.fillRect(x+w*.06+j*w/(n*2),y+h*.35,w*.05,h*.18);
+  }
+  function frame(ts){
+    if(!run)return;requestAnimationFrame(frame);
+    var dt=Math.min((ts-last)/1000||0,.05);last=ts;if(reduce)dt*=.3;
+    if(!W){size();return}
+    var op=opNow(),lv=Math.max(1,Math.min(5,Math.ceil(op/20))),col=lv<=1?"#2E9E5B":lv<=3?"#D98A12":"#C9302C";
+    var g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,P["--bg2"]);g.addColorStop(1,P["--o3"]+"55");
+    ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    ctx.fillStyle=P["--line"];
+    for(var i=0;i<11;i++){var bw=W*.075,bh=H*(.07+((i*41)%5)*.035);ctx.fillRect(i*W*.095,H*.64-bh,bw,bh)}
+    ctx.fillStyle="#3A2618";ctx.fillRect(0,H*.8,W,H*.2);
+    hall(W*.06,H*.64,W*.27,H*.16);hall(W*.6,H*.62,W*.3,H*.18);
+    /* chimney with banded stripes */
+    var cx=W*.42,cw=Math.max(14,W*.045),top=H*.4,bot=H*.8;
+    ctx.fillStyle="#2E2017";ctx.fillRect(cx-cw/2,top,cw,bot-top);
+    ctx.fillStyle="#D4520E";for(var k=0;k<3;k++)ctx.fillRect(cx-cw/2,top+H*.03+k*H*.075,cw,H*.026);
+    ctx.fillStyle="#1B120B";ctx.fillRect(cx-cw*.62,top-H*.012,cw*1.24,H*.018);
+    /* plume: darker and denser as opacity rises */
+    acc+=dt*(14+op*.45);
+    while(acc>=1){acc-=1;parts.push({x:cx+rand(-cw*.2,cw*.2),y:top,r:cw*.35*rand(.8,1.2),vx:rand(-4,4),vy:-rand(H*.05,H*.08),life:0,max:rand(5,7)})}
+    var wx=windX(),shade=Math.max(40,Math.round(228-op*1.9)),x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+    for(var q=parts.length-1;q>=0;q--){var p=parts[q];p.life+=dt;
+      p.x+=(p.vx+wx*W*.06*Math.min(1,p.life*.7))*dt;p.y+=p.vy*dt;p.vy*=.994;p.r+=dt*cw*.45;
+      var a=1-p.life/p.max;if(a<=0||p.y+p.r<0){parts.splice(q,1);continue}
+      ctx.fillStyle="rgba("+shade+","+(shade-8)+","+(shade-16)+","+Math.min(.85,a*(.32+op/130)).toFixed(3)+")";
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,6.3);ctx.fill();
+      if(a>.35){x0=Math.min(x0,p.x-p.r*.7);y0=Math.min(y0,p.y-p.r*.7);x1=Math.max(x1,p.x+p.r*.7);y1=Math.max(y1,p.y+p.r*.7)}
+    }
+    /* detection box around the plume, coloured by Ringelmann level */
+    if(x1>x0){x0=Math.max(4,x0);y0=Math.max(78,y0);   /* keep the label below the HUD lines */x1=Math.min(W-4,x1);y1=Math.min(top+cw,y1);
+      ctx.lineWidth=2;ctx.strokeStyle=col;ctx.strokeRect(x0,y0,x1-x0,y1-y0);
+      var lab="plume "+(+op).toFixed(1)+"% · Ringelmann "+lv;ctx.font="11px JetBrains Mono, monospace";
+      var tw=ctx.measureText(lab).width+10;ctx.fillStyle=col;ctx.fillRect(x0,y0-17,tw,17);ctx.fillStyle="#FFF8EE";ctx.fillText(lab,x0+5,y0-5)}
+    /* HUD */
+    ctx.font="11px JetBrains Mono, monospace";
+    ctx.fillStyle="rgba(30,19,11,.72)";ctx.fillRect(8,8,206,22);ctx.fillRect(W-86,8,78,22);
+    ctx.fillStyle="#EE6A1F";ctx.beginPath();ctx.arc(20,19,4,0,6.3);ctx.fill();
+    ctx.fillStyle="#F3E3CC";ctx.fillText("REC "+NODES.p2.id+" "+NODES.p2.name,30,23);ctx.fillText("24 fps",W-76,23);
+    var ind=LIVE&&TEL?TEL.industrial:null;
+    if(ind){var co2=dig(ind,"emissions.baseline_co2_kg_hr"),so2=dig(ind,"cv_telemetry.cems_metrics.so2_ppm");
+      var line="CEMS · CO₂ "+(co2!=null?Math.round(co2).toLocaleString("en-IN"):"-")+" kg/hr · SO₂ "+(so2!=null?so2:"-")+" ppm";
+      ctx.fillStyle="rgba(30,19,11,.72)";ctx.fillRect(8,34,ctx.measureText(line).width+16,22);ctx.fillStyle="#F3E3CC";ctx.fillText(line,16,49)}   /* under REC, clear of the caption */
+  }
+  var api={start:function(){if(run)return;run=true;last=performance.now();requestAnimationFrame(frame)},stop:function(){run=false}};
+  if("IntersectionObserver" in window){new IntersectionObserver(function(en){en[0].isIntersecting?api.start():api.stop()},{threshold:.05}).observe(cv)}else api.start();
+  return api;
+}
+var factoryCam=FactoryCam($("#facCv"));
 
 /* ---------------- map ---------------- */
 (function(){
@@ -957,6 +1116,24 @@ function logText(txt,warn){
   term.scrollTop=term.scrollHeight;
 }
 var CLSNAME={motorcycle:"Bike",auto_rickshaw:"Auto",bus_truck:"Bus/Truck"};
+function setStat(id,label,val){$("#"+id+"L").textContent=label;$("#"+id).textContent=val}
+function liveStats(ind,veh,op,tot,top){
+  if(S.node==="p2"&&ind){
+    setStat("stVeh","Ringelmann level",dig(ind,"cv_telemetry.ringelmann_level","-"));
+    setStat("stOp","Stack opacity",op+"%");
+    setStat("stTop","Stack CO₂ (kg/hr)",Math.round(+dig(ind,"emissions.baseline_co2_kg_hr",0)).toLocaleString("en-IN"));
+    var so2=dig(ind,"cv_telemetry.cems_metrics.so2_ppm");setStat("stAl","SO₂",so2!=null?so2+" ppm":"-");
+  }else if(veh){
+    var sim=dig(HEALTH,"vehicular_module.cached_telemetry_frames",0)===0,dw=dig(veh,"cv_telemetry.bay_dwell_sec");
+    setStat("stVeh",sim?"Vehicles (placeholder)":"Vehicles in view",tot||0);
+    setStat("stOp","Forecourt CO₂ (kg/hr)",Math.round(+dig(veh,"emissions.baseline_co2_kg_hr",0)).toLocaleString("en-IN"));
+    setStat("stTop","Top class",top||"-");
+    setStat("stAl","Avg dwell",dw!=null?dw+" s":"-");
+  }
+}
+function demoStatLabels(){
+  $("#stVehL").textContent="Vehicles seen";$("#stOpL").textContent="Smoke opacity";$("#stTopL").textContent="Top class";$("#stAlL").textContent="Alerts";
+}
 function prettyCls(k){return CLSNAME[k]||String(k).replace(/_/g," ").replace(/\b\w/g,function(c){return c.toUpperCase()})}
 function tick(){
   var n=N(),ind=LIVE&&TEL?TEL.industrial:null,veh=LIVE&&TEL?TEL.vehicular:null,rec=S.node==="p2"?ind:veh;
@@ -975,7 +1152,8 @@ function tick(){
     var cnt=dig(veh,"cv_telemetry.active_counts",{}),keys=Object.keys(cnt),tot=0,top="-",tv=-1;
     keys.forEach(function(k){tot+=+cnt[k]||0;if(+cnt[k]>tv){tv=+cnt[k];top=prettyCls(k)}});
     if(chCo2&&keys.length){chCo2.data.labels=keys.map(prettyCls);chCo2.data.datasets[0].data=keys.map(function(k){return +cnt[k]||0});chCo2.update()}
-    $("#chCo2T").textContent="Vehicles on the forecourt camera";$("#chCo2U").textContent="count";$("#stOpL").textContent="Stack opacity";
+    var vehSim=dig(HEALTH,"vehicular_module.cached_telemetry_frames",0)===0;   /* backend stub until a fuel-station clip is analysed */
+    $("#chCo2T").textContent=vehSim?"Vehicle counts (placeholder, no fuel-station clip yet)":"Vehicles on the forecourt camera";$("#stVehL").textContent=vehSim?"Vehicles (placeholder)":"Vehicles seen";$("#chCo2U").textContent="count";$("#stOpL").textContent="Stack opacity";
     S.veh=tot;$("#stVeh").textContent=tot;$("#stTop").textContent=top;
     var total=+dig(HEALTH,"industrial_module.cached_telemetry_frames",0)||3000;S.frames=TELN;
     $("#pBar").style.width=((TELN%total)/total*100)+"%";$("#pLbl").textContent=(TELN%total)+" / "+total+" telemetry frames";
@@ -984,7 +1162,7 @@ function tick(){
     var cls=CLS[Math.floor(Math.random()*4)];
     logLine({ts:new Date().toISOString().slice(11,19),node:n.id,cls:cls,co2_g_km:S.co2[cls],opacity_pct:op,conf:+rand(.86,.98).toFixed(2),alert:warn},warn);
     if(chCo2){chCo2.data.labels=["Car","Truck","Bus","Bike"];chCo2.data.datasets[0].data=CLS.map(function(c){return S.co2[c]});chCo2.update()}
-    $("#chCo2T").textContent="CO₂ by vehicle class";$("#chCo2U").textContent="g/km";$("#stOpL").textContent="Smoke opacity";
+    $("#chCo2T").textContent="CO₂ by vehicle class";$("#chCo2U").textContent="g/km";$("#stVehL").textContent="Vehicles seen";$("#stOpL").textContent="Smoke opacity";
     var pc=(S.frames%3000)/3000*100;$("#pBar").style.width=pc+"%";$("#pLbl").textContent=(S.frames%3000)+" / 3000 frames";
     $("#stTop").textContent=CLS.slice().sort(function(a,b){return S.co2[b]-S.co2[a]})[0];
   }
@@ -993,9 +1171,14 @@ function tick(){
   $("#stOp").textContent=op+"%";var se=$("#sOpDisp");if(se)se.textContent=op+"%";$("#stAl").textContent=S.alerts;
   /* hero holographic badges */
   var fl=0,fc=0;CLS.forEach(function(c){fl+=FLOW[c];fc+=S.co2[c]*FLOW[c]});
-  $("#hbCo2").textContent=Math.round(fc/fl);
+  var indCo2=ind?dig(ind,"emissions.baseline_co2_kg_hr"):null;
+  if(indCo2!=null){$("#hbCo2L").innerHTML='<i class="dot"></i>Stack CO₂';$("#hbCo2").textContent=Math.round(indCo2).toLocaleString("en-IN");$("#hbCo2U").textContent="kg/hr"}
+  else{$("#hbCo2L").innerHTML='<i class="dot"></i>CO₂ fleet avg';$("#hbCo2").textContent=Math.round(fc/fl);$("#hbCo2U").textContent="g/km"}
   $("#hbOp").textContent=op;
-  $("#hbVeh").textContent=(typeof scene3d!=="undefined"&&scene3d)?scene3d.count():S.veh;
+  if(veh){$("#hbVehL").innerHTML='<i class="dot"></i>Vehicles at pumps';$("#hbVeh").textContent=S.veh;
+    $("#hbVehU").textContent=dig(HEALTH,"vehicular_module.cached_telemetry_frames",0)===0?"placeholder":"now"}
+  else{$("#hbVehL").innerHTML='<i class="dot"></i>Active vehicles';$("#hbVeh").textContent=(typeof scene3d!=="undefined"&&scene3d)?scene3d.count():S.veh;$("#hbVehU").textContent="on roads"}
+  if(LIVE&&TEL)liveStats(ind,veh,op,tot,top);else demoStatLabels();
   renderReport();
 }
 setInterval(tick,1000);
@@ -1194,14 +1377,14 @@ function reportCard(k,v,sub){return '<div class="card"><span class="k">'+k+'</sp
 function renderReportLive(R){
   var k=R.executive_kpis||{},ind=R.node_2_audit_industrial||{},veh=R.node_1_audit_vehicular||{},b=R.sebi_brsr_breakdown||{};
   var vc=veh.vehicle_counts||{},vt=0;Object.keys(vc).forEach(function(x){vt+=+vc[x]||0});
-  var plates=(veh.lpr_plate_samples||[]).filter(Boolean);
+  var plates=veh.lpr_plates_source==="phase1_summary"?(veh.lpr_plate_samples||[]).filter(Boolean):[];   /* backend fills placeholders otherwise */
   $("#score").innerHTML=
     reportCard("Audit",esc(R.audit_id||"-"),esc(R.reporting_period||""))+
     reportCard("CO₂ baseline → mitigated",(+k.baseline_total_co2_kg_hr||0).toLocaleString("en-IN")+" → "+(+k.mitigated_total_co2_kg_hr||0).toLocaleString("en-IN"),"kg per hour · −"+(+k.reduction_pct||0).toFixed(1)+"%")+
     reportCard("Annual carbon credits",inr(k.annual_carbon_credit_inr),"payback "+(k.capex_payback_months!=null?k.capex_payback_months+" months":"-"))+
     reportCard("CPCB stack status",esc(String(ind.cpcb_mitigated_status||"-")),"was "+esc(String(ind.cpcb_baseline_status||"-"))+" · Ringelmann "+(ind.baseline_ringelmann||"-")+" → "+(ind.mitigated_ringelmann||"-"))+
     reportCard("SEBI BRSR scope 1 / 3",(+b.scope_1_direct_kg_hr||0).toLocaleString("en-IN")+" / "+(+b.scope_3_downstream_kg_hr||0).toLocaleString("en-IN"),"kg CO₂ per hour, baseline")+
-    reportCard("Forecourt",vt+" vehicles","dwell "+(veh.baseline_dwell_sec||"-")+"s → "+(veh.mitigated_dwell_sec||"-")+"s"+(plates.length?" · plates: "+esc(plates.slice(0,3).join(", ")):""));
+    reportCard("Forecourt",vt+" vehicles","dwell "+(veh.baseline_dwell_sec||"-")+"s → "+(veh.mitigated_dwell_sec||"-")+"s"+(plates.length?" · plates: "+esc(plates.slice(0,3).join(", ")):" · no number plates read yet"));
 }
 function renderReport(){
   $("#rDate").textContent=new Date().toLocaleString();

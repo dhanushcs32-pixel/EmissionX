@@ -113,6 +113,7 @@ def generate_report_summary() -> Dict[str, Any]:
 
     # 5. Node-1 Audit (Vehicular Forecourt - BLR_FUEL_STATION_01)
     lpr_candidates = ["KA04ME2041", "KA01AB8829", "KA03HA4910", "KA05NC7732", "DL01AB1234"]
+    lpr_source = "placeholder"   # becomes "phase1_summary" when the detector actually read plates
     phase1_summary_path = WORKSPACE_ROOT / "backend" / "data" / "phase1_summary.json"
     if phase1_summary_path.is_file():
         try:
@@ -125,6 +126,7 @@ def generate_report_summary() -> Dict[str, Any]:
                 ]
                 if extracted_plates:
                     lpr_candidates = extracted_plates[:8]
+                    lpr_source = "phase1_summary"
         except Exception as e:
             logger.debug(f"Could not extract plates from phase1_summary: {e}")
 
@@ -138,6 +140,7 @@ def generate_report_summary() -> Dict[str, Any]:
             1,
         ),
         "lpr_plate_samples": lpr_candidates,
+        "lpr_plates_source": lpr_source,
         "baseline_co2_kg_hr": veh_base["total_vehicular_co2_kg_hr"],
         "mitigated_co2_kg_hr": veh_proj_total,
         "cpcb_status": "COMPLIANT" if best_params.get("idle_time_cut_pct", 0) >= 30.0 else "MODERATE CONCERN",

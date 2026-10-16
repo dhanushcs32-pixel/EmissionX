@@ -5,6 +5,9 @@ the files the API already serves, so the website, digital twin and report all pi
 
   industrial -> cache/factory_annotated.mp4, cache/factory_telemetry.json (+ _meta.json)
   vehicular  -> cache/fuel_annotated.mp4, cache/fuel_telemetry.json, backend/data/phase1_summary.json
+
+Before the first upload for a sector replaces those files, the originals are saved in
+uploads/originals/<sector>/ (manifest.json says which existed); remove() puts them back.
 """
 from __future__ import annotations
 
@@ -23,7 +26,16 @@ logger = logging.getLogger("UploadJobs")
 WORKSPACE_ROOT = Path(__file__).resolve().parent.parent
 UPLOAD_DIR = WORKSPACE_ROOT / "uploads"
 WORK_DIR = UPLOAD_DIR / "work"
+ORIG_DIR = UPLOAD_DIR / "originals"
 CACHE_DIR = WORKSPACE_ROOT / "cache"
+
+# Files an upload replaces, per sector (restored by remove())
+PUBLISHED = {
+    "industrial": [CACHE_DIR / "factory_annotated.mp4", CACHE_DIR / "factory_telemetry.json",
+                   CACHE_DIR / "factory_telemetry_meta.json"],
+    "vehicular": [CACHE_DIR / "fuel_annotated.mp4", CACHE_DIR / "fuel_telemetry.json",
+                  WORKSPACE_ROOT / "backend" / "data" / "phase1_summary.json"],
+}
 
 ALLOWED_EXTENSIONS = {".mp4", ".mov", ".avi", ".mkv", ".webm", ".m4v"}
 MAX_UPLOAD_BYTES = 1024 * 1024 * 1024  # 1 GB
@@ -89,6 +101,81 @@ def _publish(src: Path, dst: Path, attempts: int = 5) -> None:
             time.sleep(0.5)
 
 
+def _delete(path: Path, attempts: int = 10) -> None:
+    """Deletes a served file; on Windows it can stay locked briefly while a video response closes."""
+    for i in range(attempts):
+        try:
+            path.unlink(missing_ok=True)
+            return
+        except PermissionError:
+            if i == attempts - 1:
+                raise
+            time.sleep(0.3)
+
+
+def _manifest_path(sector: str) -> Path:
+    return ORIG_DIR / sector / "manifest.json"
+
+
+def _backup_originals(sector: str, source_video: str) -> None:
+    """Saves the files this upload is about to replace, once per sector; later uploads keep that backup."""
+    mp = _manifest_path(sector)
+    if mp.is_file():
+        manifest = json.loads(mp.read_text(encoding="utf-8"))
+    else:
+        mp.parent.mkdir(parents=True, exist_ok=True)
+        manifest = {"files": {}}
+        for p in PUBLISHED[sector]:
+            rel = p.relative_to(WORKSPACE_ROOT).as_posix()
+            if p.is_file():
+                shutil.copyfile(p, mp.parent / p.name)
+                manifest["files"][rel] = "saved"
+            else:
+                manifest["files"][rel] = "absent"
+    manifest["source_video"] = source_video
+    manifest["uploaded_at"] = datetime.now(timezone.utc).isoformat()
+    mp.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+
+
+def uploaded_info(sector: str) -> Optional[Dict[str, Any]]:
+    """The uploaded clip currently replacing this sector's data, or None if the originals are in place."""
+    try:
+        m = json.loads(_manifest_path(sector).read_text(encoding="utf-8"))
+        return {"source_video": m.get("source_video"), "uploaded_at": m.get("uploaded_at")}
+    except (OSError, ValueError):
+        return None
+
+
+def remove(sector: str) -> bool:
+    """Puts back the data that existed before the first upload for this sector. False if nothing to remove."""
+    if is_running():
+        raise RuntimeError("A clip is still being analysed")
+    mp = _manifest_path(sector)
+    if not mp.is_file():
+        return False
+    manifest = json.loads(mp.read_text(encoding="utf-8"))
+    for rel, state in manifest.get("files", {}).items():
+        target = WORKSPACE_ROOT / rel
+        if state == "saved":
+            _publish(mp.parent / target.name, target)
+        else:
+            _delete(target)
+    shutil.rmtree(mp.parent, ignore_errors=True)
+    for _ in range(5):   # OneDrive or antivirus can hold the emptied folder for a moment
+        if not mp.parent.exists():
+            break
+        time.sleep(0.3)
+        shutil.rmtree(mp.parent, ignore_errors=True)
+    for clip in UPLOAD_DIR.glob(f"{sector}_*"):
+        clip.unlink(missing_ok=True)
+    with _lock:
+        if _job.get("sector") == sector and _job.get("state") in ("done", "error"):
+            _job.clear()
+            _job["state"] = "idle"
+    logger.info(f"Removed uploaded {sector} clip; original data restored")
+    return True
+
+
 def _run(sector: str, video_path: Path, original_name: str) -> None:
     t0 = time.time()
     try:
@@ -124,6 +211,7 @@ def _run_industrial(video_path: Path, original_name: str) -> str:
     meta.update({"source_video": original_name, "uploaded_from_website": True})
 
     _update(stage="publishing results")
+    _backup_originals("industrial", original_name)
     _publish(work_video, CACHE_DIR / "factory_annotated.mp4")
     _publish(work_json, CACHE_DIR / "factory_telemetry.json")
     (CACHE_DIR / "factory_telemetry_meta.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
@@ -154,6 +242,7 @@ def _run_vehicular(video_path: Path, original_name: str) -> str:
     records = tracks_to_fuel_telemetry(summary_dict)
 
     _update(stage="publishing results")
+    _backup_originals("vehicular", original_name)
     _publish(work_video, CACHE_DIR / "fuel_annotated.mp4")
     (CACHE_DIR / "fuel_telemetry.json").write_text(json.dumps(records, indent=2), encoding="utf-8")
     (WORKSPACE_ROOT / "backend" / "data" / "phase1_summary.json").write_text(json.dumps(summary_dict, indent=2), encoding="utf-8")

@@ -480,6 +480,14 @@ def root():
     }
 
 
+def _file_version(path: Path) -> Optional[int]:
+    """Modification time in ms; the website adds it to video URLs so a re-upload is never served from cache."""
+    try:
+        return int(path.stat().st_mtime * 1000)
+    except OSError:
+        return None
+
+
 @app.get("/api/health")
 def get_health() -> Dict[str, Any]:
     """Returns real-time backend health, component statuses, and cache diagnostics."""
@@ -490,15 +498,19 @@ def get_health() -> Dict[str, Any]:
             "live": True,
             "cached_telemetry_frames": len(industrial_buffer.records),
             "video_available": (WORKSPACE_ROOT / "cache" / "factory_annotated.mp4").is_file(),
+            "video_version": _file_version(WORKSPACE_ROOT / "cache" / "factory_annotated.mp4"),
             "video_path": "cache/factory_annotated.mp4",
             "detector_run": industrial_buffer.run_meta(),
+            "uploaded_clip": upload_jobs.uploaded_info("industrial"),
         },
         "vehicular_module": {
             "mode": "dynamic_linked" if vehicular_adapter.is_dynamically_linked() else "open_receiver_fallback",
             "live": True,
             "cached_telemetry_frames": len(vehicular_adapter.records),
             "video_available": (WORKSPACE_ROOT / "cache" / "fuel_annotated.mp4").is_file(),
+            "video_version": _file_version(WORKSPACE_ROOT / "cache" / "fuel_annotated.mp4"),
             "video_path": "cache/fuel_annotated.mp4",
+            "uploaded_clip": upload_jobs.uploaded_info("vehicular"),
         },
         "environment_service": {
             "source": "open-meteo" if (time.time() - _weather_last_fetched < WEATHER_CACHE_TTL_SEC) else "offline-cache",
@@ -852,6 +864,7 @@ def stream_video(sector: str):
         path=str(video_path),
         media_type="video/mp4",
         filename=video_path.name,
+        headers={"Cache-Control": "no-cache"},   # a new upload replaces the file at the same URL
     )
 
 
@@ -906,6 +919,23 @@ async def upload_clip(sector: str, request: Request, filename: str = Query(..., 
 def upload_status():
     """State of the current or last clip analysis: idle, running (with frame progress), done or error."""
     return upload_jobs.status()
+
+
+@app.delete("/api/upload/{sector}")
+def remove_uploaded_clip(sector: str):
+    """Removes the uploaded clip for a sector and restores the data that was there before it."""
+    sector = sector.lower()
+    if sector not in upload_jobs.SECTORS:
+        raise HTTPException(status_code=400, detail=f"Invalid sector '{sector}'. Must be 'industrial' or 'vehicular'.")
+    try:
+        removed = upload_jobs.remove(sector)
+    except RuntimeError as e:
+        raise HTTPException(status_code=409, detail=str(e))
+    except PermissionError as e:
+        raise HTTPException(status_code=423, detail=f"A file is still in use, try again in a moment ({e}).")
+    if not removed:
+        raise HTTPException(status_code=404, detail=f"No uploaded {sector} clip to remove.")
+    return {"removed": True, "sector": sector}
 
 
 # =====================================================================
