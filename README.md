@@ -1,7 +1,6 @@
 <div align="center">
 
-<!-- TODO: logo -> docs/assets/logo.png -->
-<img src="./docs/assets/logo.png" width="120" alt="EmissionX logo"/>
+<img src="./docs/assets/logo.jpg" width="120" alt="EmissionX logo"/>
 
 # EmissionX
 
@@ -13,17 +12,17 @@ and a GenAI advisor that drafts the policy.
 </p>
 
 <a href="https://emission-x.vercel.app/">
-  <img src="https://img.shields.io/badge/▶%20LIVE%20DEMO-Enter%20Platform-10b981?style=for-the-badge" alt="Live demo"/>
+  <img src="https://img.shields.io/badge/▶%20LIVE%20DEMO-Enter%20Platform-ff7300?style=for-the-badge" alt="Live demo"/>
 </a>
 
 <br><br>
 
-<img src="https://img.shields.io/badge/Computer%20Vision-YOLO%20%2B%20OpenCV-10b981?style=for-the-badge" alt="YOLO OpenCV">
-<img src="https://img.shields.io/badge/Backend-FastAPI-10b981?style=for-the-badge" alt="FastAPI">
-<img src="https://img.shields.io/badge/3D-Three.js-10b981?style=for-the-badge" alt="Three.js">
-<img src="https://img.shields.io/badge/Charts-Chart.js-10b981?style=for-the-badge" alt="Chart.js">
-<img src="https://img.shields.io/badge/GenAI-Groq%20%7C%20Gemini-10b981?style=for-the-badge" alt="Groq Gemini">
-<img src="https://img.shields.io/badge/DSU-Hackathon-10b981?style=for-the-badge" alt="DSU Hackathon">
+<img src="https://img.shields.io/badge/Computer%20Vision-YOLO%20%2B%20OpenCV-ff7300?style=for-the-badge" alt="YOLO OpenCV">
+<img src="https://img.shields.io/badge/Backend-FastAPI-ff7300?style=for-the-badge" alt="FastAPI">
+<img src="https://img.shields.io/badge/3D-Three.js-ff7300?style=for-the-badge" alt="Three.js">
+<img src="https://img.shields.io/badge/Charts-Chart.js-ff7300?style=for-the-badge" alt="Chart.js">
+<img src="https://img.shields.io/badge/GenAI-Groq%20%7C%20Gemini-ff7300?style=for-the-badge" alt="Groq Gemini">
+<img src="https://img.shields.io/badge/DSU-Hackathon-ff7300?style=for-the-badge" alt="DSU Hackathon">
 
 <br><br>
 
