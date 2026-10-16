@@ -5,10 +5,10 @@ import {defineConfig} from 'vite';
 
 // The website calls the FastAPI backend (main.py) as relative /api/... URLs.
 // In dev and preview, Vite forwards them to the backend, so no CORS or hard-coded host is needed.
-// Point it elsewhere with EMISSIONX_API_URL, e.g. EMISSIONX_API_URL=http://192.168.1.20:8000
+// Point it elsewhere with EMISSIONX_API_URL, e.g. EMISSIONX_API_URL=https://emissionx-p8lt.onrender.com
 const apiProxy = {
   '/api': {
-    target: process.env.EMISSIONX_API_URL || 'http://127.0.0.1:8000',
+    target: process.env.EMISSIONX_API_URL || 'https://emissionx-p8lt.onrender.com',
     changeOrigin: true,
   },
 };

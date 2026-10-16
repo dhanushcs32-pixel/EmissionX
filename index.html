@@ -723,7 +723,7 @@ function N(){return NODES[S.node]}
 /* ---------------- backend API (FastAPI main.py) ----------------
    Relative /api URLs go through the Vite proxy (vite.config.ts). Every caller falls back to the
    simulated demo data when the backend is down or an endpoint changes shape. */
-var API_BASE=window.EMISSIONX_API!=null?window.EMISSIONX_API:(location.protocol==="file:"?"http://localhost:8000":"");
+var API_BASE=window.EMISSIONX_API!=null?window.EMISSIONX_API:"https://emissionx-p8lt.onrender.com";
 var LIVE=false,HEALTH=null;
 function api(path,body,ms){
   var ctl=window.AbortController?new AbortController():null,t=ctl?setTimeout(function(){ctl.abort()},ms||5000):0;
