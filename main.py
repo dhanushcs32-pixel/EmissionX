@@ -653,6 +653,23 @@ async def get_ai_advice(req: AIAdviceRequest):
         }
 
 
+class ChatRequest(BaseModel):
+    message: str
+    history: List[Dict[str, str]] = Field(default_factory=list, description="Prior {role, content} text turns")
+    allow_write: bool = Field(default=True, description="Let the bot modify the JSON data files")
+    context: Optional[Dict[str, Any]] = Field(default=None, description="Live dashboard snapshot")
+
+
+@app.post("/api/chat")
+async def chat_endpoint(req: ChatRequest):
+    """GenAI chatbot with tool-calling read/write access to the platform JSON files."""
+    from modules.chatbot import chat, ChatUnavailable
+    try:
+        return await asyncio.to_thread(chat, req.message, req.history, req.allow_write, req.context)
+    except ChatUnavailable as e:
+        raise HTTPException(status_code=503, detail=str(e))
+
+
 @app.get("/api/video/{sector}")
 def stream_video(sector: str):
     """

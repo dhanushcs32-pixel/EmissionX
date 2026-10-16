@@ -1,0 +1,8 @@
+{
+  "name": "EmmisionX",
+  "description": "Real-time carbon emission detection, digital twin simulator, and GenAI policy advisor.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

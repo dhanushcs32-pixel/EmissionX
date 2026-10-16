@@ -1,42 +1,12 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
-
-# Virtual Environments
-.venv/
-env/
-venv/
-
-# Pytest & cache
-.pytest_cache/
-
-# Videos & media caches
-*.mp4
-cache/factory_annotated.mp4
-cache/*.mp4
-backend/data/*.mp4
-fuel_station.mp4
-factory_stack.mp4
-
-# Models
-*.pt
-*.onnx
-models/*.pt
-models/*.onnx
-models/*.bin
-
-# Node / Frontend
 node_modules/
-.next/
-dist/
 build/
-.env
-.env.local
-
-# OS & IDE
-Thumbs.db
-[Ee]xcluded/
+dist/
+coverage/
 .DS_Store
-.vscode/
-.idea/
+*.log
+.env*
+!.env.example
+
+__pycache__/
+.pytest_cache/
+*.bak
