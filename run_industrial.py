@@ -318,6 +318,11 @@ def main() -> None:
     parser.add_argument("--output", type=str, default="cache/factory_annotated.mp4", help="Path to save annotated output video")
     parser.add_argument("--json", type=str, default="cache/factory_telemetry.json", help="Path to save telemetry JSON file")
     parser.add_argument("--model", type=str, default="models/smoke.pt", help="Path to YOLO plume weights (optional)")
+    parser.add_argument(
+        "--profile", type=str, default="auto",
+        choices=["auto", "universal_optical_flow", "overcast_horizontal", "sunset_vertical", "synthetic"],
+        help="Smoke segmentation engine; 'auto' routes by scene (unknown scenes use the universal optical-flow engine)",
+    )
     args, _ = parser.parse_known_args()
 
     print("=" * 65)
@@ -342,10 +347,12 @@ def main() -> None:
         output_video_path=output_video,
         output_json_path=output_json,
         model_path=model_weight,
+        profile=None if args.profile == "auto" else args.profile,
     )
 
     print("\n[PIPELINE SUMMARY]")
-    print(f" - Profile Selected:   {stats.get('profile', 'Auto-Routed')}")
+    print(f" - Profile Selected:   {stats.get('profile', 'Auto-Routed')} ({stats.get('detector_mode', '')})")
+    print(f" - Video Codec:        {stats.get('video_codec')} (browsers need avc1)")
     print(f" - Frames Processed:   {stats['frames_processed']}")
     print(f" - Processing Speed:   {stats['proc_fps']} FPS (Total time: {stats['elapsed_sec']}s)")
     print(f" - Annotated Video:    {stats['annotated_video']} (File size: {os.path.getsize(output_video) / 1024:.1f} KB)")

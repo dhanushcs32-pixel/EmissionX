@@ -141,15 +141,19 @@ class IndustrialTelemetryBuffer:
 
     def __init__(self, json_path: str = "cache/factory_telemetry.json"):
         self.json_path = Path(json_path)
+        self.meta_path = self.json_path.with_name(self.json_path.stem + "_meta.json")
         self.records: List[Dict[str, Any]] = []
         self.frame_idx = 0
+        self._mtime: Optional[float] = None
         self.load_cache()
 
     def load_cache(self) -> None:
         if self.json_path.is_file():
             try:
+                self._mtime = self.json_path.stat().st_mtime
                 with open(self.json_path, "r", encoding="utf-8") as f:
                     self.records = json.load(f)
+                self.frame_idx = 0
                 logger.info(f"Loaded {len(self.records)} industrial telemetry records from {self.json_path}")
             except Exception as e:
                 logger.warning(f"Could not read {self.json_path}: {e}")
@@ -157,8 +161,26 @@ class IndustrialTelemetryBuffer:
         else:
             self.records = []
 
+    def reload_if_changed(self) -> None:
+        """Picks up a fresh run of run_industrial.py without restarting the server."""
+        try:
+            mtime = self.json_path.stat().st_mtime if self.json_path.is_file() else None
+        except OSError:
+            return
+        if mtime != self._mtime:
+            self.load_cache()
+
+    def run_meta(self) -> Optional[Dict[str, Any]]:
+        """Detector run metadata written by process_video (engine/profile, source video, codec)."""
+        try:
+            with open(self.meta_path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except (OSError, ValueError):
+            return None
+
     def get_next_record(self, env: Dict[str, Any]) -> Dict[str, Any]:
         """Returns the next frame's telemetry in a continuous circular loop."""
+        self.reload_if_changed()
         if not self.records:
             # Fallback synthetic industrial record if cache not yet populated
             return {
@@ -450,6 +472,7 @@ def get_health() -> Dict[str, Any]:
             "cached_telemetry_frames": len(industrial_buffer.records),
             "video_available": (WORKSPACE_ROOT / "cache" / "factory_annotated.mp4").is_file(),
             "video_path": "cache/factory_annotated.mp4",
+            "detector_run": industrial_buffer.run_meta(),
         },
         "vehicular_module": {
             "mode": "dynamic_linked" if vehicular_adapter.is_dynamically_linked() else "open_receiver_fallback",

@@ -1458,11 +1458,15 @@ def process_video(
     base_fuel_rate: float = 1200.0,
     scrubber_efficiency: float = 0.0,
     max_frames: Optional[int] = None,
+    profile: Optional[str] = None,
 ) -> Dict[str, Any]:
     """
     Analyzes pre-recorded CCTV footage of a factory smokestack, segments smoke plume,
     computes masked Ringelmann Opacity, pairs with CEMS telemetry, calculates emissions,
     and saves both annotated video (with true segmentation overlay) and telemetry JSON.
+
+    profile: None auto-routes by scene; or force "universal_optical_flow", "overcast_horizontal",
+    "sunset_vertical" or "synthetic".
     """
     input_path = Path(input_video_path)
     if not input_path.is_file():
@@ -1483,12 +1487,17 @@ def process_video(
 
     logger.info(f"Processing video {input_path.name}: {width}x{height} @ {fps:.1f} FPS, total frames: {total_frames}")
 
-    # Video Writer
-    fourcc = cv2.VideoWriter_fourcc(*"mp4v")
-    writer = cv2.VideoWriter(output_video_path, fourcc, fps, (width, height))
+    # Video Writer: H.264 (avc1) so browsers can play it via /api/video/industrial;
+    # mp4v only as a fallback for OpenCV builds without an H.264 encoder (browsers cannot play mp4v)
+    video_codec = "avc1"
+    writer = cv2.VideoWriter(output_video_path, cv2.VideoWriter_fourcc(*"avc1"), fps, (width, height))
+    if not writer.isOpened():
+        video_codec = "mp4v"
+        writer = cv2.VideoWriter(output_video_path, cv2.VideoWriter_fourcc(*"mp4v"), fps, (width, height))
+        logger.warning("H.264 encoder unavailable; wrote mp4v, which web browsers cannot play.")
 
     # Initialize Detector & CEMS Generator
-    detector = DualModePlumeDetector(model_path=model_path)
+    detector = DualModePlumeDetector(model_path=model_path, profile=profile)
     cems_gen = SyntheticCEMSGenerator(
         fuel_type=fuel_type,
         base_fuel_rate=base_fuel_rate,
@@ -1497,6 +1506,7 @@ def process_video(
 
     telemetry_records: List[Dict[str, Any]] = []
     frame_idx = 0
+    mode_name = "n/a"
     start_time = time.time()
 
     try:
@@ -1606,7 +1616,9 @@ def process_video(
 
     # Save permanent backup copy named after the video profile/resolution
     # so switching videos never destroys previously verified demo outputs!
-    tag = "overcast" if "overcast" in (detector.active_profile or "") else ("sunset" if "sunset" in (detector.active_profile or "") else "synthetic")
+    active = detector.active_profile or ""
+    tag = ("overcast" if "overcast" in active else "sunset" if "sunset" in active
+           else "universal" if "universal" in active else "synthetic")
     backup_video_path = Path(output_video_path).parent / f"factory_annotated_{tag}.mp4"
     backup_json_path = Path(output_json_path).parent / f"factory_telemetry_{tag}.json"
     try:
@@ -1623,7 +1635,28 @@ def process_video(
         f"Saved {frame_idx} frames to {output_video_path} and telemetry to {output_json_path}"
     )
 
+    # Run metadata next to the telemetry (factory_telemetry_meta.json), so the API can say which engine ran
+    meta_path = Path(output_json_path).with_name(Path(output_json_path).stem + "_meta.json")
+    try:
+        with open(meta_path, "w", encoding="utf-8") as f:
+            json.dump({
+                "generated_at": datetime.now(timezone.utc).isoformat(),
+                "source_video": input_path.name,
+                "profile": detector.active_profile,
+                "detector_mode": mode_name,
+                "frames_processed": frame_idx,
+                "width": width,
+                "height": height,
+                "fps": round(float(fps), 2),
+                "video_codec": video_codec,
+            }, f, indent=2)
+    except Exception as e:
+        logger.warning(f"Could not write run metadata {meta_path}: {e}")
+
     return {
+        "video_codec": video_codec,
+        "detector_mode": mode_name,
+        "meta_json": str(meta_path),
         "frames_processed": frame_idx,
         "elapsed_sec": round(elapsed, 2),
         "proc_fps": round(proc_fps, 1),
