@@ -303,7 +303,7 @@ All demo data is simulated. Thresholds and advice are indicative; check local po
 
 ## Team
 
-Built for the **DSU Hackathon**.
+Built for the **CODE CLASH 2.O**.
 
 <div align="center">
 
