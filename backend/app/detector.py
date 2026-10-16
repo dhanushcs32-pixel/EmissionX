@@ -92,6 +92,7 @@ class VehicleDetectorTracker:
             writer = cv2.VideoWriter(str(output_p), fourcc, fps, (width, height))
 
         vehicle_records: Dict[int, VehicleTrackRecord] = {}
+        plate_votes: Dict[int, Dict[str, Tuple[float, float]]] = {}  # track -> plate -> (conf sum, best conf)
         frame_idx = 0
 
         logger.info(
@@ -176,13 +177,21 @@ class VehicleDetectorTracker:
                                     plate_res = self.lpr.read_vehicle_plate(crop)
                                     if plate_res:
                                         plate_txt, plate_conf = plate_res
-                                        if rec.plate_confidence is None or plate_conf > rec.plate_confidence:
-                                            rec.license_plate = plate_txt
-                                            rec.plate_confidence = round(float(plate_conf), 3)
+                                        # Vote across frames: summed confidence per distinct reading, so one
+                                        # misread frame cannot override a plate read consistently elsewhere
+                                        votes = plate_votes.setdefault(tracker_id, {})
+                                        total, best_conf = votes.get(plate_txt, (0.0, 0.0))
+                                        votes[plate_txt] = (total + plate_conf, max(best_conf, plate_conf))
+                                        winner = max(votes, key=lambda k: votes[k][0])
+                                        if winner != rec.license_plate:
                                             logger.info(
-                                                f"Frame {frame_idx}: Detected Plate [{plate_txt}] "
-                                                f"(conf: {plate_conf:.2f}) for Track #{tracker_id} ({cls_name})"
+                                                f"Frame {frame_idx}: Plate [{winner}] "
+                                                f"(conf: {votes[winner][1]:.2f}, reads: {len(votes)}) "
+                                                f"for Track #{tracker_id} ({cls_name})"
                                             )
+                                        rec.license_plate = winner
+                                        rec.plate_confidence = round(float(votes[winner][1]), 3)
+                                        rec.data_quality_flag = "phase2_lpr_read"
 
                         # Build display label (with license plate if recognized)
                         if rec.license_plate:

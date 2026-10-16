@@ -56,8 +56,9 @@ def main():
     )
     parser.add_argument(
         "--lpr",
-        action="store_true",
-        help="Enable Automatic License Plate Recognition (OCR) for tracked vehicles",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="License Plate Recognition (OCR) for tracked vehicles; on by default, --no-lpr to skip",
     )
     parser.add_argument(
         "--lpr-interval",
